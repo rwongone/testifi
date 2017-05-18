@@ -1,0 +1,9 @@
+FROM docker:17
+
+RUN apk add --update py-pip make bash \
+    && pip install docker-compose
+
+COPY . /usr/src/testifi
+WORKDIR /usr/src/testifi
+
+CMD ["sh"]
