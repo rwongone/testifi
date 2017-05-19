@@ -4,6 +4,8 @@
 #
 # Read the Guide for Upgrading Ruby on Rails for more info on each option.
 
+Rails.application.config.raise_on_unfiltered_parameters = true
+
 # Make Ruby 2.4 preserve the timezone of the receiver when calling `to_time`.
 # Previous versions had false.
 ActiveSupport.to_time_preserves_timezone = true
