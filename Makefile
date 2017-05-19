@@ -45,15 +45,14 @@ deploy_run:
 		testifi_deploy:latest \
 		sh -c make dev
 
-client_dev:
+# creates an optimized production build of the frontend
+ui:
 	docker container run --rm -it \
 		-v $(PWD)/client:/usr/src/app \
 		-w /usr/src/app \
 		-u $(UID):$(GID) \
-		-p 3001:3001 \
-		-e PORT=3001 \
 		node \
-		npm start
+		sh -c 'npm install; npm run build'
 
 node:
 	docker container run --rm -it \
