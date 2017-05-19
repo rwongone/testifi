@@ -36,4 +36,4 @@ deploy_build:
 	docker build -f Dockerfile.testifi -t testifi_deploy .
 
 deploy_run:
-	docker run --rm -it --name testifi_deploy -v /var/run/docker.sock:/var/run/docker.sock testifi_deploy:latest sh -c make dev
+	docker run --rm -it --name testifi_deploy -v /var/run/docker.sock:/var/run/docker.sock -e PROJECT_DIR=$(PWD) testifi_deploy:latest sh -c make dev

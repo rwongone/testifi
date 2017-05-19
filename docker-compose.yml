@@ -7,6 +7,7 @@ services:
         working_dir: /usr/src/app
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
+            - ${PROJECT_DIR}:/usr/src/app
         ports:
             - "3000:3000"
         links:
