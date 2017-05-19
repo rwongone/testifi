@@ -15,14 +15,14 @@ all: dev
 
 install: build create_db
 
-dev: build run
+dev: build run_dev
 
 build:
 	docker build -f Dockerfile.rails -t testifi_app .
 
 # If we get a reverse proxy going, we can scale the app to 2 instances.
-run:
-	docker-compose up --scale app=1 -d
+run_dev:
+	docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --scale app=1 -d
 
 console:
 	docker exec -it testifi_app sh

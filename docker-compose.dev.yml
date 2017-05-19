@@ -1,0 +1,15 @@
+version: '3'
+services:
+    clientdev:
+        container_name: client_dev
+        image: node
+        command: npm start
+        working_dir: /usr/src/app
+        volumes:
+            - ${PROJECT_DIR}/client:/usr/src/app
+        ports:
+            - "3001:3001"
+        environment:
+            PORT: 3001
+        links:
+            - app
