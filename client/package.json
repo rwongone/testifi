@@ -2,7 +2,7 @@
   "name": "client",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://localhost:3000",
+  "proxy": "http://app:3000",
   "dependencies": {
     "react": "^15.5.4",
     "react-dom": "^15.5.4"

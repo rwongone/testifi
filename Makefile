@@ -30,7 +30,7 @@ console:
 c: console
 
 stop:
-	docker kill testifi_app testifi_db
+	docker rm -f testifi_app testifi_db client_dev
 
 deploy: deploy_build deploy_run
 
