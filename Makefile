@@ -30,7 +30,9 @@ console:
 c: console
 
 stop:
-	docker rm -f testifi_app testifi_db client_dev
+	echo "Force stopping all containers";
+	-docker rm -f testifi_app testifi_db client_dev;
+	sudo rm -rf tmp
 
 deploy: deploy_build deploy_run
 
