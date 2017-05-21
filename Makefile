@@ -63,3 +63,6 @@ node:
 		-u $(UID):$(GID) \
 		node \
 		bash
+
+test:
+	bundle exec rspec
