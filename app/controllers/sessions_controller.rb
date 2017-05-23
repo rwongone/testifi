@@ -6,10 +6,12 @@ class SessionsController < ApplicationController
     if u && u.authenticate(auth_params[:password])
       jwt = Auth.issue({user_id: u.id})
       render status: :ok, json: {jwt: jwt}
+    else
+      render status: 400, json: {}
     end
   end
 
-  private 
+  private
 
   def auth_params
     params.permit(:email, :password)
