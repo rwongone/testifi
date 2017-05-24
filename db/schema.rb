@@ -10,10 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170522194718) do
+ActiveRecord::Schema.define(version: 20170524200327) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "assignments", force: :cascade do |t|
+    t.string "name"
+    t.text "description"
+    t.bigint "course_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["course_id"], name: "index_assignments_on_course_id"
+  end
 
   create_table "courses", force: :cascade do |t|
     t.string "course_code"
@@ -21,6 +30,24 @@ ActiveRecord::Schema.define(version: 20170522194718) do
     t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "problems", force: :cascade do |t|
+    t.string "name"
+    t.bigint "assignment_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["assignment_id"], name: "index_problems_on_assignment_id"
+  end
+
+  create_table "submissions", force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "problem_id"
+    t.string "language", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["problem_id"], name: "index_submissions_on_problem_id"
+    t.index ["user_id"], name: "index_submissions_on_user_id"
   end
 
   create_table "users", id: :serial, force: :cascade do |t|
