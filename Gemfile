@@ -22,6 +22,9 @@ gem 'bcrypt', '~> 3.1.7'
 # jwt for authentication
 gem 'jwt'
 
+# docker-api for test execution
+gem 'docker-api', '~> 1.33.4'
+
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
