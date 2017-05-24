@@ -7,6 +7,7 @@ SHELL := bash
 .SUFFIXES:
 UID=$(shell id -u)
 GID=$(shell id -g)
+DOCKER_DIR=docker/sys
 
 # When a phony target is declared, make will execute the recipe regardless of whether a file with the same name exists.
 .PHONY: all install dev build run console c stop deploy deploy_build deploy_run
@@ -18,11 +19,11 @@ install: build create_db
 dev: build run_dev
 
 build:
-	docker build -f Dockerfile.rails -t testifi_app .
+	docker build -f $(DOCKER_DIR)/Dockerfile.rails -t testifi_app .
 
 # If we get a reverse proxy going, we can scale the app to 2 instances.
 run_dev:
-	docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --scale app=1 -d
+	docker-compose -f $(DOCKER_DIR)/docker-compose.yml -f $(DOCKER_DIR)/docker-compose.dev.yml up --scale app=1 -d
 
 console:
 	docker exec -it testifi_app sh
@@ -37,7 +38,7 @@ stop:
 deploy: deploy_build deploy_run
 
 deploy_build:
-	docker build -f Dockerfile.testifi -t testifi_deploy .
+	docker build -f $(DOCKER_DIR)/Dockerfile.testifi -t testifi_deploy .
 
 deploy_run:
 	docker run --rm -it \
