@@ -1,0 +1,26 @@
+.adminSignup {
+  margin-top: 40px;
+  display: flex;
+  justify-content: center;
+}
+
+.adminSignup .frame {
+  border: 1px solid #4a4a4a;
+  border-radius: 4px;
+  width: 50%;
+  min-width: 768px;
+  padding: 20px;
+  background: #cbeaf1;
+}
+
+.adminSignup .adminSignupForm {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-gap: 20px;
+  align-items: center;
+}
+
+.adminSignup .submitButton {
+  grid-column-start: 1;
+  grid-column-end: 3;
+}
