@@ -2,12 +2,74 @@ import React, { Component } from 'react';
 import './AdminSignup.css';
 
 class AdminSignup extends Component {
+    constructor() {
+        super();
+        this.state = {
+            password: '',
+            confirmPassword: '',
+            hasStartedConfirmingPassword: false
+        }
+    }
+
     onSubmit = e => {
-        // TODO post the info to the server
+        const data = {
+            name: e.target.name.value,
+            email: e.target.email.value,
+            password: e.target.password.value
+        };
+        if (data.password !== e.target.confirmPassword.value) {
+            alert('Passwords must match before proceeding');
+            e.preventDefault();
+            return;
+        }
+        if (!data.password.length) {
+            alert('Password cannot be empty');
+            e.preventDefault();
+            return;
+        }
+        let headers = new Headers();
+        headers.append('Accept', 'application/json');
+        headers.append('Content-Type', 'application/json');
+        fetch('/admin', {
+            method: 'POST',
+            body: JSON.stringify(data),
+            headers
+        })
+        .then(resp => resp.json())
+        .then(json => {
+            // TODO handle parsed response (including errors)
+            debugger;
+        });
         e.preventDefault();
     }
 
+    onPasswordChange = e => {
+        this.setState({
+            password: e.target.value
+        });
+    }
+
+    onConfirmPasswordChange = e => {
+        this.setState({
+            confirmPassword: e.target.value,
+            hasStartedConfirmingPassword: true
+        });
+    }
+
     render() {
+        const {
+            confirmPassword,
+            password,
+            hasStartedConfirmingPassword
+        } = this.state;
+
+        let confirmPasswordClass = '';
+        if (hasStartedConfirmingPassword) {
+            confirmPasswordClass = password === confirmPassword
+                ? 'passwordMatch'
+                : 'passwordNonmatch';
+        }
+
         return (
                 <div className="adminSignup">
                     <div className="frame">
@@ -16,8 +78,8 @@ class AdminSignup extends Component {
                         <form className="adminSignupForm" onSubmit={ this.onSubmit }>
                             <label htmlFor="name">Name: </label><input type="text" name="name" />
                             <label htmlFor="email">Email: </label><input type="text" name="email" />
-                            <label htmlFor="password">Password: </label><input type="password" name="password" />
-                            <label htmlFor="confirmPassword">Confirm Password: </label><input type="password" name="confirmPassword" />
+                            <label htmlFor="password">Password: </label><input type="password" name="password" onChange={ this.onPasswordChange } value={ password } />
+                            <label htmlFor="confirmPassword">Confirm Password: </label><input type="password" name="confirmPassword" onChange={ this.onConfirmPasswordChange } value={ confirmPassword } className={ confirmPasswordClass } />
                             <button className="submitButton" type="submit">Create</button>
                         </form>
                     </div>

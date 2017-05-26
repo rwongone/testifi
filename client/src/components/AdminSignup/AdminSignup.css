@@ -24,3 +24,13 @@
   grid-column-start: 1;
   grid-column-end: 3;
 }
+
+.adminSignup input.passwordMatch, input.passwordMatch:focus {
+  box-shadow: 0 0 5px green;
+  border: 1px solid green;
+}
+
+.adminSignup input.passwordNonmatch, input.passwordNonmatch:focus {
+  box-shadow: 0 0 5px red;
+  border: 1px solid red;
+}
