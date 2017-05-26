@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { registerAdmin } from '../../actions/user';
 import './AdminSignup.css';
 
 class AdminSignup extends Component {
@@ -12,6 +14,10 @@ class AdminSignup extends Component {
     }
 
     onSubmit = e => {
+        const {
+            dispatch
+        } = this.props;
+
         const data = {
             name: e.target.name.value,
             email: e.target.email.value,
@@ -27,19 +33,7 @@ class AdminSignup extends Component {
             e.preventDefault();
             return;
         }
-        let headers = new Headers();
-        headers.append('Accept', 'application/json');
-        headers.append('Content-Type', 'application/json');
-        fetch('/admin', {
-            method: 'POST',
-            body: JSON.stringify(data),
-            headers
-        })
-        .then(resp => resp.json())
-        .then(json => {
-            // TODO handle parsed response (including errors)
-            debugger;
-        });
+        dispatch(registerAdmin(data));
         e.preventDefault();
     }
 
@@ -88,4 +82,4 @@ class AdminSignup extends Component {
     }
 }
 
-export default AdminSignup;
+export default connect()(AdminSignup);
