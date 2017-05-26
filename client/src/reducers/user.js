@@ -6,7 +6,7 @@ export default function(state = Map({
     admin: false,
     email: '',
     name: '',
-    id: null
+    id: -1
 }), action) {
     switch (action.type) {
         case RECEIVE_USER:

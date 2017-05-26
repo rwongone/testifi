@@ -1,9 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { PropTypes } from 'prop-types';
 import { registerAdmin } from '../../actions/user';
 import './AdminSignup.css';
 
 class AdminSignup extends Component {
+    static propTypes = {
+        dispatch: PropTypes.func.isRequired
+    }
+
     constructor() {
         super();
         this.state = {
