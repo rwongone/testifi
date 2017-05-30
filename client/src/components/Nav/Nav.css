@@ -2,9 +2,16 @@
   width: 100%;
   background: #f8f8f8;
   line-height: 4rem;
+  display: flex;
+  justify-content: space-between;
 }
 
 .nav .name {
   font-size: 20px;
   margin-left: 16px;
+}
+
+.nav .greeting {
+  font-size: 14px;
+  margin-right: 10px;
 }

@@ -59,7 +59,7 @@ ui:
 
 node:
 	docker container run --rm -it \
-		-v $(PWD):/usr/src/app \
+		-v $(PWD)/client:/usr/src/app \
 		-w /usr/src/app \
 		-u $(UID):$(GID) \
 		node \
