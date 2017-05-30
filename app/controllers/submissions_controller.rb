@@ -1,27 +1,35 @@
+require 'submission_executor'
+
 class SubmissionsController < ApplicationController
   def create
-    problem = Submission.new(create_params)
-    if problem.save!
-      render status: :created, json: problem
+    submission = Submission.new(create_params)
+    if submission.save!
+      render status: :created, json: submission
     end
   end
 
   def show
-    problem = Submission.find(params[:id])
-    render status: :ok, json: problem
+    submission = Submission.find(params[:id])
+    render status: :ok, json: submission
   end
 
   def update
-    problem = Submission.find(params[:id])
-    if problem.update!(create_params)
-      render status: :ok, json: problem
+    submission = Submission.find(params[:id])
+    if submission.update!(create_params)
+      render status: :ok, json: submission
     end
   end
 
   def destroy
-    problem = Submission.find(params[:id])
-    problem.destroy
+    submission = Submission.find(params[:id])
+    submission.destroy
     head :no_content
+  end
+
+  def exec
+    submission = Submission.find(params[:id])
+    result = SubmissionExecutor.run_tests(submission)
+    render status: :ok, json: { 'result': result }
   end
 
   private
