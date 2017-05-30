@@ -22,7 +22,7 @@ class SubmissionExecutor
 
   def self.run_test(submission=nil, image=nil)
     problem = submission&.problem
-    cmd = problem&.cmd || ["sh", "-c", "g++ submission/submitted_file.cpp && ./a.out < input/sample_test > output/program_output"] # ["ls", "-la"]
+    cmd =  ["sh", "-c", problem&.cmd || "g++ submission/submitted_file.cpp && ./a.out < input/sample_test > output/program_output"] # ["ls", "-la"]
     filepath = submission&.filepath || 'var/submission/solution.cpp'
 
     opts = {

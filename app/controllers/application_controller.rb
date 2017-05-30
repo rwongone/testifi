@@ -7,10 +7,9 @@ class ApplicationController < ActionController::API
 
   def current_user
     if bearer_token?
-      user = User.find(auth["user_id"])
-      if user
-        @current_user ||= user
-      end
+      user_id = auth["user_id"]
+      user = User.find_by(id: user_id)
+      @current_user ||= user
     end
   end
 
