@@ -4,6 +4,7 @@ class CreateSubmissions < ActiveRecord::Migration[5.1]
       t.references :user
       t.references :problem
       t.string :language, null: false
+      t.string :filepath, null: false
 
       t.timestamps
     end
