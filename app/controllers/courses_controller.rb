@@ -24,12 +24,6 @@ class CoursesController < ApplicationController
     head :no_content
   end
 
-  def exec
-    course = Course.find(params[:id])
-    result = CourseExecutor.run_tests(course)
-    render status: :ok, json: { 'result': result }
-  end
-
   private
 
   def create_params
