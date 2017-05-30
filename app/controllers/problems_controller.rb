@@ -27,6 +27,6 @@ class ProblemsController < ApplicationController
   private
 
   def create_params
-    params.permit(:name, :description, :assignment_id)
+    params.permit(:name, :description, :assignment_id, :cmd)
   end
 end
