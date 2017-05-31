@@ -26,7 +26,7 @@ run_dev:
 	docker-compose -f $(DOCKER_DIR)/docker-compose.yml -f $(DOCKER_DIR)/docker-compose.dev.yml up --scale app=1 -d
 
 console:
-	docker exec -it testifi_app sh
+	docker exec -it testifi_app bash
 
 c: console
 
