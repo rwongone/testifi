@@ -25,6 +25,9 @@ gem 'jwt'
 # http client
 gem 'http'
 
+# Mime type detection
+gem 'mimemagic'
+
 # docker-api for test execution
 gem 'docker-api', '~> 1.33.4'
 

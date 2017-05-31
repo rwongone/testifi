@@ -1,8 +1,18 @@
 require 'submission_executor'
+require 'mimemagic'
 
 class SubmissionsController < ApplicationController
   def create
-    submission = Submission.new(create_params)
+
+    file = params[:file]
+    content_type = MimeMagic.by_magic(file)
+    filename = file.original_filename
+    file_contents = file.read
+
+    submission = Submission.new(create_params.merge(
+        content_type: content_type,
+        filename: filename,
+        file_contents: file_contents))
     if submission.save!
       render status: :created, json: submission
     end
@@ -40,6 +50,6 @@ class SubmissionsController < ApplicationController
   private
 
   def create_params
-    params.permit(:user_id, :problem_id, :language, :filepath)
+    params.permit(:user_id, :problem_id, :language)
   end
 end

@@ -47,13 +47,22 @@ class UsersController < ApplicationController
 
     response = HTTP.headers(:accept => "application/json")
         .post("https://github.com/login/oauth/access_token?", json: data)
-        .parse
-    response = HTTP.headers(:accept => "application/json")
-        .get("https://api.github.com/user?access_token=#{response['access_token']}")
-        .parse
 
-    github_id = response['id']
-    github_name = response['name']
+    if !response.status.success?
+      return render status: :bad_request, json: {message: 'Invalid Github OAuth code'}
+    end
+
+    response = HTTP.headers(:accept => "application/json")
+        .get("https://api.github.com/user?access_token=#{response.parse['access_token']}")
+
+    if !response.status.success?
+      return render status: :bad_request, json: {message: 'Error communicating with Github'}
+    end
+
+    parsed_response = response.parse
+
+    github_id = parsed_response['id']
+    github_name = parsed_response['name']
 
     u = User.find_or_create_by(github_id: github_id)
     if !u.persisted?
