@@ -22,7 +22,7 @@ class SubmissionExecutor
 
   def self.run_test(submission=nil, image=nil)
     problem = submission&.problem
-    cmd =  ["sh", "-c", problem&.cmd || "g++ submission/submitted_file.cpp && ./a.out < input/sample_test > output/program_output"] # ["ls", "-la"]
+    cmd =  ["sh", "-c", problem&.cmd || "g++ submission/submitted_file.cpp && ./a.out < input/sample_test > output/program_output"]
     filepath = submission&.filepath || 'var/submission/solution.cpp'
 
     opts = {
@@ -47,7 +47,7 @@ class SubmissionExecutor
     # Currently, specifying an absolute path does not work.
     # Use a relative path from HOST_WORKDIR.
     image = Docker::Image.build_from_dir("#{HOST_WORKDIR}", {
-      'dockerfile' => "docker/lang/#{lang_to_image[language]}",
+      'dockerfile' => "docker/lang/#{lang_to_image[language.to_sym]}",
     } )
   end
 

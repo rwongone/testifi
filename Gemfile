@@ -34,8 +34,9 @@ gem 'docker-api', '~> 1.33.4'
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platform: :mri
-  gem 'rspec-rails'
   gem "factory_girl_rails", "~> 4.0"
+  gem 'rspec-json_expectations'
+  gem 'rspec-rails'
 end
 
 group :development do
