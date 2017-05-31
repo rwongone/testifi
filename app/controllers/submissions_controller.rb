@@ -13,6 +13,11 @@ class SubmissionsController < ApplicationController
     render status: :ok, json: submission
   end
 
+  def index
+    submissions = Submission.all
+    render status: :ok, json: submissions
+  end
+
   def update
     submission = Submission.find(params[:id])
     if submission.update!(create_params)
