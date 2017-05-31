@@ -1,4 +1,4 @@
-require 'rails_helper'
+require 'helpers/rails_helper'
 
 RSpec.describe Submission, type: :model do
   pending "add some examples to (or delete) #{__FILE__}"

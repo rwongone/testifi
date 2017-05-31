@@ -1,23 +1,20 @@
-require 'rails_helper'
+require 'helpers/api_helper'
+require 'helpers/rails_helper'
 require 'rspec/json_expectations'
 
 RSpec.describe "Submissions", type: :request do
+  include_context "with authenticated requests"
+
   let(:user) { create(:user) }
   let(:course) { create(:course) }
   let(:assignment) { create(:assignment, course_id: course.id) }
   let(:problem) { create(:problem, assignment_id: assignment.id) }
   let!(:submission) { create(:submission, user_id: user.id, problem_id: problem.id) }
-  let(:headers) { {} }
-  let(:auth_header) { {'HTTP_AUTHORIZATION': 'Bearer X'} }
-
-  before do
-    allow(Auth).to receive(:decode).and_return({ 'user_id' => user.id })
-  end
 
   describe "GET /api/submissions" do
     let!(:submission2) { create(:submission, user_id: user.id, problem_id: problem.id) }
     it "returns a list of all Submissions" do
-      get "/api/submissions", headers: headers.merge(auth_header)
+      get "/api/submissions"
       expect(response).to have_http_status(200)
       expect(response.body).to eq([submission, submission2].to_json)
     end
@@ -25,7 +22,7 @@ RSpec.describe "Submissions", type: :request do
 
   describe "GET /api/submissions/:id" do
     it "returns the Submission as JSON" do
-      get "/api/submissions/#{submission.id}", headers: headers.merge(auth_header)
+      get "/api/submissions/#{submission.id}"
       expect(response).to have_http_status(200)
       expect(response.body).to eq(submission.to_json)
     end
@@ -42,7 +39,7 @@ RSpec.describe "Submissions", type: :request do
     end
 
     it "creates a Submission with the right attributes" do
-      post "/api/submissions", params: params, headers: headers.merge(auth_header)
+      post "/api/submissions", params: params
       expect(response).to have_http_status(201)
       expect(response.body).to include_json(**params)
     end
@@ -56,8 +53,7 @@ RSpec.describe "Submissions", type: :request do
     end
 
     it "synchronously executes the test case and returns the result" do
-      post "/api/exec", params: params, headers: headers.merge(auth_header)
-      File.open('spec_output', 'w') { |f| f.write(response.body) }
+      post "/api/exec", params: params
       expect(response).to have_http_status(200)
       expect(response.body).to include_json(
         result: /.*/,
