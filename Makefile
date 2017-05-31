@@ -35,7 +35,10 @@ stop:
 	-docker rm -f testifi_app testifi_db client_dev;
 	sudo rm -rf tmp
 
-deploy: deploy_build deploy_run
+deploy: copy_secret deploy_build deploy_run
+
+copy_secret:
+	cp -n config/secrets.yml{.base,}
 
 deploy_build:
 	docker build -f $(DOCKER_DIR)/Dockerfile.testifi -t testifi_deploy .
