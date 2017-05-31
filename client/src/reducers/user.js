@@ -24,6 +24,7 @@ export default function(state = Map({
                 name,
                 id
             });
+
         default:
             return state;
     }

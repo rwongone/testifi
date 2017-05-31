@@ -6,6 +6,10 @@
   justify-content: space-between;
 }
 
+.nav a {
+  text-decoration: none;
+}
+
 .nav .name {
   font-size: 20px;
   margin-left: 16px;
@@ -13,5 +17,5 @@
 
 .nav .greeting {
   font-size: 14px;
-  margin-right: 10px;
+  margin-right: 30px;
 }

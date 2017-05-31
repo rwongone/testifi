@@ -1,0 +1,10 @@
+.home {
+  margin-top: 40px;
+  display: flex;
+  justify-content: center;
+}
+
+.home .frame {
+  width: 50%;
+  min-width: 768px;
+}

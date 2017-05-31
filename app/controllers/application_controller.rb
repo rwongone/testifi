@@ -1,4 +1,6 @@
 class ApplicationController < ActionController::API
+  include ActionController::Cookies
+
   before_action :authenticate
 
   def logged_in?
@@ -24,10 +26,10 @@ class ApplicationController < ActionController::API
   end
 
   def bearer_token
-    request.env['HTTP_AUTHORIZATION'].scan(/Bearer (.*)$/).flatten.last
+    cookies['Authorization']
   end
 
   def bearer_token?
-    !!request.env.fetch('HTTP_AUTHORIZATION', "").scan(/Bearer/).flatten.first
+    !bearer_token.nil?
   end
 end

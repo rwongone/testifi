@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import PropTypes from 'prop-types';
 import './Nav.css';
@@ -7,10 +8,7 @@ import './Nav.css';
 class Nav extends Component {
     static propTypes = {
         user: ImmutablePropTypes.contains({
-            admin: PropTypes.bool.isRequired,
-            email: PropTypes.string.isRequired,
-            name: PropTypes.string.isRequired,
-            id: PropTypes.number.isRequired
+            name: PropTypes.string.isRequired
         })
     }
 
@@ -21,11 +19,17 @@ class Nav extends Component {
 
         return (
                 <div className="nav">
-                    <div className="name">
-                        Testifi
-                    </div>
+                    <Link to="/">
+                        <div className="name">
+                            Testifi
+                        </div>
+                    </Link>
                     <div className="greeting">
-                        { user.get('fetched') ? `Hello ${user.get('name')}` : '' }
+                        {
+                        user.get('fetched')
+                        ? `Hello ${user.get('name')}`
+                        : <Link to="/login"><button>Login</button></Link>
+                        }
                     </div>
                 </div>
                 );
