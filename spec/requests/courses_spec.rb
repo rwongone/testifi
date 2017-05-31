@@ -10,9 +10,9 @@ RSpec.describe "Courses", type: :request do
     allow(Auth).to receive(:decode).and_return({ 'user_id' => user.id })
   end
 
-  describe "GET /courses" do
+  describe "GET /api/courses" do
     it "returns the Course as JSON" do
-      get "/courses/#{course.id}", headers: headers.merge(auth_header)
+      get "/api/courses/#{course.id}", headers: headers.merge(auth_header)
       expect(response).to have_http_status(200)
       expect(response.body).to eq(course.to_json)
     end
