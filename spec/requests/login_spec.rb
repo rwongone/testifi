@@ -1,4 +1,5 @@
-require 'rails_helper'
+require 'helpers/api_helper'
+require 'helpers/rails_helper'
 
 RSpec.describe "User authentication", type: :request do
   describe "POST /api/login" do
