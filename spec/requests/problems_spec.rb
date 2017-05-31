@@ -12,9 +12,9 @@ RSpec.describe "Problems", type: :request do
     allow(Auth).to receive(:decode).and_return({ 'user_id' => user.id })
   end
 
-  describe "GET /problems" do
+  describe "GET /api/problems" do
     it "returns the Problem as JSON" do
-      get "/problems/#{problem.id}", headers: headers.merge(auth_header)
+      get "/api/problems/#{problem.id}", headers: headers.merge(auth_header)
       expect(response).to have_http_status(200)
       expect(response.body).to eq(problem.to_json)
     end
