@@ -46,7 +46,9 @@ ActiveRecord::Schema.define(version: 20170531005146) do
     t.bigint "user_id"
     t.bigint "problem_id"
     t.string "language", null: false
-    t.string "filepath", null: false
+    t.string "filename"
+    t.string "content_type"
+    t.binary "file_contents"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["problem_id"], name: "index_submissions_on_problem_id"
