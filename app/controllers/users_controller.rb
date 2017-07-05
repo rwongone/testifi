@@ -1,7 +1,7 @@
 require "http"
 
 class UsersController < ApplicationController
-  skip_before_action :authenticate, only: [:create, :create_admin, :oauth_github]
+  skip_before_action :authenticate, only: [:create, :create_admin, :oauth_github, :oauth_google]
 
   def create_admin
     u = User.where(admin: true).first
@@ -78,6 +78,35 @@ class UsersController < ApplicationController
     redirect_to "/"
   end
 
+  def oauth_google()
+    code = params[:code]
+    validator = GoogleIDToken::Validator.new
+    jwt = validator.check(code, google_client.id, google_client.id)
+    if jwt
+      google_id = jwt['sub']
+      google_name = jwt['name']
+      email = jwt['email']
+
+      u = User.find_or_create_by(google_id: google_id)
+      if !u.persisted?
+        u.name = google_name
+        u.email = email
+        u.password = SecureRandom.hex
+        u.save!
+      end
+      jwt = Auth.issue({user_id: u.id})
+      cookies['Authorization'] = {
+        :value => jwt,
+        :expires => 2.day.from_now
+      }
+
+      render status: :ok, json: u
+    else
+      logger.info validator.problem
+      head :forbidden
+    end
+  end
+
   private
   def create_params
     params.permit(:name, :email, :password, :password_confirmation)
@@ -85,5 +114,9 @@ class UsersController < ApplicationController
 
   def github_client
     OpenStruct.new Rails.application.secrets.github_client
+  end
+
+  def google_client
+    OpenStruct.new Rails.application.secrets.google_client
   end
 end

@@ -31,6 +31,9 @@ gem 'mimemagic'
 # docker-api for test execution
 gem 'docker-api', '~> 1.33.4'
 
+# google-id-token to verify google tokens on login
+gem 'google-id-token'
+
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 

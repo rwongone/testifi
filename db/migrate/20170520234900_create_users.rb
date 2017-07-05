@@ -5,12 +5,14 @@ class CreateUsers < ActiveRecord::Migration[5.0]
       t.string :email
       t.string :password_digest
       t.boolean :admin
-      t.integer :github_id
+      t.string :github_id
+      t.string :google_id
 
       t.timestamps
     end
 
     add_index :users, :email, unique: true
     add_index :users, :github_id, unique: true
+    add_index :users, :google_id, unique: true
   end
 end

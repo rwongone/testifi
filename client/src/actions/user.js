@@ -23,6 +23,32 @@ export function loginGithub() {
     }
 }
 
+export function loginGoogle(googleUser) {
+    return function(dispatch) {
+        let headers = new Headers();
+        headers.append('Accept', 'application/json');
+        headers.append('Content-Type', 'application/json');
+        fetch(`/api/users/oauth/google?code=${googleUser.getAuthResponse().id_token}`, {
+            credentials: 'include',
+            headers: headers
+        })
+        .then(resp => {
+            if (resp.ok) {
+                return resp.json()
+            } else {
+                throw Error("Google authentication failed");
+            }
+        })
+        .then(user => {
+            dispatch(receiveUser(user));
+            return user;
+        })
+        .catch(e => {
+            console.error(e)
+        });
+    }
+}
+
 export function fetchUser() {
     return function(dispatch) {
         let headers = new Headers();
@@ -42,6 +68,7 @@ export function fetchUser() {
         })
         .then(user => {
             dispatch(receiveUser(user));
+            return user;
         })
         .catch(e => {
             console.log(e);
