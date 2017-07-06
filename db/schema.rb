@@ -28,8 +28,17 @@ ActiveRecord::Schema.define(version: 20170531005146) do
     t.string "course_code"
     t.string "title"
     t.text "description"
+    t.bigint "teacher_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["teacher_id"], name: "index_courses_on_teacher_id"
+  end
+
+  create_table "courses_students", force: :cascade do |t|
+    t.bigint "course_id", null: false
+    t.bigint "student_id", null: false
+    t.index ["course_id"], name: "index_courses_students_on_course_id"
+    t.index ["student_id"], name: "index_courses_students_on_student_id"
   end
 
   create_table "problems", force: :cascade do |t|
@@ -65,7 +74,6 @@ ActiveRecord::Schema.define(version: 20170531005146) do
   create_table "users", id: :serial, force: :cascade do |t|
     t.string "name"
     t.string "email"
-    t.string "password_digest"
     t.boolean "admin"
     t.string "github_id"
     t.string "google_id"
