@@ -9,11 +9,15 @@
   min-width: 300px;
 }
 
-.loginButton {
-  width: 100%;
+.login .loginButtons {
   margin-top: 30px;
 }
 
-.loginButton .name {
+.login .loginButton {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.login .loginButton .name {
   margin-left: 10px;
 }

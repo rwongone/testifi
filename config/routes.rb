@@ -7,6 +7,7 @@ Rails.application.routes.draw do
     resources :users, only: [:create, :show]
     post '/admin',    to: 'users#create_admin'
     get '/users/oauth/github', to: 'users#oauth_github'
+    get '/users/oauth/google', to: 'users#oauth_google'
     get '/user', to: 'users#current'
 
     resources :courses
