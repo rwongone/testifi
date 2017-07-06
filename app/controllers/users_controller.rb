@@ -1,7 +1,7 @@
 require "http"
 
 class UsersController < ApplicationController
-  skip_before_action :authenticate, only: [:create, :create_admin, :oauth_github, :oauth_google]
+  skip_before_action :authenticate, only: [:create_admin, :oauth_github, :oauth_google]
 
   def create_admin
     u = User.where(admin: true).first
@@ -17,13 +17,6 @@ class UsersController < ApplicationController
       end
     else
       head 400
-    end
-  end
-
-  def create
-    u = User.new(create_params)
-    if u.save!
-      render status: :created, json: u
     end
   end
 
@@ -67,7 +60,6 @@ class UsersController < ApplicationController
     u = User.find_or_create_by(github_id: github_id)
     if !u.persisted?
       u.name = github_name
-      u.password = SecureRandom.hex
       u.save!
     end
     jwt = Auth.issue({user_id: u.id})
@@ -91,7 +83,6 @@ class UsersController < ApplicationController
       if !u.persisted?
         u.name = google_name
         u.email = email
-        u.password = SecureRandom.hex
         u.save!
       end
       jwt = Auth.issue({user_id: u.id})
@@ -108,10 +99,6 @@ class UsersController < ApplicationController
   end
 
   private
-  def create_params
-    params.permit(:name, :email, :password, :password_confirmation)
-  end
-
   def github_client
     OpenStruct.new Rails.application.secrets.github_client
   end
