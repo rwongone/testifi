@@ -29,31 +29,46 @@ RSpec.describe "Submissions", type: :request do
   end
 
   describe "POST /api/submissions" do
+    let (:uploaded_file) { fixture_file_upload("#{fixture_path}/files/Solution.java") }
     let (:params) do
       {
         user_id: user.id,
         problem_id: problem.id,
-        language: 'cpp',
-        filepath: 'var/submission/solution.cpp',
+        language: 'java',
+        file: uploaded_file,
+      }
+    end
+    let (:expected_properties) do
+      {
+        user_id: user.id,
+        problem_id: problem.id,
+        language: 'java',
+        filename: 'Solution.java',
       }
     end
 
     it "creates a Submission with the right attributes" do
       post "/api/submissions", params: params
       expect(response).to have_http_status(201)
-      expect(response.body).to include_json(**params)
+      expect(response.body).to include_json(**expected_properties)
     end
   end
 
   describe "POST /api/exec" do
-    let(:params) do
+    let (:uploaded_file) { fixture_file_upload("#{fixture_path}/files/Solution.java") }
+    let (:submission_params) do
       {
-        id: submission.id,
+        user_id: user.id,
+        problem_id: problem.id,
+        language: 'java',
+        file: uploaded_file,
       }
     end
 
     it "synchronously executes the test case and returns the result" do
-      post "/api/exec", params: params
+      post "/api/submissions", params: submission_params
+      post "/api/exec", params: { id: JSON.parse(response.body)['id'] }
+
       expect(response).to have_http_status(200)
       expect(response.body).to include_json(
         result: /.*/,

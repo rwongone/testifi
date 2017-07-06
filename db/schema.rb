@@ -35,7 +35,6 @@ ActiveRecord::Schema.define(version: 20170531005146) do
   create_table "problems", force: :cascade do |t|
     t.string "name"
     t.text "description"
-    t.string "cmd"
     t.bigint "assignment_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

@@ -1,7 +1,6 @@
 FactoryGirl.define do
   factory :problem do
-    name { "Counting Inversions" }
-    description { "Count the inversions in the array provided." }
-    cmd { "g++ submission/submitted_file.cpp && ./a.out < input/sample_test > output/program_output" }
+    name { "Sum a List" }
+    description { "Print the sum of the elements of a list of integers." }
   end
 end
