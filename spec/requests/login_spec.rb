@@ -14,9 +14,9 @@ RSpec.describe "User authentication", type: :request do
       validator = instance_double("GoogleIDToken::Validator")
       expect(GoogleIDToken::Validator).to receive(:new).and_return(validator)
       expect(validator).to receive(:check).with(code, google_client.id, google_client.id).and_return({
-          sub: google_id,
-          name: name,
-          email: email
+          "sub"=>google_id,
+          "name"=>name,
+          "email"=>email
       })
 
       get("/api/users/oauth/google", params: {code: code})
@@ -24,6 +24,7 @@ RSpec.describe "User authentication", type: :request do
       expect(parsed['name']).to eq(name)
       expect(parsed['email']).to eq(email)
       expect(parsed['google_id']).to eq(google_id)
+      expect(cookies['Authorization']).not_to be_empty
       expect(response).to have_http_status(200)
     end
 

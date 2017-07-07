@@ -73,14 +73,13 @@ class UsersController < ApplicationController
   def oauth_google()
     code = params[:code]
     validator = GoogleIDToken::Validator.new
-    jwt = validator.check(code, google_client.id, google_client.id)
-    if jwt
-      google_id = jwt['sub']
-      google_name = jwt['name']
-      email = jwt['email']
+    google_jwt = validator.check(code, google_client.id, google_client.id)
+    if google_jwt
+      google_id = google_jwt['sub']
+      google_name = google_jwt['name']
+      email = google_jwt['email']
 
-      u = User.find_or_create_by(google_id: google_id)
-      if !u.persisted?
+      u = User.find_or_create_by(google_id: google_id) do |u|
         u.name = google_name
         u.email = email
         u.save!
