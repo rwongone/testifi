@@ -24,6 +24,10 @@ class CoursesController < ApplicationController
     head :no_content
   end
 
+  def get_enrolled
+    render status: :ok, json: current_user.enrolled_courses
+  end
+
   private
 
   def create_params
