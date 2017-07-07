@@ -21,20 +21,17 @@ class SubmissionExecutor
   end
 
   def self.run_test(submission=nil, image=nil)
-    problem = submission&.problem
-    cmd =  ["sh", "-c", problem&.cmd || "g++ submission/submitted_file.cpp && ./a.out < input/sample_test > output/program_output"]
-    filepath = submission&.filepath || 'var/submission/solution.cpp'
-
+    cmd =  ["sh", "-c", "javac submission/Solution.java -d . && java Solution < input/sample_test > output/program_output"]
     opts = {
       'Image' => image.id,
       'Cmd' => (cmd.is_a?(String) ? cmd.split(/\s+/) : cmd),
     }
-    container = Docker::Container.create(opts)
-    container.store_file("#{WORKDIR}/input/sample_test", File.read('var/test/sample_test.txt'))
 
-    # g++ gives an error if it does not recognize the file extension on the source file.
-    container.store_file("#{WORKDIR}/submission/submitted_file.cpp", File.read(filepath))
+    container = Docker::Container.create(opts)
+    container.store_file("#{WORKDIR}/input/sample_test", File.read('var/test/sample_test.in'))
+    container.store_file("#{WORKDIR}/submission/Solution.java", submission.file_contents)
     container.start!
+
     container.attach(:stream => true, :stdin => nil, :stdout => true, :stderr => true, :logs => true, :tty => false)
     container.streaming_logs(stderr: true) { |stream, chunk| puts chunk }
     container.read_file("#{WORKDIR}/output/program_output")
@@ -54,6 +51,7 @@ class SubmissionExecutor
   def self.lang_to_image
     {
       cpp: 'Dockerfile.cpp',
+      java: 'Dockerfile.java',
     }
   end
 end

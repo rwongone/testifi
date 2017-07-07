@@ -3,7 +3,6 @@ require 'mimemagic'
 
 class SubmissionsController < ApplicationController
   def create
-
     file = params[:file]
     content_type = MimeMagic.by_magic(file)
     filename = file.original_filename
