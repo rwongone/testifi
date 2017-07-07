@@ -15,6 +15,10 @@ RSpec.describe "Submissions", type: :request do
     authenticate(student)
   end
 
+  before(:each) do
+    authenticate(user)
+  end
+
   describe "GET /api/submissions" do
     let!(:submission2) { create(:submission, user_id: student.id, problem_id: problem.id) }
     it "returns a list of all Submissions" do

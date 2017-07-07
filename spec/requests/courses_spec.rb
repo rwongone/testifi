@@ -80,19 +80,47 @@ RSpec.describe "Courses", type: :request do
     )
   end
 
-  describe "GET /api/courses/enrolled" do
-    it "returns the Courses that the user is enrolled in as JSON" do
+  describe "GET /api/courses/visible" do
+    it "returns the Courses that the student is enrolled in as JSON" do
+      authenticate(student)
+
       # ensure arbitrary courses are not being returned
-      get "/api/courses/enrolled"
+      get "/api/courses/visible"
       expect(response).to have_http_status(200)
       parsed = ActiveSupport::JSON.decode(response.body)
       expect(parsed).to eq([])
 
       # enroll the student
-      course.students << user
+      course.students << student
 
       # ensure courses are being returned
-      get "/api/courses/enrolled"
+      get "/api/courses/visible"
+      expect(response).to have_http_status(200)
+      parsed = ActiveSupport::JSON.decode(response.body)
+      expect(parsed.size).to eq(1)
+      c = parsed[0]
+      expect(c['id']).to eq(course.id)
+      expect(c['course_code']).to eq(course.course_code)
+      expect(c['title']).to eq(course.title)
+      expect(c['description']).to eq(course.description)
+      expect(c['teacher_id']).to eq(course.teacher_id)
+    end
+
+    it "returns the Courses that the teacher teaches as JSON" do
+      authenticate(teacher)
+
+      # ensure arbitrary courses are not being returned
+      get "/api/courses/visible"
+      expect(response).to have_http_status(200)
+      parsed = ActiveSupport::JSON.decode(response.body)
+      expect(parsed).to eq([])
+
+      # enroll the student
+      course.teacher = teacher
+      course.save
+
+      # ensure courses are being returned
+      get "/api/courses/visible"
       expect(response).to have_http_status(200)
       parsed = ActiveSupport::JSON.decode(response.body)
       expect(parsed.size).to eq(1)
