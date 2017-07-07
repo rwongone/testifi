@@ -4,15 +4,24 @@ RSpec.describe User, type: :model do
   describe '#create' do
     let(:name) { "Larry Learner" }
     let(:email) { "larry@downtolearn.com" }
-    let(:password) { "12345678" }
-    let(:short_password) { "1234567" }
+    let(:google_id) { "18y3fl3424" }
 
-    it 'allows the creation of a user with password at least 8 chars long' do
-      expect(User.create!(name: name, email: email, password: password, password_confirmation: password)).to have_attributes(name: name, email: email)
+    it 'allows the creation of a user with name, email and google_id' do
+      google_id_token = class_double("GoogleIDToken::Validator")
+      validator = instance_double("GoogleIDToken::Validator")
+      allow(users_controller).to receive(:params).and_return({code: 'somerandomcode'})
+      expect(google_id_token).to receive(:new).and_return(validator)
+      expect(validator).to receive(:check).with(code, google_client.id, google_client.id).and_return({
+          sub: google_id,
+          name: name,
+          email: email
+      })
+      # TODO call controller method instead of User.create
+      expect(User.create!(name: name, email: email, google_id: google_id)).to have_attributes(name: name, email: email, google_id: google_id)
     end
+  end
 
-    it 'rejects the creation of a user with password shorter than 8 chars' do
-      expect(User.new(name: name, email: email, password: short_password, password_confirmation: short_password).valid?).to be false
-    end
+  def google_client
+    OpenStruct.new Rails.application.secrets.google_client
   end
 end
