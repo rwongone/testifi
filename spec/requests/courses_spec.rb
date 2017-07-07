@@ -79,4 +79,29 @@ RSpec.describe "Courses", type: :request do
       "teacher_id" => expected.teacher_id
     )
   end
+
+  describe "GET /api/courses/enrolled" do
+    it "returns the Courses that the user is enrolled in as JSON" do
+      # ensure arbitrary courses are not being returned
+      get "/api/courses/enrolled"
+      expect(response).to have_http_status(200)
+      parsed = ActiveSupport::JSON.decode(response.body)
+      expect(parsed).to eq([])
+
+      # enroll the student
+      course.students << user
+
+      # ensure courses are being returned
+      get "/api/courses/enrolled"
+      expect(response).to have_http_status(200)
+      parsed = ActiveSupport::JSON.decode(response.body)
+      expect(parsed.size).to eq(1)
+      c = parsed[0]
+      expect(c['id']).to eq(course.id)
+      expect(c['course_code']).to eq(course.course_code)
+      expect(c['title']).to eq(course.title)
+      expect(c['description']).to eq(course.description)
+      expect(c['teacher_id']).to eq(course.teacher_id)
+    end
+  end
 end
