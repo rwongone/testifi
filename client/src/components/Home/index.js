@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { Link, Redirect } from 'react-router-dom';
+import { Link, Redirect, Route } from 'react-router-dom';
+import CoursePage from '../CoursePage';
 import './Home.css';
 
 class Home extends Component {
@@ -43,12 +44,12 @@ class Home extends Component {
             return <Redirect to="/courses" />
         }
 
-        return <div>Should render courses here</div>
+        return (
+                <Route path="/courses" component={ CoursePage } />
+                );
     }
 }
 
-export default connect(state => {
-    return {
-        user: state.user
-    }
-})(Home);
+export default connect(state => ({
+    user: state.user
+}))(Home);
