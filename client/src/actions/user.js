@@ -14,9 +14,12 @@ export function registerAdmin(admin) {
         .then(handleErrors)
         .then(resp => resp.json())
         .then(user => {
-            dispatch(receiveUser(user));
+            dispatch(receiveUserSuccess(user));
         })
-        .catch(e => console.error(e));
+        .catch(e => {
+            dispatch(receiveUserFailure());
+            console.error(e)
+        });
     }
 }
 
@@ -38,10 +41,13 @@ export function loginGoogle(googleUser) {
         .then(handleErrors)
         .then(resp => resp.json())
         .then(user => {
-            dispatch(receiveUser(user));
+            dispatch(receiveUserSuccess(user));
             return user;
         })
-        .catch(e => console.error(e));
+        .catch(e => {
+            dispatch(receiveUserFailure());
+            console.error(e)
+        });
     }
 }
 
@@ -58,17 +64,27 @@ export function fetchUser() {
         .then(handleErrors)
         .then(resp => resp.json())
         .then(user => {
-            dispatch(receiveUser(user));
+            dispatch(receiveUserSuccess(user));
             return user;
         })
-        .catch(e => console.log(e));
+        .catch(e => {
+            dispatch(receiveUserFailure());
+            console.error(e);
+        });
     }
 }
 
-export const RECEIVE_USER = 'RECEIVE_USER';
-function receiveUser(user) {
+export const RECEIVE_USER_SUCCESS = 'RECEIVE_USER_SUCCESS';
+function receiveUserSuccess(user) {
     return {
-        type: RECEIVE_USER,
+        type: RECEIVE_USER_SUCCESS,
         user
+    }
+}
+
+export const RECEIVE_USER_FAILURE = 'RECEIVE_USER_FAILURE';
+function receiveUserFailure() {
+    return {
+        type: RECEIVE_USER_FAILURE
     }
 }

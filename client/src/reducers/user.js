@@ -1,5 +1,5 @@
 import { Map } from 'immutable';
-import { RECEIVE_USER } from '../actions/user';
+import { RECEIVE_USER_SUCCESS, RECEIVE_USER_FAILURE } from '../actions/user';
 
 export default function(state = Map({
     fetched: false,
@@ -9,7 +9,7 @@ export default function(state = Map({
     id: -1
 }), action) {
     switch (action.type) {
-        case RECEIVE_USER:
+        case RECEIVE_USER_SUCCESS:
             const {
                 admin,
                 email,
@@ -23,6 +23,11 @@ export default function(state = Map({
                 email,
                 name,
                 id
+            });
+
+        case RECEIVE_USER_FAILURE:
+            return state.merge({
+                fetched: true
             });
 
         default:
