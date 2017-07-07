@@ -26,7 +26,7 @@ class Nav extends Component {
                     </Link>
                     <div className="greeting">
                         {
-                        user.get('fetched')
+                        user.get('fetched') && user.get('id') !== -1
                         ? `Hello ${user.get('name')}`
                         : <Link to="/login"><button>Login</button></Link>
                         }

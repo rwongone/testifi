@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
@@ -33,8 +33,10 @@ class App extends Component {
                 <Router>
                     <div>
                         <Nav />
-                        <Route path="/" component={ Home } />
-                        <Route path="/login" component={ Login } />
+                        <Switch>
+                            <Route path="/login" component={ Login } />
+                            <Route path="/" component={ Home } />
+                        </Switch>
                     </div>
                 </Router>
                 );

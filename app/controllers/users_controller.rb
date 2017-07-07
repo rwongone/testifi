@@ -57,9 +57,9 @@ class UsersController < ApplicationController
     github_id = parsed_response['id']
     github_name = parsed_response['name']
 
-    u = User.find_or_create_by(github_id: github_id)
-    if !u.persisted?
+    u = User.find_or_create_by(github_id: github_id) do |u|
       u.name = github_name
+      u.admin = false
       u.save!
     end
     jwt = Auth.issue({user_id: u.id})
@@ -82,6 +82,7 @@ class UsersController < ApplicationController
       u = User.find_or_create_by(google_id: google_id) do |u|
         u.name = google_name
         u.email = email
+        u.admin = false
         u.save!
       end
       jwt = Auth.issue({user_id: u.id})

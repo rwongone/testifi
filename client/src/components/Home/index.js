@@ -10,7 +10,7 @@ class Home extends Component {
     static propTypes = {
         user: ImmutablePropTypes.contains({
             id: PropTypes.number.isRequired,
-        })
+        }).isRequired
     }
 
     render() {
