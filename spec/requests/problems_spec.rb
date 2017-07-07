@@ -9,6 +9,10 @@ RSpec.describe "Problems", type: :request do
   let(:assignment) { create(:assignment, course_id: course.id) }
   let(:problem) { create(:problem, assignment_id: assignment.id) }
 
+  before(:each) do
+    authenticate(user)
+  end
+
   describe "GET /api/problems" do
     it "returns the Problem as JSON" do
       get "/api/problems/#{problem.id}"

@@ -10,7 +10,7 @@ Rails.application.routes.draw do
     get '/users/oauth/google', to: 'users#oauth_google'
     get '/user', to: 'users#current'
 
-    get '/courses/enrolled', to: 'courses#get_enrolled'
+    get '/courses/visible', to: 'courses#get_visible'
     resources :courses
     resources :assignments
     resources :problems
