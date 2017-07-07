@@ -1,4 +1,5 @@
 import { GITHUB_CLIENT_ID } from '../constants';
+import { handleErrors } from './util';
 
 export function registerAdmin(admin) {
     return function(dispatch) {
@@ -10,10 +11,12 @@ export function registerAdmin(admin) {
             body: JSON.stringify(admin),
             headers
         })
+        .then(handleErrors)
         .then(resp => resp.json())
         .then(user => {
             dispatch(receiveUser(user));
-        });
+        })
+        .catch(e => console.error(e));
     }
 }
 
@@ -32,20 +35,13 @@ export function loginGoogle(googleUser) {
             credentials: 'include',
             headers: headers
         })
-        .then(resp => {
-            if (resp.ok) {
-                return resp.json()
-            } else {
-                throw Error("Google authentication failed");
-            }
-        })
+        .then(handleErrors)
+        .then(resp => resp.json())
         .then(user => {
             dispatch(receiveUser(user));
             return user;
         })
-        .catch(e => {
-            console.error(e)
-        });
+        .catch(e => console.error(e));
     }
 }
 
@@ -59,20 +55,13 @@ export function fetchUser() {
             headers,
             credentials: 'include'
         })
-        .then(resp => {
-            if (resp.ok) {
-                return resp.json()
-            } else {
-                throw Error("User is not logged in");
-            }
-        })
+        .then(handleErrors)
+        .then(resp => resp.json())
         .then(user => {
             dispatch(receiveUser(user));
             return user;
         })
-        .catch(e => {
-            console.log(e);
-        });
+        .catch(e => console.log(e));
     }
 }
 
