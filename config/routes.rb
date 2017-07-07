@@ -4,7 +4,7 @@ Rails.application.routes.draw do
     post '/exec',     to: 'submissions#exec'
 
     # users related
-    resources :users, only: [:create, :show]
+    resources :users, only: [:show]
     post '/admin',    to: 'users#create_admin'
     get '/users/oauth/github', to: 'users#oauth_github'
     get '/users/oauth/google', to: 'users#oauth_google'
