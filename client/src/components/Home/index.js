@@ -13,20 +13,37 @@ class Home extends Component {
     }
 
     render() {
-        const id = this.props.user.get('id');
+        const fetched = this.props.user.get('fetched');
+        // return null until we know if the user is logged in
+        if (!fetched) {
+            return null;
+        }
 
-        return id === -1
-            ? (
+        const id = this.props.user.get('id');
+        const location = this.props.location;
+        // if the user is not logged in
+        if (id === -1) {
+            // if not at the home page, redirect to the home page
+            if (location.pathname !== '/') {
+                return <Redirect to="/" />
+            }
+
+            // return the home page
+            return (
                     <div className="home">
                         <div className="frame">
                             <h1>Welcome to Testifi</h1>
                             This is a platform for testing software. Please <Link to="/login">login</Link> to get started.
                         </div>
                     </div>
-                    )
-            : (
-                    <Redirect to="/courses" />
                     );
+        }
+
+        if (location.pathname === '/') {
+            return <Redirect to="/courses" />
+        }
+
+        return <div>Should render courses here</div>
     }
 }
 
