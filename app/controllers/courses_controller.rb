@@ -1,10 +1,7 @@
 class CoursesController < ApplicationController
-  def create
-    if !current_user.admin?
-      head :forbidden
-      return
-    end
+  skip_before_action :check_admin, only: [:show, :get_visible]
 
+  def create
     course = Course.new(create_params)
     course.teacher_id = current_user.id
     if course.save!
@@ -18,11 +15,6 @@ class CoursesController < ApplicationController
   end
 
   def update
-    if !current_user.admin?
-      head :forbidden
-      return
-    end
-
     # cannot update someone else's course
     course = Course.find(params[:id])
     if course.teacher_id != current_user.id
@@ -36,11 +28,6 @@ class CoursesController < ApplicationController
   end
 
   def destroy
-    if !current_user.admin?
-      head :forbidden
-      return
-    end
-
     # cannot delete someone else's course
     course = Course.find(params[:id])
     if course.teacher_id != current_user.id

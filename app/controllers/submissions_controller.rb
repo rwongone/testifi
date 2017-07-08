@@ -2,6 +2,8 @@ require 'submission_executor'
 require 'mimemagic'
 
 class SubmissionsController < ApplicationController
+  skip_before_action :check_admin
+
   def create
     file = params[:file]
     content_type = MimeMagic.by_magic(file)
