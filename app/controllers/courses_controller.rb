@@ -24,6 +24,15 @@ class CoursesController < ApplicationController
     head :no_content
   end
 
+  # get visible returns courses that are taught by an admin or enrolled in by a student
+  def get_visible
+    if current_user.admin
+      render status: :ok, json: current_user.taught_courses
+    else
+      render status: :ok, json: current_user.enrolled_courses
+    end
+  end
+
   private
 
   def create_params

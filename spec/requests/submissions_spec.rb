@@ -5,14 +5,18 @@ require 'rspec/json_expectations'
 RSpec.describe "Submissions", type: :request do
   include_context "with authenticated requests"
 
-  let(:user) { create(:user) }
+  let(:student) { create(:student) }
   let(:course) { create(:course) }
   let(:assignment) { create(:assignment, course_id: course.id) }
   let(:problem) { create(:problem, assignment_id: assignment.id) }
-  let!(:submission) { create(:submission, user_id: user.id, problem_id: problem.id) }
+  let!(:submission) { create(:submission, user_id: student.id, problem_id: problem.id) }
+
+  before(:each) do
+    authenticate(student)
+  end
 
   describe "GET /api/submissions" do
-    let!(:submission2) { create(:submission, user_id: user.id, problem_id: problem.id) }
+    let!(:submission2) { create(:submission, user_id: student.id, problem_id: problem.id) }
     it "returns a list of all Submissions" do
       get "/api/submissions"
       expect(response).to have_http_status(200)
@@ -32,7 +36,7 @@ RSpec.describe "Submissions", type: :request do
     let (:uploaded_file) { fixture_file_upload("#{fixture_path}/files/Solution.java") }
     let (:params) do
       {
-        user_id: user.id,
+        user_id: student.id,
         problem_id: problem.id,
         language: 'java',
         file: uploaded_file,
@@ -40,7 +44,7 @@ RSpec.describe "Submissions", type: :request do
     end
     let (:expected_properties) do
       {
-        user_id: user.id,
+        user_id: student.id,
         problem_id: problem.id,
         language: 'java',
         filename: 'Solution.java',
@@ -58,7 +62,7 @@ RSpec.describe "Submissions", type: :request do
     let (:uploaded_file) { fixture_file_upload("#{fixture_path}/files/Solution.java") }
     let (:submission_params) do
       {
-        user_id: user.id,
+        user_id: student.id,
         problem_id: problem.id,
         language: 'java',
         file: uploaded_file,

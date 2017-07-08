@@ -1,8 +1,6 @@
 RSpec.shared_context "with authenticated requests" do
-  let(:authenticated_user) { user || create(:user) }
-
-  before do
+  def authenticate(user)
     cookies['Authorization'] = 'X'
-    allow(Auth).to receive(:decode).and_return({ 'user_id' => authenticated_user.id })
+    allow(Auth).to receive(:decode).and_return({ 'user_id' => user.id })
   end
 end
