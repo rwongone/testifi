@@ -48,6 +48,8 @@ deploy_run:
 		--name testifi_deploy \
 		-v /var/run/docker.sock:/var/run/docker.sock \
 		-e PROJECT_DIR=$(PWD) \
+		-e HOST_UID=$(UID) \
+		-e HOST_GID=$(GID) \
 		testifi_deploy:latest \
 		sh -c make dev
 

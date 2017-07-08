@@ -10,7 +10,7 @@ class Course extends Component {
     static propTypes = {
         course: ImmutablePropTypes.contains({
             fetched: PropTypes.bool.isRequired,
-            courses: ImmutablePropTypes.list.isRequired,
+            courses: ImmutablePropTypes.list.isRequired
         }).isRequired,
         user: ImmutablePropTypes.contains({
             isAdmin: PropTypes.bool.isRequired,

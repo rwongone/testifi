@@ -23,10 +23,11 @@ class CoursesController < ApplicationController
       return
     end
 
-    # cannot delete someone else's course
+    # cannot update someone else's course
     course = Course.find(params[:id])
-    if course.teacher != current_user.id
+    if course.teacher != current_user
       head :forbidden
+      return
     end
 
     if course.update!(create_params)
@@ -42,8 +43,9 @@ class CoursesController < ApplicationController
 
     # cannot delete someone else's course
     course = Course.find(params[:id])
-    if course.teacher != current_user.id
+    if course.teacher != current_user
       head :forbidden
+      return
     end
 
     course.destroy

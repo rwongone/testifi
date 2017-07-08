@@ -20,6 +20,14 @@ export function fetchCourses() {
     }
 }
 
+export const RECEIVE_COURSES_SUCCESS = 'RECEIVE_COURSES_SUCCESS';
+function receiveCoursesSuccess(courses) {
+    return {
+        type: RECEIVE_COURSES_SUCCESS,
+        courses
+    }
+}
+
 export function createCourse(info) {
     return function(dispatch) {
         let headers = new Headers();
@@ -38,14 +46,6 @@ export function createCourse(info) {
             return course;
         })
         .catch(e => console.error(e));
-    }
-}
-
-export const RECEIVE_COURSES_SUCCESS = 'RECEIVE_COURSES_SUCCESS';
-function receiveCoursesSuccess(courses) {
-    return {
-        type: RECEIVE_COURSES_SUCCESS,
-        courses
     }
 }
 
