@@ -57,12 +57,12 @@ class UsersController < ApplicationController
     github_id = parsed_response['id']
     github_name = parsed_response['name']
 
-    u = User.find_or_create_by(github_id: github_id)
-    if !u.persisted?
+    user = User.find_or_create_by(github_id: github_id) do |u|
       u.name = github_name
+      u.admin = false
       u.save!
     end
-    jwt = Auth.issue({user_id: u.id})
+    jwt = Auth.issue({user_id: user.id})
     cookies['Authorization'] = {
       :value => jwt,
       :expires => 2.day.from_now
@@ -79,18 +79,19 @@ class UsersController < ApplicationController
       google_name = google_jwt['name']
       email = google_jwt['email']
 
-      u = User.find_or_create_by(google_id: google_id) do |u|
+      user = User.find_or_create_by(google_id: google_id) do |u|
         u.name = google_name
         u.email = email
+        u.admin = false
         u.save!
       end
-      jwt = Auth.issue({user_id: u.id})
+      jwt = Auth.issue({user_id: user.id})
       cookies['Authorization'] = {
         :value => jwt,
         :expires => 2.day.from_now
       }
 
-      render status: :ok, json: u
+      render status: :ok, json: user
     else
       logger.info validator.problem
       head :forbidden

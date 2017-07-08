@@ -1,4 +1,5 @@
 import { GITHUB_CLIENT_ID } from '../constants';
+import { handleErrors } from './util';
 
 export function registerAdmin(admin) {
     return function(dispatch) {
@@ -10,9 +11,14 @@ export function registerAdmin(admin) {
             body: JSON.stringify(admin),
             headers
         })
+        .then(handleErrors)
         .then(resp => resp.json())
         .then(user => {
-            dispatch(receiveUser(user));
+            dispatch(receiveUserSuccess(user));
+        })
+        .catch(e => {
+            dispatch(receiveUserFailure());
+            console.error(e)
         });
     }
 }
@@ -32,18 +38,14 @@ export function loginGoogle(googleUser) {
             credentials: 'include',
             headers: headers
         })
-        .then(resp => {
-            if (resp.ok) {
-                return resp.json()
-            } else {
-                throw Error("Google authentication failed");
-            }
-        })
+        .then(handleErrors)
+        .then(resp => resp.json())
         .then(user => {
-            dispatch(receiveUser(user));
+            dispatch(receiveUserSuccess(user));
             return user;
         })
         .catch(e => {
+            dispatch(receiveUserFailure());
             console.error(e)
         });
     }
@@ -59,27 +61,30 @@ export function fetchUser() {
             headers,
             credentials: 'include'
         })
-        .then(resp => {
-            if (resp.ok) {
-                return resp.json()
-            } else {
-                throw Error("User is not logged in");
-            }
-        })
+        .then(handleErrors)
+        .then(resp => resp.json())
         .then(user => {
-            dispatch(receiveUser(user));
+            dispatch(receiveUserSuccess(user));
             return user;
         })
         .catch(e => {
-            console.log(e);
+            dispatch(receiveUserFailure());
+            console.error(e);
         });
     }
 }
 
-export const RECEIVE_USER = 'RECEIVE_USER';
-function receiveUser(user) {
+export const RECEIVE_USER_SUCCESS = 'RECEIVE_USER_SUCCESS';
+function receiveUserSuccess(user) {
     return {
-        type: RECEIVE_USER,
+        type: RECEIVE_USER_SUCCESS,
         user
+    }
+}
+
+export const RECEIVE_USER_FAILURE = 'RECEIVE_USER_FAILURE';
+function receiveUserFailure() {
+    return {
+        type: RECEIVE_USER_FAILURE
     }
 }
