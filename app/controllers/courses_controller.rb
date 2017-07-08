@@ -1,6 +1,12 @@
 class CoursesController < ApplicationController
   def create
+    if !current_user.admin
+      head :forbidden
+      return
+    end
+
     course = Course.new(create_params)
+    course.teacher = current_user
     if course.save!
       render status: :created, json: course
     end
@@ -12,14 +18,34 @@ class CoursesController < ApplicationController
   end
 
   def update
+    if !current_user.admin
+      head :forbidden
+      return
+    end
+
+    # cannot delete someone else's course
     course = Course.find(params[:id])
+    if course.teacher != current_user.id
+      head :forbidden
+    end
+
     if course.update!(create_params)
       render status: :ok, json: course
     end
   end
 
   def destroy
+    if !current_user.admin
+      head :forbidden
+      return
+    end
+
+    # cannot delete someone else's course
     course = Course.find(params[:id])
+    if course.teacher != current_user.id
+      head :forbidden
+    end
+
     course.destroy
     head :no_content
   end
