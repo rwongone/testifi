@@ -19,7 +19,7 @@ RSpec.describe "Courses", type: :request do
   end
 
   describe "GET /api/courses/visible" do
-    it "returns the Courses that the student is enrolled in as JSON" do
+    it "returns no courses when a student is not enrolled" do
       authenticate(student)
 
       # ensure arbitrary courses are not being returned
@@ -27,6 +27,10 @@ RSpec.describe "Courses", type: :request do
       expect(response).to have_http_status(200)
       parsed = ActiveSupport::JSON.decode(response.body)
       expect(parsed).to eq([])
+    end
+
+    it "returns the Courses that the student is enrolled in as JSON" do
+      authenticate(student)
 
       # enroll the student
       course.students << student
@@ -39,7 +43,8 @@ RSpec.describe "Courses", type: :request do
       validate_course(parsed[0], course)
     end
 
-    it "returns the Courses that the teacher teaches as JSON" do
+
+    it "returns no courses when the teacher is not teaching" do
       authenticate(teacher)
 
       # ensure arbitrary courses are not being returned
@@ -47,8 +52,12 @@ RSpec.describe "Courses", type: :request do
       expect(response).to have_http_status(200)
       parsed = ActiveSupport::JSON.decode(response.body)
       expect(parsed).to eq([])
+    end
 
-      # enroll the student
+    it "returns the Courses that the teacher teaches as JSON" do
+      authenticate(teacher)
+
+      # assign a course to the teacher
       course.teacher = teacher
       course.save
 
