@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
+import { NEW_ASSIGNMENT_ID } from '../../constants';
 import AssignmentTile from './AssignmentTile';
 
 class AssignmentList extends Component {
@@ -19,13 +20,25 @@ class AssignmentList extends Component {
 
     render() {
         const {
+            assignment,
             user,
-            match
+            match: { params: { courseId } }
         } = this.props;
+        const parsedCourseId = parseInt(courseId, 10);
 
-        debugger;
         return (
                 <div>
+                    {
+                    assignment.getIn([parsedCourseId, 'assignments']).map(
+                    a => <AssignmentTile key={ a.get('id') } title={ a.get('title') } id={ a.get('id') } />
+                    )
+                    }
+                    {
+                    user.get('isAdmin')
+                    ? (
+                    <AssignmentTile title="Create..." id={ NEW_ASSIGNMENT_ID } />
+                    ) : null
+                    }
                 </div>
                 );
     }

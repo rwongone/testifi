@@ -9,10 +9,13 @@ export default function(state = Map(), action) {
 
         case RECEIVE_COURSES_SUCCESS:
             for (let c of action.courses) {
-                state = state.set(c.id, Map({
-                    fetched: false,
-                    assignments: List()
-                }));
+                // there is a race where assignments can be fetched before courses
+                if (!state.get(c.id)) {
+                    state = state.set(c.id, Map({
+                        fetched: false,
+                        assignments: List()
+                    }));
+                }
             }
             return state;
 

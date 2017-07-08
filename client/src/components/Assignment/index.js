@@ -17,23 +17,33 @@ class Assignment extends Component {
         dispatch: PropTypes.func.isRequired
     }
 
+    getCourseId = () => {
+        const {
+            match: { params: { courseId } }
+        } = this.props;
+        return parseInt(courseId, 10);
+    }
+
     componentWillMount() {
         const {
             assignment,
-            dispatch,
-            match: { params: { courseId } }
+            dispatch
         } = this.props;
 
-        const parsedCourseId = parseInt(courseId, 10);
-        if (!assignment.getIn([parsedCourseId, 'fetched'])) {
-            dispatch(fetchAssignments(parsedCourseId));
+        const courseId = this.getCourseId();
+        if (!assignment.getIn([courseId, 'fetched'])) {
+            dispatch(fetchAssignments(courseId));
         }
     }
 
     render() {
-        return (
+        const { assignment } = this.props;
+        const courseId = this.getCourseId();
+
+        // make sure the assignments have been fetched before rendering anything
+        return assignment.getIn([courseId, 'fetched']) ? (
                 <Route exact path="/courses/:courseId/assignments" component={ AssignmentList } />
-                );
+                ) : null;
     }
 }
 
