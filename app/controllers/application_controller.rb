@@ -1,7 +1,7 @@
 class ApplicationController < ActionController::API
   include ActionController::Cookies
 
-  before_action :authenticate
+  before_action :authenticate, :check_admin
 
   def logged_in?
     !!current_user
@@ -17,6 +17,10 @@ class ApplicationController < ActionController::API
 
   def authenticate
     head :unauthorized if !logged_in?
+  end
+
+  def check_admin
+    head :forbidden if !current_user.admin?
   end
 
   private

@@ -10,9 +10,18 @@ RSpec.describe "Assignments", type: :request do
 
   before(:each) do
     authenticate(student)
+    course.students << student
   end
 
-  describe "GET /api/assignments" do
+  describe "GET /api/courses/:course_id/assignments" do
+    it "returns all assignments in a course as JSON" do
+      get "/api/courses/#{course.id}/assignments"
+      expect(response).to have_http_status(200)
+      expect(response.body).to include(assignment.to_json)
+    end
+  end
+
+  describe "GET /api/assignments/:id" do
     it "returns the Assignment as JSON" do
       get "/api/assignments/#{assignment.id}"
       expect(response).to have_http_status(200)

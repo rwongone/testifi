@@ -11,9 +11,10 @@ RSpec.describe "Problems", type: :request do
 
   before(:each) do
     authenticate(student)
+    course.students << student
   end
 
-  describe "GET /api/problems" do
+  describe "GET /api/problems/:id" do
     it "returns the Problem as JSON" do
       get "/api/problems/#{problem.id}"
       expect(response).to have_http_status(200)
