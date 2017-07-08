@@ -1,6 +1,6 @@
 class CoursesController < ApplicationController
   def create
-    if !current_user.admin
+    if !current_user.admin?
       head :forbidden
       return
     end
@@ -18,7 +18,7 @@ class CoursesController < ApplicationController
   end
 
   def update
-    if !current_user.admin
+    if !current_user.admin?
       head :forbidden
       return
     end
@@ -36,7 +36,7 @@ class CoursesController < ApplicationController
   end
 
   def destroy
-    if !current_user.admin
+    if !current_user.admin?
       head :forbidden
       return
     end
@@ -54,7 +54,7 @@ class CoursesController < ApplicationController
 
   # get visible returns courses that are taught by an admin or enrolled in by a student
   def get_visible
-    if current_user.admin
+    if current_user.admin?
       render status: :ok, json: current_user.taught_courses
     else
       render status: :ok, json: current_user.enrolled_courses
