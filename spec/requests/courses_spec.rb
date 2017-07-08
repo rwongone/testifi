@@ -7,6 +7,35 @@ RSpec.describe "Courses", type: :request do
   let(:teacher) { create(:user, :teacher) }
   let!(:course) { create(:course) }
 
+  describe "POST /api/courses" do
+    it "does not allow students to create a course" do
+      authenticate(student)
+
+      post "/api/courses"
+      expect(response).to have_http_status(403)
+    end
+
+    it "allows teachers to create a course" do
+      authenticate(teacher)
+
+      params = {
+        "course_code" => "CS348",
+        "title" => "Introduction to Databases",
+        "description" => "This course introduces students to databases"
+      }
+
+      post "/api/courses", params: params, headers: headers
+      expect(response).to have_http_status(201)
+      parsed = ActiveSupport::JSON.decode(response.body)
+      expect(parsed).to include(
+        "course_code" => params["course_code"],
+        "title" => params["title"],
+        "description" => params["description"],
+        "teacher_id" => teacher.id
+      )
+    end
+  end
+
   describe "GET /api/courses" do
     it "returns the Course as JSON for students" do
       authenticate(student)
