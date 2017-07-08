@@ -42,6 +42,18 @@ input:focus, textarea:focus {
   border: 1px solid rgba(81, 203, 238, 1);
 }
 
+select {
+  padding: 10px;
+  border: 1px solid #4a4a4a;
+  border-radius: 4px;
+  background: #f8f8f8;
+}
+
+select:focus {
+  box-shadow: none;
+  outline: none;
+}
+
 a, a:hover, a:active, a:focus, a:visited {
   color: inherit;
 }
