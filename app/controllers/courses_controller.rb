@@ -6,7 +6,7 @@ class CoursesController < ApplicationController
     end
 
     course = Course.new(create_params)
-    course.teacher = current_user
+    course.teacher_id = current_user.id
     if course.save!
       render status: :created, json: course
     end
@@ -25,7 +25,7 @@ class CoursesController < ApplicationController
 
     # cannot update someone else's course
     course = Course.find(params[:id])
-    if course.teacher != current_user
+    if course.teacher_id != current_user.id
       head :forbidden
       return
     end
@@ -43,7 +43,7 @@ class CoursesController < ApplicationController
 
     # cannot delete someone else's course
     course = Course.find(params[:id])
-    if course.teacher != current_user
+    if course.teacher_id != current_user.id
       head :forbidden
       return
     end
