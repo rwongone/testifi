@@ -4,9 +4,9 @@ import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { Route } from 'react-router-dom';
 import { fetchCourses } from '../../actions/course';
-import CourseCreate from '../CourseCreate';
+import CourseNew from './CourseNew';
 
-class CoursePage extends Component {
+class Course extends Component {
     static propTypes = {
         course: ImmutablePropTypes.contains({
             fetched: PropTypes.bool.isRequired,
@@ -52,7 +52,7 @@ class CoursePage extends Component {
     render() {
         return (
                 // TODO return different paths based on the situation
-                <Route path="/courses/create" component={ CourseCreate } />
+                <Route path="/courses/create" component={ CourseNew } />
                 );
     }
 }
@@ -60,4 +60,4 @@ class CoursePage extends Component {
 export default connect(state => ({
     course: state.course,
     user: state.user
-}))(CoursePage);
+}))(Course);

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-class CourseCreate extends Component {
+class CourseNew extends Component {
     static propTypes = {
         dispatch: PropTypes.func.isRequired
     }
@@ -14,4 +14,4 @@ class CourseCreate extends Component {
     }
 }
 
-export default connect()(CourseCreate);
+export default connect()(CourseNew);

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { Link, Redirect, Route } from 'react-router-dom';
-import CoursePage from '../CoursePage';
+import Course from '../Course';
 import './Home.css';
 
 class Home extends Component {
@@ -45,7 +45,7 @@ class Home extends Component {
         }
 
         return (
-                <Route path="/courses" component={ CoursePage } />
+                <Route path="/courses" component={ Course } />
                 );
     }
 }
