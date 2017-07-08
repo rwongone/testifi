@@ -31,7 +31,7 @@ class AssignmentsController < ApplicationController
   def update
     assignment = Assignment.includes(:course).find(params[:id])
 
-    if !assignment.course.user_ids.include?(current_user.id)
+    if assignment.course.teacher_id != current_user.id
       head :forbidden
       return
     end
@@ -44,12 +44,11 @@ class AssignmentsController < ApplicationController
   def destroy
     assignment = Assignment.includes(:course).find(params[:id])
 
-    if !assignment.course.user_ids.include?(current_user.id)
+    if assignment.course.teacher_id != current_user.id
       head :forbidden
       return
     end
 
-    assignment = Assignment.find(params[:id])
     assignment.destroy
     head :no_content
   end
