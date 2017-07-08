@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { Route, Switch, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
@@ -30,21 +30,18 @@ class App extends Component {
 
     render() {
         return (
-                <Router>
-                    <div>
-                        <Nav />
-                        <Switch>
-                            <Route path="/login" component={ Login } />
-                            <Route path="/" component={ Home } />
-                        </Switch>
-                    </div>
-                </Router>
+                <div>
+                    <Nav />
+                    <Switch>
+                        <Route path="/login" component={ Login } />
+                        <Route path="/" component={ Home } />
+                    </Switch>
+                </div>
                 );
     }
 }
 
-export default connect(state => {
-    return {
-        user: state.user
-    };
-})(App);
+// need withrouter to force a rerender on route change (user selects a course from dropdown)
+export default withRouter(connect(state => ({
+    user: state.user
+}))(App));
