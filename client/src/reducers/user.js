@@ -3,7 +3,7 @@ import { RECEIVE_USER_SUCCESS, RECEIVE_USER_FAILURE } from '../actions/user';
 
 export default function(state = Map({
     fetched: false,
-    admin: false,
+    isAdmin: false,
     email: '',
     name: '',
     id: -1
@@ -19,7 +19,7 @@ export default function(state = Map({
 
             return state.merge({
                 fetched: true,
-                admin,
+                isAdmin: admin,
                 email,
                 name,
                 id

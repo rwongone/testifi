@@ -12,7 +12,7 @@ class CoursePage extends Component {
             fetched: PropTypes.bool.isRequired,
         }).isRequired,
         user: ImmutablePropTypes.contains({
-            admin: PropTypes.bool.isRequired,
+            isAdmin: PropTypes.bool.isRequired,
         }).isRequired,
         dispatch: PropTypes.func.isRequired
     }
@@ -30,7 +30,7 @@ class CoursePage extends Component {
             dispatch(fetchCourses()).then(courses => {
                 // if at the root of courses, need to redirect
                 if (location.pathname === '/courses') {
-                    if (user.get('admin')) {
+                    if (user.get('isAdmin')) {
                         if (courses.length === 0) {
                             // redirect to the course create page
                             history.push('/courses/create');
