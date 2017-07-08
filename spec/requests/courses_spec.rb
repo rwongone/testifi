@@ -13,7 +13,8 @@ RSpec.describe "Courses", type: :request do
 
       get "/api/courses/#{course.id}"
       expect(response).to have_http_status(200)
-      expect(response.body).to eq(course.to_json)
+      parsed = ActiveSupport::JSON.decode(response.body)
+      validate_course(parsed, course)
     end
   end
 
@@ -35,12 +36,7 @@ RSpec.describe "Courses", type: :request do
       expect(response).to have_http_status(200)
       parsed = ActiveSupport::JSON.decode(response.body)
       expect(parsed.size).to eq(1)
-      c = parsed[0]
-      expect(c['id']).to eq(course.id)
-      expect(c['course_code']).to eq(course.course_code)
-      expect(c['title']).to eq(course.title)
-      expect(c['description']).to eq(course.description)
-      expect(c['teacher_id']).to eq(course.teacher_id)
+      validate_course(parsed[0], course)
     end
 
     it "returns the Courses that the teacher teaches as JSON" do
@@ -61,12 +57,17 @@ RSpec.describe "Courses", type: :request do
       expect(response).to have_http_status(200)
       parsed = ActiveSupport::JSON.decode(response.body)
       expect(parsed.size).to eq(1)
-      c = parsed[0]
-      expect(c['id']).to eq(course.id)
-      expect(c['course_code']).to eq(course.course_code)
-      expect(c['title']).to eq(course.title)
-      expect(c['description']).to eq(course.description)
-      expect(c['teacher_id']).to eq(course.teacher_id)
+      validate_course(parsed[0], course)
     end
+  end
+
+  def validate_course(actual, expected)
+    expect(actual).to include(
+      "id" => expected.id,
+      "course_code" => expected.course_code,
+      "title" => expected.title,
+      "description" => expected.description,
+      "teacher_id" => expected.teacher_id
+    )
   end
 end
