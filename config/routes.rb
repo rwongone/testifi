@@ -11,8 +11,11 @@ Rails.application.routes.draw do
     get '/user', to: 'users#current'
 
     get '/courses/visible', to: 'courses#get_visible'
-    resources :courses
-    resources :assignments
+    resources :courses, only: [:create, :show, :update, :destroy] do
+      resources :assignments, only: [:create, :index]
+    end
+    resources :assignments, only: [:show, :update, :destroy]
+
     resources :problems
     resources :submissions
   end
