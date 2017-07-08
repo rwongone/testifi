@@ -4,12 +4,12 @@ require 'helpers/rails_helper'
 RSpec.describe "Assignments", type: :request do
   include_context "with authenticated requests"
 
-  let(:user) { create(:student) }
+  let(:student) { create(:student) }
   let(:course) { create(:course) }
   let!(:assignment) { create(:assignment, course_id: course.id) }
 
   before(:each) do
-    authenticate(user)
+    authenticate(student)
   end
 
   describe "GET /api/assignments" do
