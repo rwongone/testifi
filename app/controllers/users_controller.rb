@@ -2,6 +2,7 @@ require "http"
 
 class UsersController < ApplicationController
   skip_before_action :authenticate, only: [:create_admin, :oauth_github, :oauth_google]
+  skip_before_action :check_admin
 
   def create_admin
     u = User.where(admin: true).first

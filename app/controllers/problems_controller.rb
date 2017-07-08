@@ -1,4 +1,6 @@
 class ProblemsController < ApplicationController
+  skip_before_action :check_admin, only: [:show]
+
   def create
     problem = Problem.new(create_params)
     if problem.save!
@@ -8,6 +10,12 @@ class ProblemsController < ApplicationController
 
   def show
     problem = Problem.find(params[:id])
+    course = problem.assignment.course
+    if !course.user_ids.include?(current_user.id)
+      head :forbidden
+      return
+    end
+
     render status: :ok, json: problem
   end
 
