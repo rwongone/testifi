@@ -10,6 +10,7 @@ class Course extends Component {
     static propTypes = {
         course: ImmutablePropTypes.contains({
             fetched: PropTypes.bool.isRequired,
+            courses: ImmutablePropTypes.list.isRequired,
         }).isRequired,
         user: ImmutablePropTypes.contains({
             isAdmin: PropTypes.bool.isRequired,
@@ -17,35 +18,44 @@ class Course extends Component {
         dispatch: PropTypes.func.isRequired
     }
 
-    componentWillMount() {
+    redirectToSubPage = () => {
         const {
             course,
-            dispatch,
             history,
             location,
             user
         } = this.props;
 
-        if (!course.get('fetched')) {
-            dispatch(fetchCourses()).then(courses => {
-                // if at the root of courses, need to redirect
-                if (location.pathname === '/courses') {
-                    if (user.get('isAdmin')) {
-                        if (courses.length === 0) {
-                            // redirect to the course create page
-                            history.push('/courses/create');
-                        } else {
-                            // TODO pick a course to redirect to
-                        }
-                    } else {
-                        if (courses.length === 0) {
-                            // TODO show a splash screen telling the student to ask the teacher to enroll them
-                        } else {
-                            // TODO pick a course to redirect to
-                        }
-                    }
+        // if at the root of courses, need to redirect
+        if (location.pathname === '/courses') {
+            if (user.get('isAdmin')) {
+                if (course.get('courses').isEmpty()) {
+                    // redirect to the course create page
+                    history.push('/courses/create');
+                } else {
+                    // redirect to the first available course
+                    history.push(`/courses/${course.get('courses').first().get('id')}`);
                 }
-            });
+            } else {
+                if (course.get('courses').isEmpty()) {
+                    // TODO show a splash screen telling the student to ask the teacher to enroll them
+                } else {
+                    // TODO pick a course to redirect to
+                }
+            }
+        }
+    }
+
+    componentWillMount() {
+        const {
+            course,
+            dispatch
+        } = this.props;
+
+        if (!course.get('fetched')) {
+            dispatch(fetchCourses()).then(this.redirectToSubPage);
+        } else {
+            this.redirectToSubPage();
         }
     }
 
