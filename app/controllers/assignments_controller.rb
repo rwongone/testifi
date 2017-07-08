@@ -1,5 +1,5 @@
 class AssignmentsController < ApplicationController
-  skip_before_action :check_admin, only: [:show]
+  skip_before_action :check_admin, only: [:show, :index]
 
   def index
     render status: :ok, json: Assignment.where(course_id: params[:course_id])
