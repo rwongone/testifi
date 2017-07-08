@@ -5,7 +5,7 @@ export function fetchCourses() {
         let headers = new Headers();
         headers.append('Accept', 'application/json');
         headers.append('Content-Type', 'application/json');
-        return fetch('/api/courses/enrolled', {
+        return fetch('/api/courses/visible', {
             method: 'GET',
             headers,
             credentials: 'include'
