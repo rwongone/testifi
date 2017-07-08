@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
@@ -49,11 +48,12 @@ class CourseDropdown extends Component {
     selectCourse = e => {
         const { history } = this.props;
 
-        let courseId = parseInt(e.target.value);
+        let courseId = parseInt(e.target.value, 10);
         if (courseId === CREATE_ID) {
-            courseId = 'create';
+            history.push(`/courses/create`);
+            return;
         }
-        history.push(`/courses/${courseId}`);
+        history.push(`/courses/${courseId}/assignments`);
     }
 
     render() {

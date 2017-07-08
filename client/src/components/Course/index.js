@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { Route } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import { fetchCourses } from '../../actions/course';
+import Assignment from '../Assignment';
 import CourseNew from './CourseNew';
 
 class Course extends Component {
@@ -34,13 +35,14 @@ class Course extends Component {
                     history.push('/courses/create');
                 } else {
                     // redirect to the first available course
-                    history.push(`/courses/${course.get('courses').first().get('id')}`);
+                    history.push(`/courses/${course.get('courses').first().get('id')}/assignments`);
                 }
             } else {
                 if (course.get('courses').isEmpty()) {
                     // TODO show a splash screen telling the student to ask the teacher to enroll them
                 } else {
-                    // TODO pick a course to redirect to
+                    // redirect to the first available course
+                    history.push(`/courses/${course.get('courses').first().get('id')}/assignments`);
                 }
             }
         }
@@ -61,8 +63,10 @@ class Course extends Component {
 
     render() {
         return (
-                // TODO return different paths based on the situation
-                <Route path="/courses/create" component={ CourseNew } />
+                <Switch>
+                    <Route path="/courses/create" component={ CourseNew } />
+                    <Route path="/courses/:courseId/assignments" component={ Assignment } />
+                </Switch>
                 );
     }
 }
