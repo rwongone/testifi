@@ -6,12 +6,14 @@ RSpec.describe "Assignments", type: :request do
 
   let(:student) { create(:student) }
   let(:teacher) { create(:teacher) }
-  let(:course) { create(:course) }
+  let(:course) { create(:course, students: [student]) }
 
   before(:each) do
     authenticate(student)
-    course.students << student
   end
+
+  # TODO(rwongone): Does anything different happen when a student is not
+  # enrolled in the course? Should a similar restriction apply to teachers?
 
   describe "GET /api/courses/:course_id/assignments" do
     let!(:assignment) { create(:assignment, course_id: course.id) }
