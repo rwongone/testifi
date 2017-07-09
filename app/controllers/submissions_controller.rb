@@ -5,12 +5,19 @@ class SubmissionsController < ApplicationController
   skip_before_action :check_admin
 
   def create
+    course = Problem.find(params[:problem_id]).course
+    if !current_user_in_course?(course)
+      head :forbidden
+      return
+    end
+
     file = params[:file]
     content_type = MimeMagic.by_magic(file)
     filename = file.original_filename
     file_contents = file.read
 
     submission = Submission.new(create_params.merge(
+        user_id: current_user.id,
         content_type: content_type,
         filename: filename,
         file_contents: file_contents))
@@ -21,25 +28,28 @@ class SubmissionsController < ApplicationController
 
   def show
     submission = Submission.find(params[:id])
+    if submission.user_id != current_user.id && !current_user.admin?
+      head :forbidden
+      return
+    end
     render status: :ok, json: submission
   end
 
   def index
-    submissions = Submission.all
-    render status: :ok, json: submissions
-  end
-
-  def update
-    submission = Submission.find(params[:id])
-    if submission.update!(create_params)
-      render status: :ok, json: submission
+    course = Problem.find(params[:problem_id]).course
+    if !current_user_in_course?(course)
+      head :forbidden
+      return
     end
-  end
 
-  def destroy
-    submission = Submission.find(params[:id])
-    submission.destroy
-    head :no_content
+    submissions = []
+    if current_user.admin?
+      submissions = Submission.where(problem_id: params[:problem_id])
+    else
+      submissions = Submission.where(problem_id: params[:problem_id], user_id: current_user.id)
+    end
+
+    render status: :ok, json: submissions
   end
 
   def exec
