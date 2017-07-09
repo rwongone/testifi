@@ -10,6 +10,16 @@
   box-sizing: border-box;
 }
 
+.testNew .dropzone .acceptedCheck {
+  margin-left: 20px;
+  color: green;
+}
+
+.testNew .dropzone .rejectedX {
+  margin-left: 20px;
+  color: red;
+}
+
 .testNew .submitButton {
   grid-column-start: 1;
   grid-column-end: 3;

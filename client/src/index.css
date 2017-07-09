@@ -55,6 +55,22 @@ select:focus {
   outline: none;
 }
 
+.dropzone {
+  border: 2px dashed #4a4a4a;
+  border-radius: 4px;
+  background: #f8f8f8;
+  cursor: pointer;
+  padding: 50px 20px;
+}
+
+.dropzone.accepted {
+  border-color: green;
+}
+
+.dropzone.rejected {
+  border-color: red;
+}
+
 a, a:hover, a:active, a:focus, a:visited {
   color: inherit;
 }

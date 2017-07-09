@@ -8,9 +8,11 @@
     }
   },
   "dependencies": {
+    "classnames": "^2.2.5",
     "immutable": "^3.8.1",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
+    "react-dropzone": "^3.13.3",
     "react-immutable-proptypes": "^2.1.0",
     "react-redux": "^5.0.5",
     "react-router-dom": "^4.1.1",

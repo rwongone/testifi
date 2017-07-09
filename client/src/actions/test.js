@@ -33,13 +33,16 @@ function receiveTestsSuccess(problemId, tests) {
 
 export function createTest(problemId, info) {
     return function(dispatch) {
+        // since tests contain an input file, they must be posted as form data
+        const fd = new FormData();
+        fd.append("name", info.name);
+        fd.append("input", info.input);
         let headers = new Headers();
         headers.append('Accept', 'application/json');
-        headers.append('Content-Type', 'application/json');
         return fetch(`/api/problems/${problemId}/tests`, {
             method: 'POST',
             headers,
-            body: JSON.stringify(info),
+            body: fd,
             credentials: 'include'
         })
         .then(handleErrors)
