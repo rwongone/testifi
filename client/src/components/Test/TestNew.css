@@ -1,0 +1,16 @@
+.testNew .newTestForm {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-gap: 20px;
+  align-items: center;
+}
+
+.testNew .testInputField {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.testNew .submitButton {
+  grid-column-start: 1;
+  grid-column-end: 3;
+}
