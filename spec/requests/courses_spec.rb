@@ -53,7 +53,7 @@ RSpec.describe "Courses", type: :request do
       it "returns the Course as JSON" do
         get "/api/courses/#{course.id}"
         expect(response).to have_http_status(200)
-        expect(json_response).to include(course_properties)
+        expect(response.body).to eq(course.to_json)
       end
     end
 
@@ -93,7 +93,7 @@ RSpec.describe "Courses", type: :request do
       it "returns the Course as JSON" do
         get "/api/courses/#{course.id}"
         expect(response).to have_http_status(200)
-        expect(json_response).to include(course_properties)
+        expect(response.body).to eq(course.to_json)
       end
     end
 
