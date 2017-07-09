@@ -1,0 +1,12 @@
+.problemNew .newProblemForm {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-gap: 20px;
+  align-items: center;
+}
+
+.problemNew .submitButton {
+  grid-column-start: 1;
+  grid-column-end: 3;
+}
+

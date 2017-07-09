@@ -1,5 +1,6 @@
 .assignmentShow .frame {
   display: flex;
+  flex-direction: column;
   margin: 60px auto;
   max-width: 1000px;
   justify-content: center;

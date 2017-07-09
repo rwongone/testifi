@@ -3,12 +3,10 @@ import { connect } from 'react-redux';
 import { Route } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import AssignmentNav from './AssignmentNav';
 import { fetchProblems } from '../../actions/problem';
-import Problem from '../Problem';
-import './AssignmentShow.css';
+import ProblemList from './ProblemList';
 
-class AssignmentShow extends Component {
+class Problem extends Component {
     static propTypes = {
         dispatch: PropTypes.func.isRequired,
         match: PropTypes.shape({
@@ -18,14 +16,6 @@ class AssignmentShow extends Component {
             }).isRequired
         }).isRequired,
         history: PropTypes.object.isRequired,
-        assignment: ImmutablePropTypes.contains({
-            assignments: ImmutablePropTypes.mapOf(
-                ImmutablePropTypes.contains({
-                    name: PropTypes.string.isRequired,
-                    description: PropTypes.string.isRequired
-                })
-                )
-        }),
         problem: ImmutablePropTypes.mapOf(
                 ImmutablePropTypes.contains({
                     fetched: PropTypes.bool.isRequired
@@ -56,33 +46,14 @@ class AssignmentShow extends Component {
     }
 
     render() {
-        const {
-            assignment,
-            history,
-        } = this.props;
-        const courseId = this.getCourseId();
-        const assignmentId = this.getAssignmentId();
-        const ass = assignment.getIn([courseId, 'assignments']).find(a => a.get('id') === assignmentId);
-
         return (
-                <div className="assignmentShow">
-                    <AssignmentNav courseId={ courseId } history={ history } backEnabled={ true } />
-                    <div className="frame">
-                        <h1>{ ass.get('name') }</h1>
-                        <div>
-                            Description:
-                        </div>
-                        <div>
-                            { ass.get('description') }
-                        </div>
-                        <Route path="/courses/:courseId/assignments/:assignmentId" component={ Problem } />
-                    </div>
+                <div className="problem">
+                    <Route path="/courses/:courseId/assignments/:assignmentId" component={ ProblemList } />
                 </div>
                 );
     }
 }
 
 export default connect(state => ({
-    assignment: state.assignment,
     problem: state.problem
-}))(AssignmentShow);
+}))(Problem);

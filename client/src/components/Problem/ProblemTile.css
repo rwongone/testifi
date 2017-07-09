@@ -1,0 +1,7 @@
+.problem .problemTileFrame.frame {
+  width: 50%;
+  min-width: 768px;
+  margin: 10px auto;
+  background: #f0f0f0;
+}
+

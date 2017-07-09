@@ -27,12 +27,14 @@ export default function(state = Map(), action) {
             return state;
 
         case CREATE_COURSE_SUCCESS:
-            return state.set(action.course.id, Map({
-                fetched: false,
-                assignments: List()
-            }));
+            // if the fetch initiates before the course is created, there will already be an entry for the course
+            if (!state.get(action.course.id)) {
+                return state.set(action.course.id, defaultStateForCourse);
+            }
+            return state;
 
         case FETCH_ASSIGNMENTS:
+            // when courses get created, the creation success may not be returned before assignments are fetched
             if (!state.get(action.courseId)) {
                 return state.set(action.courseId, defaultStateForCourse.set('fetching', true));
             }

@@ -61,8 +61,8 @@ class Assignment extends Component {
         return assignment.getIn([courseId, 'fetched']) ? (
                 <Switch>
                     <Route exact path="/courses/:courseId/assignments" component={ AssignmentList } />
-                    <Route path="/courses/:courseId/assignments/:assignmentId" component={ AssignmentShow } />
                     <Route exact path="/courses/:courseId/assignments/create" component={ AssignmentNew } />
+                    <Route path="/courses/:courseId/assignments/:assignmentId" component={ AssignmentShow } />
                 </Switch>
                 ) : null;
     }
