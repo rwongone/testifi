@@ -5,8 +5,12 @@
   align-items: center;
 }
 
+.problemNew .problemInputField {
+  width: 100%;
+  box-sizing: border-box;
+}
+
 .problemNew .submitButton {
   grid-column-start: 1;
   grid-column-end: 3;
 }
-

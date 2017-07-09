@@ -39,7 +39,7 @@ class ProblemList extends Component {
                 <div>
                     <h2>Problems</h2>
                     {
-                    problems.map(p => <ProblemTile courseId={ parsedCourseId } assignmentId={ parsedAssignmentId } problem={ p } history={ history } />)
+                    problems.map(p => <ProblemTile key={ p.get('id') } courseId={ parsedCourseId } assignmentId={ parsedAssignmentId } problem={ p } history={ history } />)
                     }
                     {
                     user.get('isAdmin')

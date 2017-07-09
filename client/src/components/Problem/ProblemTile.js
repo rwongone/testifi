@@ -34,7 +34,9 @@ class ProblemTile extends Component {
 
         return (
                 <div>
-                    { problem.get('name') }
+                    <div className="problemTileFrame frame existing" onClick={ this.goToProblem } >
+                        { problem.get('name') }
+                    </div>
                 </div>
                 );
     }

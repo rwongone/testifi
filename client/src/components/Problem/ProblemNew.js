@@ -37,18 +37,30 @@ class ProblemNew extends Component {
             description: e.target.description.value
         }
 
-        dispatch(createProblem(problem)).then(p => push(`/courses/${courseId}/assignments/${assignmentId}/problems/${p.id}`));
+        dispatch(createProblem(assignmentId, problem)).then(p => push(`/courses/${courseId}/assignments/${assignmentId}/problems/${p.id}`));
         e.preventDefault();
     }
 
     render() {
         return (
-                <div className="problemNew problemTileFrame frame">
-                    <form className="newProblemForm" onSubmit={ this.onSubmit }>
-                        <label htmlFor="name">Name: </label><input type="text" name="name" />
-                        <label htmlFor="description">Description: </label><input type="text" name="description" />
-                        <button className="submitButton" type="submit">Create</button>
-                    </form>
+                <div className="problemNew">
+                    <div className="problemTileFrame frame">
+                        <form className="newProblemForm" onSubmit={ this.onSubmit }>
+                            <div>
+                                <label htmlFor="name">Name: </label>
+                            </div>
+                            <div>
+                                <input type="text" name="name" className="problemInputField" />
+                            </div>
+                            <div>
+                                <label htmlFor="description">Description: </label>
+                            </div>
+                            <div>
+                                <input type="text" name="description" className="problemInputField" />
+                            </div>
+                            <button className="submitButton" type="submit">Create</button>
+                        </form>
+                    </div>
                 </div>
                 );
     }
