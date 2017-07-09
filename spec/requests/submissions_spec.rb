@@ -8,17 +8,18 @@ RSpec.describe "Submissions", type: :request do
   let(:student) { create(:student) }
   let(:course) { create(:course) }
   let(:assignment) { create(:assignment, course_id: course.id) }
-  let(:problem) { create(:problem, assignment_id: assignment.id) }
+  let!(:problem) { create(:problem, assignment_id: assignment.id) }
   let!(:submission) { create(:submission, user_id: student.id, problem_id: problem.id) }
 
   before(:each) do
     authenticate(student)
+    course.students << student
   end
 
-  describe "GET /api/submissions" do
+  describe "GET /api/problems/:problem_id/submissions" do
     let!(:submission2) { create(:submission, user_id: student.id, problem_id: problem.id) }
-    it "returns a list of all Submissions" do
-      get "/api/submissions"
+    it "returns a list of all of user's Submissions for a Problem" do
+      get "/api/problems/#{problem.id}/submissions"
       expect(response).to have_http_status(200)
       expect(response.body).to eq([submission, submission2].to_json)
     end
@@ -32,7 +33,7 @@ RSpec.describe "Submissions", type: :request do
     end
   end
 
-  describe "POST /api/submissions" do
+  describe "POST /api/problems/:problem_id/submissions" do
     let (:uploaded_file) { fixture_file_upload("#{fixture_path}/files/Solution.java") }
     let (:params) do
       {
@@ -52,7 +53,7 @@ RSpec.describe "Submissions", type: :request do
     end
 
     it "creates a Submission with the right attributes" do
-      post "/api/submissions", params: params
+      post "/api/problems/#{problem.id}/submissions", params: params
       expect(response).to have_http_status(201)
       expect(response.body).to include_json(**expected_properties)
     end
@@ -70,7 +71,7 @@ RSpec.describe "Submissions", type: :request do
     end
 
     it "synchronously executes the test case and returns the result" do
-      post "/api/submissions", params: submission_params
+      post "/api/problems/#{problem.id}/submissions", params: submission_params
       post "/api/exec", params: { id: JSON.parse(response.body)['id'] }
 
       expect(response).to have_http_status(200)
