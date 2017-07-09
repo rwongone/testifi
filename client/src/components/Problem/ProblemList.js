@@ -9,18 +9,16 @@ class ProblemList extends Component {
     static propTypes = {
         problem: ImmutablePropTypes.mapOf(
                             ImmutablePropTypes.contains({
-                                problems: ImmutablePropTypes.list.isRequired
+                                problems: ImmutablePropTypes.listOf(ImmutablePropTypes.contains({
+                                    id: PropTypes.number.isRequired
+                                })).isRequired
                             }).isRequired
                             ).isRequired,
         user: ImmutablePropTypes.contains({
             isAdmin: PropTypes.bool.isRequired,
         }).isRequired,
-        match: PropTypes.shape({
-            params: PropTypes.shape({
-                assignmentId: PropTypes.string.isRequired,
-                courseId: PropTypes.string.isRequired
-            }).isRequired
-        }).isRequired,
+        courseId: PropTypes.number.isRequired,
+        assignmentId: PropTypes.number.isRequired,
         history: PropTypes.object.isRequired
     }
 
@@ -29,21 +27,20 @@ class ProblemList extends Component {
             problem,
             user,
             history,
-            match: { params: { assignmentId, courseId } }
+            courseId,
+            assignmentId
         } = this.props;
-        const parsedAssignmentId = parseInt(assignmentId, 10);
-        const parsedCourseId = parseInt(courseId, 10);
-        const problems = problem.getIn([parsedAssignmentId, 'problems']);
+        const problems = problem.getIn([assignmentId, 'problems']);
 
         return (
-                <div>
+                <div className="problemList">
                     <h2>Problems</h2>
                     {
-                    problems.map(p => <ProblemTile key={ p.get('id') } courseId={ parsedCourseId } assignmentId={ parsedAssignmentId } problem={ p } history={ history } />)
+                    problems.map(p => <ProblemTile key={ p.get('id') } courseId={ courseId } assignmentId={ assignmentId } problem={ p } history={ history } />)
                     }
                     {
                     user.get('isAdmin')
-                    ? <ProblemNew courseId={ parsedCourseId } assignmentId={ parsedAssignmentId } history={ history } />
+                    ? <ProblemNew courseId={ courseId } assignmentId={ assignmentId } history={ history } />
                     : null
                     }
                 </div>

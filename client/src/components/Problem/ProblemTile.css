@@ -1,10 +1,10 @@
-.problem .problemTileFrame.frame {
+.problemList .problemTileFrame.frame {
   width: 50%;
   min-width: 768px;
   margin: 10px auto;
   background: #f0f0f0;
 }
 
-.problem .problemTileFrame.frame.existing {
+.problemList .problemTileFrame.frame.existing {
   cursor: pointer;
 }

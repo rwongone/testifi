@@ -1,30 +1,27 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import { Route } from 'react-router-dom';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import AssignmentNav from './AssignmentNav';
-import Problem from '../Problem';
+import AssignmentDetails from './AssignmentDetails';
+import ProblemShow from '../Problem/ProblemShow';
+import { fetchProblems } from '../../actions/problem';
 import './AssignmentShow.css';
 
 class AssignmentShow extends Component {
     static propTypes = {
-        dispatch: PropTypes.func.isRequired,
         match: PropTypes.shape({
             params: PropTypes.shape({
-                assignmentId: PropTypes.string.isRequired,
                 courseId: PropTypes.string.isRequired
             }).isRequired
         }).isRequired,
         history: PropTypes.object.isRequired,
-        assignment: ImmutablePropTypes.contains({
-            assignments: ImmutablePropTypes.mapOf(
+        problem: ImmutablePropTypes.mapOf(
                 ImmutablePropTypes.contains({
-                    name: PropTypes.string.isRequired,
-                    description: PropTypes.string.isRequired
+                    fetched: PropTypes.bool.isRequired
                 })
                 )
-        })
     }
 
     getCourseId = () => {
@@ -41,33 +38,36 @@ class AssignmentShow extends Component {
         return parseInt(assignmentId, 10);
     }
 
+    componentWillMount() {
+        const { problem, dispatch } = this.props;
+        const assignmentId = this.getAssignmentId();
+        if (!problem.getIn([assignmentId, 'fetched'])) {
+            dispatch(fetchProblems(assignmentId));
+        }
+    }
+
     render() {
-        const {
-            assignment,
-            history,
-        } = this.props;
+        const { problem, history } = this.props;
         const courseId = this.getCourseId();
         const assignmentId = this.getAssignmentId();
-        const ass = assignment.getIn([courseId, 'assignments']).find(a => a.get('id') === assignmentId);
 
         return (
                 <div className="assignmentShow">
                     <AssignmentNav courseId={ courseId } history={ history } backEnabled={ true } />
-                    <div className="frame">
-                        <h1>{ ass.get('name') }</h1>
-                        <div>
-                            Description:
+                        {
+                        problem.getIn([assignmentId, 'fetched'])
+                        ? (
+                        <div className="frame">
+                            <Route exact path="/courses/:courseId/assignments/:assignmentId" component={ AssignmentDetails } />
+                            <Route path="/courses/:courseId/assignments/:assignmentId/problems/:problemId" component={ ProblemShow } />
                         </div>
-                        <div>
-                            { ass.get('description') }
-                        </div>
-                        <Route path="/courses/:courseId/assignments/:assignmentId" component={ Problem } />
-                    </div>
+                        ) : null
+                        }
                 </div>
                 );
     }
 }
 
 export default connect(state => ({
-    assignment: state.assignment
+    problem: state.problem
 }))(AssignmentShow);
