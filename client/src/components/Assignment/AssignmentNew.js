@@ -7,18 +7,30 @@ import './AssignmentNew.css';
 
 class AssignmentNew extends Component {
     static propTypes = {
-        dispatch: PropTypes.func.isRequired
+        dispatch: PropTypes.func.isRequired,
+        match: PropTypes.shape({
+            params: PropTypes.shape({
+                courseId: PropTypes.string.isRequired
+            }).isRequired
+        }).isRequired
+    }
+
+    getCourseId = () => {
+        const {
+            match: { params: { courseId } }
+        } = this.props;
+        return parseInt(courseId, 10);
     }
 
     onSubmit = e => {
-        const { dispatch } = this.props;
+        const { courseId, dispatch } = this.props;
 
         const assignment = {
             name: e.target.name.value,
             description: e.target.description.value
         }
 
-        dispatch(createAssignment(assignment));
+        dispatch(createAssignment(this.getCourseId(), assignment));
         e.preventDefault();
     }
 
