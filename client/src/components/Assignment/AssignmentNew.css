@@ -1,0 +1,23 @@
+.assignmentNew .assignmentNewFrameContainer {
+  margin-top: 40px;
+  display: flex;
+  justify-content: center;
+}
+
+.assignmentNew .frame {
+  width: 50%;
+  min-width: 768px;
+}
+
+.assignmentNew .newAssignmentForm {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-gap: 20px;
+  align-items: center;
+}
+
+.assignmentNew .submitButton {
+  grid-column-start: 1;
+  grid-column-end: 3;
+}
+
