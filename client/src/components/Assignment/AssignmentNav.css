@@ -1,4 +1,13 @@
 .assignmentNav {
-  padding: 20px 20px 20px 100px;
   background: #cbeaf1;
+  display: flex;
+}
+
+.assignmentNav .backButtonAndText {
+  padding: 20px 50px 20px 100px;
+  cursor: pointer;
+}
+
+.assignmentNav .backButton {
+  margin-right: 20px;
 }

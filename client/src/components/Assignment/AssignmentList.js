@@ -14,7 +14,7 @@ class AssignmentList extends Component {
                                 assignments: ImmutablePropTypes.listOf(
                                                      ImmutablePropTypes.contains({
                                                          id: PropTypes.number.isRequired,
-                                                         title: PropTypes.string.isRequired
+                                                         name: PropTypes.string.isRequired
                                                      })
                                                      ).isRequired
                             }).isRequired
@@ -61,7 +61,7 @@ class AssignmentList extends Component {
                         assignment.getIn([parsedCourseId, 'assignments']).map(
                         a => <AssignmentTile
                             key={ a.get('id') }
-                            title={ a.get('title') }
+                            name={ a.get('name') }
                             onClick={ this.goToAssignment(a.get('id')) } />
                         )
                         }
@@ -69,7 +69,7 @@ class AssignmentList extends Component {
                         user.get('isAdmin')
                         ? (
                         <AssignmentTile
-                            title="Create New Assignment"
+                            name="Create New Assignment"
                             onClick={ this.goToAssignment(NEW_ASSIGNMENT_ID) } />
                         ) : null
                         }

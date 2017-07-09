@@ -4,14 +4,14 @@ import './AssignmentTile.css';
 
 export default class AssignmentTile extends Component {
     static propTypes = {
-        title: PropTypes.string.isRequired,
+        name: PropTypes.string.isRequired,
         onClick: PropTypes.func.isRequired
     }
 
     render() {
-        const { title, onClick } = this.props;
+        const { name, onClick } = this.props;
         return (
-                <div className="assignmentTile" onClick={ onClick }>{ title }</div>
+                <div className="assignmentTile" onClick={ onClick }>{ name }</div>
                 );
     }
 }

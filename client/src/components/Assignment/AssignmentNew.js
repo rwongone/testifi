@@ -12,7 +12,8 @@ class AssignmentNew extends Component {
             params: PropTypes.shape({
                 courseId: PropTypes.string.isRequired
             }).isRequired
-        }).isRequired
+        }).isRequired,
+        history: PropTypes.object.isRequired
     }
 
     getCourseId = () => {
@@ -23,21 +24,28 @@ class AssignmentNew extends Component {
     }
 
     onSubmit = e => {
-        const { courseId, dispatch } = this.props;
+        const {
+            dispatch,
+            history: { push }
+        } = this.props;
+        const courseId = this.getCourseId();
 
         const assignment = {
             name: e.target.name.value,
             description: e.target.description.value
         }
 
-        dispatch(createAssignment(this.getCourseId(), assignment));
+        dispatch(createAssignment(this.getCourseId(), assignment)).then(a => push(`/courses/${courseId}/assignments/${a.id}`));
         e.preventDefault();
     }
 
     render() {
+        const { history } = this.props;
+        const courseId = this.getCourseId();
+
         return (
                 <div className="assignmentNew">
-                    <AssignmentNav />
+                    <AssignmentNav courseId={ courseId } history={ history } backEnabled={ true } />
                     <div className="assignmentNewFrameContainer">
                         <div className="frame">
                             <h2>Create new Assignment</h2>
