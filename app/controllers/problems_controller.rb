@@ -3,7 +3,7 @@ class ProblemsController < ApplicationController
 
   def index
     course = Assignment.find(params[:assignment_id]).course
-    if !course.user_ids.include?(current_user.id)
+    if !current_user_in_course?(course)
       head :forbidden
       return
     end
@@ -21,7 +21,7 @@ class ProblemsController < ApplicationController
   def show
     problem = Problem.find(params[:id])
     course = problem.course
-    if !course.user_ids.include?(current_user.id)
+    if !current_user_in_course?(course)
       head :forbidden
       return
     end
