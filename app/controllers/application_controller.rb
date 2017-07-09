@@ -23,6 +23,10 @@ class ApplicationController < ActionController::API
     head :forbidden if !current_user.admin?
   end
 
+  def current_user_in_course?(course)
+    course.user_ids.include? current_user.id
+  end
+
   private
 
   def auth

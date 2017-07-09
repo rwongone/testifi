@@ -20,7 +20,7 @@ class AssignmentsController < ApplicationController
 
   def show
     assignment = Assignment.includes(:course).find(params[:id])
-    if !assignment.course.user_ids.include?(current_user.id)
+    if !current_user_in_course?(assignment.course)
       head :forbidden
       return
     end

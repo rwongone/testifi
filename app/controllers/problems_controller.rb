@@ -1,5 +1,15 @@
 class ProblemsController < ApplicationController
-  skip_before_action :check_admin, only: [:show]
+  skip_before_action :check_admin, only: [:show, :index]
+
+  def index
+    course = Assignment.find(params[:assignment_id]).course
+    if !current_user_in_course?(course)
+      head :forbidden
+      return
+    end
+
+    render status: :ok, json: Problem.where(assignment_id: params[:assignment_id])
+  end
 
   def create
     problem = Problem.new(create_params)
@@ -10,8 +20,8 @@ class ProblemsController < ApplicationController
 
   def show
     problem = Problem.find(params[:id])
-    course = problem.assignment.course
-    if !course.user_ids.include?(current_user.id)
+    course = problem.course
+    if !current_user_in_course?(course)
       head :forbidden
       return
     end
@@ -21,6 +31,13 @@ class ProblemsController < ApplicationController
 
   def update
     problem = Problem.find(params[:id])
+
+    course = problem.course
+    if course.teacher_id != current_user.id
+      head :forbidden
+      return
+    end
+
     if problem.update!(create_params)
       render status: :ok, json: problem
     end
@@ -28,6 +45,13 @@ class ProblemsController < ApplicationController
 
   def destroy
     problem = Problem.find(params[:id])
+
+    course = problem.course
+    if course.teacher_id != current_user.id
+      head :forbidden
+      return
+    end
+
     problem.destroy
     head :no_content
   end
