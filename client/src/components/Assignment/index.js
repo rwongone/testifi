@@ -14,7 +14,12 @@ class Assignment extends Component {
                                 assignments: ImmutablePropTypes.list.isRequired
                             }).isRequired
                             ).isRequired,
-        dispatch: PropTypes.func.isRequired
+        dispatch: PropTypes.func.isRequired,
+        match: PropTypes.shape({
+            params: PropTypes.shape({
+                courseId: PropTypes.string.isRequired
+            }).isRequired
+        }).isRequired
     }
 
     getCourseId = () => {

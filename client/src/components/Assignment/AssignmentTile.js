@@ -5,14 +5,13 @@ import './AssignmentTile.css';
 export default class AssignmentTile extends Component {
     static propTypes = {
         title: PropTypes.string.isRequired,
-        id: PropTypes.number.isRequired
+        onClick: PropTypes.func.isRequired
     }
 
-    // TODO make tiles clickable
     render() {
-        const { title } = this.props;
+        const { title, onClick } = this.props;
         return (
-                <div className="assignmentTile">{ title }</div>
+                <div className="assignmentTile" onClick={ onClick }>{ title }</div>
                 );
     }
 }

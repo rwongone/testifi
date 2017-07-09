@@ -21,7 +21,28 @@ class AssignmentList extends Component {
                             ).isRequired,
         user: ImmutablePropTypes.contains({
             isAdmin: PropTypes.bool.isRequired,
+        }).isRequired,
+        match: PropTypes.shape({
+            params: PropTypes.shape({
+                courseId: PropTypes.string.isRequired
+            }).isRequired
+        }).isRequired,
+        history: PropTypes.shape({
+            push: PropTypes.func.isRequired
         }).isRequired
+    }
+
+    goToAssignment = assignmentId => () => {
+        const {
+            match: { params: { courseId } },
+            history
+        } = this.props;
+
+        if (assignmentId === NEW_ASSIGNMENT_ID) {
+            history.push(`/courses/${courseId}/assignments/create`);
+            return;
+        }
+        history.push(`/courses/${courseId}/assignments/${assignmentId}`);
     }
 
     render() {
@@ -38,13 +59,18 @@ class AssignmentList extends Component {
                     <div className="assignmentList">
                         {
                         assignment.getIn([parsedCourseId, 'assignments']).map(
-                        a => <AssignmentTile key={ a.get('id') } title={ a.get('title') } id={ a.get('id') } />
+                        a => <AssignmentTile
+                            key={ a.get('id') }
+                            title={ a.get('title') }
+                            onClick={ this.goToAssignment(a.get('id')) } />
                         )
                         }
                         {
                         user.get('isAdmin')
                         ? (
-                        <AssignmentTile title="Create New Assignment" id={ NEW_ASSIGNMENT_ID } />
+                        <AssignmentTile
+                            title="Create New Assignment"
+                            onClick={ this.goToAssignment(NEW_ASSIGNMENT_ID) } />
                         ) : null
                         }
                     </div>

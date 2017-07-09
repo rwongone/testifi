@@ -19,6 +19,9 @@ class CourseDropdown extends Component {
         }).isRequired,
         location: PropTypes.shape({
             pathname: PropTypes.string.isRequired
+        }).isRequired,
+        history: PropTypes.shape({
+            push: PropTypes.func.isRequired
         }).isRequired
     }
 

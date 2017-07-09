@@ -16,7 +16,10 @@ class Course extends Component {
         user: ImmutablePropTypes.contains({
             isAdmin: PropTypes.bool.isRequired,
         }).isRequired,
-        dispatch: PropTypes.func.isRequired
+        dispatch: PropTypes.func.isRequired,
+        history: PropTypes.shape({
+            push: PropTypes.func.isRequired
+        }).isRequired
     }
 
     redirectToSubPage = () => {
