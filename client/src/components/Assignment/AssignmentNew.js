@@ -13,7 +13,9 @@ class AssignmentNew extends Component {
                 courseId: PropTypes.string.isRequired
             }).isRequired
         }).isRequired,
-        history: PropTypes.object.isRequired
+        history: PropTypes.shape({
+            push: PropTypes.func.isRequired
+        }).isRequired
     }
 
     getCourseId = () => {

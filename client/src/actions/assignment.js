@@ -1,7 +1,12 @@
 import { handleErrors } from './util';
 
+export const FETCH_ASSIGNMENTS = 'FETCH_ASSIGNMENTS';
 export function fetchAssignments(courseId) {
     return function(dispatch) {
+        dispatch({
+            type: FETCH_ASSIGNMENTS,
+            courseId
+        });
         let headers = new Headers();
         headers.append('Accept', 'application/json');
         headers.append('Content-Type', 'application/json');
@@ -16,7 +21,10 @@ export function fetchAssignments(courseId) {
             dispatch(receiveAssignmentsSuccess(courseId, assignments));
             return assignments;
         })
-        .catch(e => console.error(e));
+        .catch(e => {
+            dispatch(receiveAssignmentsFailure(courseId));
+            console.error(e);
+        });
     }
 }
 
@@ -26,6 +34,14 @@ function receiveAssignmentsSuccess(courseId, assignments) {
         type: RECEIVE_ASSIGNMENTS_SUCCESS,
         courseId,
         assignments
+    }
+}
+
+export const RECEIVE_ASSIGNMENTS_FAILURE = 'RECEIVE_ASSIGNMENTS_FAILURE';
+function receiveAssignmentsFailure(courseId) {
+    return {
+        type: RECEIVE_ASSIGNMENTS_FAILURE,
+        courseId
     }
 }
 

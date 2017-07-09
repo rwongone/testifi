@@ -6,11 +6,17 @@ import './CourseNew.css';
 
 class CourseNew extends Component {
     static propTypes = {
-        dispatch: PropTypes.func.isRequired
+        dispatch: PropTypes.func.isRequired,
+        history: PropTypes.shape({
+            push: PropTypes.func.isRequired
+        }).isRequired
     }
 
     onSubmit = e => {
-        const { dispatch } = this.props;
+        const {
+            dispatch,
+            history: { push }
+        } = this.props;
 
         const course = {
             course_code: e.target.courseCode.value,
@@ -18,7 +24,7 @@ class CourseNew extends Component {
             description: e.target.description.value
         }
 
-        dispatch(createCourse(course));
+        dispatch(createCourse(course)).then(c => push(`/courses/${c.id}/assignments`));
         e.preventDefault();
     }
 
