@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import { Route } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import AssignmentList from './AssignmentList';
+import AssignmentNew from './AssignmentNew';
 import { fetchAssignments } from '../../actions/assignment';
 
 class Assignment extends Component {
@@ -47,7 +48,10 @@ class Assignment extends Component {
 
         // make sure the assignments have been fetched before rendering anything
         return assignment.getIn([courseId, 'fetched']) ? (
-                <Route exact path="/courses/:courseId/assignments" component={ AssignmentList } />
+                <Switch>
+                    <Route exact path="/courses/:courseId/assignments" component={ AssignmentList } />
+                    <Route exact path="/courses/:courseId/assignments/create" component={ AssignmentNew } />
+                </Switch>
                 ) : null;
     }
 }
