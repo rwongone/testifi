@@ -13,18 +13,18 @@ class SubmissionsController < ApplicationController
 
     file = params[:file]
 
-    file = DbFile.new(
-      name: file.original_filename,
-      type: MimeMagic.by_magic(file),
-      contents: file.read,
-    )
+    ActiveRecord::Base.transaction do
+      file = DbFile.create(
+        name: file.original_filename,
+        type: MimeMagic.by_magic(file),
+        contents: file.read,
+      )
 
-    submission = Submission.new(create_params.merge(
-      user_id: current_user.id,
-      db_file: file,
-    ))
+      submission = Submission.create(create_params.merge(
+        user_id: current_user.id,
+        db_file: file,
+      ))
 
-    if submission.save!
       render status: :created, json: submission
     end
   end
