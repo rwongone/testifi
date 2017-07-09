@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router';
+import { NEW_COURSE_ID } from '../../constants';
 import './CourseDropdown.css';
 
-const CREATE_ID = -1;
 class CourseDropdown extends Component {
     static propTypes = {
         course: ImmutablePropTypes.contains({
@@ -40,7 +39,7 @@ class CourseDropdown extends Component {
         }
 
         if (course === 'create') {
-            return CREATE_ID;
+            return NEW_COURSE_ID;
         }
 
         return parseInt(course, 10);
@@ -49,11 +48,12 @@ class CourseDropdown extends Component {
     selectCourse = e => {
         const { history } = this.props;
 
-        let courseId = parseInt(e.target.value);
-        if (courseId === CREATE_ID) {
-            courseId = 'create';
+        let courseId = parseInt(e.target.value, 10);
+        if (courseId === NEW_COURSE_ID) {
+            history.push(`/courses/create`);
+            return;
         }
-        history.push(`/courses/${courseId}`);
+        history.push(`/courses/${courseId}/assignments`);
     }
 
     render() {
@@ -72,7 +72,7 @@ class CourseDropdown extends Component {
                             >{ `${c.get('course_code')}: ${c.get('title')}` }</option>
                             ))
                             }
-                            <option value={ CREATE_ID }>Create...</option>
+                            <option value={ NEW_COURSE_ID }>Create New Course...</option>
                         </select>
                     </div>
                     )
