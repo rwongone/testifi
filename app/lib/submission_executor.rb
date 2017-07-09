@@ -25,7 +25,7 @@ class SubmissionExecutor
   end
 
   def self.create_testing_image(submission=nil)
-    language = submission&.language || :cpp
+    language = submission&.language || :java
 
     # Use src_dir build arugment to specify to directory to copy.
     # Currently, specifying an absolute path does not work.
