@@ -5,13 +5,15 @@ RSpec.describe "Assignments", type: :request do
   include_context "with authenticated requests"
 
   let(:student) { create(:student) }
-  let(:course) { create(:course) }
+  let(:course) { create(:course, students: [student]) }
   let!(:assignment) { create(:assignment, course_id: course.id) }
 
   before(:each) do
     authenticate(student)
-    course.students << student
   end
+
+  # TODO(rwongone): Does anything different happen when a student is not
+  # enrolled in the course? Should a similar restriction apply to teachers?
 
   describe "GET /api/courses/:course_id/assignments" do
     it "returns all assignments in a course as JSON" do

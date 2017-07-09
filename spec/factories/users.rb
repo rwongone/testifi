@@ -6,7 +6,7 @@ FactoryGirl.define do
     admin { false }
   end
 
-  trait :teacher do
+  factory :teacher, class: User do
     name { 'P B' }
     email { 'pb@teacher.com' }
     google_id { 't_google_id123' }
