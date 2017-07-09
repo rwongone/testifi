@@ -6,7 +6,7 @@ RSpec.describe "Assignments", type: :request do
 
   let(:student) { create(:student) }
   let(:teacher) { create(:teacher) }
-  let(:course) { create(:course, students: [student]) }
+  let(:course) { create(:course, students: [student], teacher: teacher) }
 
   before(:each) do
     authenticate(student)
