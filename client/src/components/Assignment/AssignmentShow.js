@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import AssignmentNav from './AssignmentNav';
+import { fetchProblems } from '../../actions/problem';
 import './AssignmentShow.css';
 
 class AssignmentShow extends Component {
@@ -14,7 +15,12 @@ class AssignmentShow extends Component {
                 courseId: PropTypes.string.isRequired
             }).isRequired
         }).isRequired,
-        history: PropTypes.object.isRequired
+        history: PropTypes.object.isRequired,
+        problem: ImmutablePropTypes.mapOf(
+                ImmutablePropTypes.contains({
+                    fetched: PropTypes.bool.isRequired
+                })
+                )
     }
 
     getCourseId = () => {
@@ -29,6 +35,14 @@ class AssignmentShow extends Component {
             match: { params: { assignmentId } }
         } = this.props;
         return parseInt(assignmentId, 10);
+    }
+
+    componentWillMount() {
+        const { problem, dispatch } = this.props;
+        const assignmentId = this.getAssignmentId();
+        if (!problem.getIn([assignmentId, 'fetched'])) {
+            dispatch(fetchProblems(assignmentId));
+        }
     }
 
     render() {
@@ -47,5 +61,6 @@ class AssignmentShow extends Component {
 }
 
 export default connect(state => ({
-    assignment: state.assignment
+    assignment: state.assignment,
+    problem: state.problem
 }))(AssignmentShow);
