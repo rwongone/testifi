@@ -6,14 +6,13 @@ RSpec.describe "Submissions", type: :request do
   include_context "with authenticated requests"
 
   let(:student) { create(:student) }
-  let(:course) { create(:course) }
+  let(:course) { create(:course, students: [student]) }
   let(:assignment) { create(:assignment, course_id: course.id) }
   let!(:problem) { create(:problem, assignment_id: assignment.id) }
   let!(:submission) { create(:submission, user_id: student.id, problem_id: problem.id) }
 
   before(:each) do
     authenticate(student)
-    course.students << student
   end
 
   describe "GET /api/problems/:problem_id/submissions" do
