@@ -1,0 +1,6 @@
+.assignmentList {
+  display: flex;
+  margin: 0 auto;
+  padding: 60px 30px;
+  max-width: 1000px;
+}
