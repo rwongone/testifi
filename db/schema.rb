@@ -65,6 +65,9 @@ ActiveRecord::Schema.define(version: 20170531005146) do
 
   create_table "tests", force: :cascade do |t|
     t.string "name"
+    t.string "filename"
+    t.binary "file_contents"
+    t.string "hint"
     t.bigint "problem_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
