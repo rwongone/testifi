@@ -9,8 +9,7 @@ class ProblemTile extends Component {
         assignmentId: PropTypes.number.isRequired,
         problem: ImmutablePropTypes.contains({
             id: PropTypes.number.isRequired,
-            name: PropTypes.string.isRequired,
-            description: PropTypes.string.isRequired
+            name: PropTypes.string.isRequired
         }),
         history: PropTypes.shape({
             push: PropTypes.func.isRequired

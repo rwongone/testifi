@@ -9,6 +9,7 @@ class ProblemShow extends Component {
         assignment: ImmutablePropTypes.contains({
             assignments: ImmutablePropTypes.mapOf(
                 ImmutablePropTypes.contains({
+                    id: PropTypes.number.isRequired,
                     name: PropTypes.string.isRequired
                 })
                 )
@@ -16,6 +17,7 @@ class ProblemShow extends Component {
         problem: ImmutablePropTypes.contains({
             problems: ImmutablePropTypes.mapOf(
                 ImmutablePropTypes.contains({
+                    id: PropTypes.number.isRequired,
                     name: PropTypes.string.isRequired
                 })
                 )

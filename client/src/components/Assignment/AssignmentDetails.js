@@ -9,6 +9,7 @@ class AssignmentDetails extends Component {
         assignment: ImmutablePropTypes.contains({
             assignments: ImmutablePropTypes.mapOf(
                 ImmutablePropTypes.contains({
+                    id: PropTypes.number.isRequired,
                     name: PropTypes.string.isRequired,
                     description: PropTypes.string.isRequired
                 })
@@ -20,6 +21,7 @@ class AssignmentDetails extends Component {
                 courseId: PropTypes.string.isRequired
             }).isRequired
         }).isRequired,
+        history: PropTypes.object.isRequired
     }
 
     getCourseId = () => {

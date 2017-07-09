@@ -11,8 +11,10 @@ import './AssignmentShow.css';
 
 class AssignmentShow extends Component {
     static propTypes = {
+        dispatch: PropTypes.func.isRequired,
         match: PropTypes.shape({
             params: PropTypes.shape({
+                assignmentId: PropTypes.string.isRequired,
                 courseId: PropTypes.string.isRequired
             }).isRequired
         }).isRequired,
