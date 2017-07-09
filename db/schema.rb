@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170531005146) do
+ActiveRecord::Schema.define(version: 20170709210034) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -41,6 +41,17 @@ ActiveRecord::Schema.define(version: 20170531005146) do
     t.index ["student_id"], name: "index_courses_students_on_student_id"
   end
 
+  create_table "db_files", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "type"
+    t.binary "contents", null: false
+    t.string "has_a_file_type"
+    t.bigint "has_a_file_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["has_a_file_type", "has_a_file_id"], name: "index_db_files_on_has_a_file_type_and_has_a_file_id"
+  end
+
   create_table "problems", force: :cascade do |t|
     t.string "name"
     t.text "description"
@@ -56,9 +67,6 @@ ActiveRecord::Schema.define(version: 20170531005146) do
     t.bigint "user_id", null: false
     t.bigint "problem_id", null: false
     t.string "language", null: false
-    t.string "filename", null: false
-    t.string "content_type"
-    t.binary "file_contents"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["problem_id"], name: "index_submissions_on_problem_id"
@@ -67,8 +75,6 @@ ActiveRecord::Schema.define(version: 20170531005146) do
 
   create_table "tests", force: :cascade do |t|
     t.string "name"
-    t.string "filename"
-    t.binary "file_contents"
     t.string "hint"
     t.bigint "problem_id"
     t.datetime "created_at", null: false

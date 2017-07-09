@@ -11,8 +11,9 @@ RSpec.describe "Submissions", type: :request do
   let(:course) { create(:course) }
   let(:assignment) { create(:assignment, course_id: course.id) }
   let!(:problem) { create(:problem, assignment_id: assignment.id) }
-  let!(:submission) { create(:submission, user_id: student.id, problem_id: problem.id) }
   let(:uploaded_file) { fixture_file_upload("#{fixture_path}/files/Solution.java") }
+  let(:db_file) { create(:submission_db_file, name: uploaded_file.original_filename, contents: uploaded_file.read, has_a_file_id: submission.id) }
+  let!(:submission) { create(:submission, user_id: student.id, problem_id: problem.id) }
 
   # TODO(rwongone): Currently, we only check if a user is in a course's
   # list of enrolled students to decide whether the resource is accessible.
@@ -73,7 +74,6 @@ RSpec.describe "Submissions", type: :request do
             user_id: student.id,
             problem_id: problem.id,
             language: 'java',
-            filename: 'Solution.java',
           }
         end
 
@@ -88,7 +88,6 @@ RSpec.describe "Submissions", type: :request do
         it "synchronously executes the test case and returns the result" do
           post "/api/problems/#{problem.id}/submissions", params: submission_params
           post "/api/exec", params: { id: JSON.parse(response.body)['id'] }
-
           expect(response).to have_http_status(200)
           expect(response.body).to include_json(
             result: /.*/,
