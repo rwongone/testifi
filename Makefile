@@ -71,4 +71,4 @@ node:
 		bash
 
 test:
-	bundle exec rspec
+	docker exec -it testifi_app bash -c 'rspec -fd'
