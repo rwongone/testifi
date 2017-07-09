@@ -3,17 +3,12 @@ require 'helpers/api_helper'
 
 RSpec.describe "Courses", type: :request do
   include_context "with authenticated requests"
-  let(:student) { create(:user) }
-  let(:teacher) { create(:user, :teacher) }
+  let(:student) { create(:student) }
+  let(:teacher) { create(:teacher) }
   let!(:course) { create(:course) }
 
   describe "POST /api/courses" do
-    it "does not allow students to create a course" do
-      authenticate(student)
-
-      post "/api/courses"
-      expect(response).to have_http_status(403)
-    end
+    it_behaves_like "an admin-only POST endpoint", "/api/courses"
 
     it "allows teachers to create a course" do
       authenticate(teacher)
@@ -51,51 +46,48 @@ RSpec.describe "Courses", type: :request do
     it "returns no courses when a student is not enrolled" do
       authenticate(student)
 
-      # ensure arbitrary courses are not being returned
       get "/api/courses/visible"
       expect(response).to have_http_status(200)
       parsed = ActiveSupport::JSON.decode(response.body)
       expect(parsed).to eq([])
     end
 
-    it "returns the Courses that the student is enrolled in as JSON" do
-      authenticate(student)
+    context "when a student is enrolled in courses" do
+      let(:course) { create(:course, students: [student]) }
 
-      # enroll the student
-      course.students << student
+      it "returns those Courses that the student is enrolled in as JSON" do
+        authenticate(student)
 
-      # ensure courses are being returned
-      get "/api/courses/visible"
-      expect(response).to have_http_status(200)
-      parsed = ActiveSupport::JSON.decode(response.body)
-      expect(parsed.size).to eq(1)
-      validate_course(parsed[0], course)
+        get "/api/courses/visible"
+        expect(response).to have_http_status(200)
+        parsed = ActiveSupport::JSON.decode(response.body)
+        expect(parsed.size).to eq(1)
+        validate_course(parsed[0], course)
+      end
     end
 
 
     it "returns no courses when the teacher is not teaching" do
       authenticate(teacher)
 
-      # ensure arbitrary courses are not being returned
       get "/api/courses/visible"
       expect(response).to have_http_status(200)
       parsed = ActiveSupport::JSON.decode(response.body)
       expect(parsed).to eq([])
     end
 
-    it "returns the Courses that the teacher teaches as JSON" do
-      authenticate(teacher)
+    context "when the teacher teaches the course" do
+      let(:course) { create(:course, teacher: teacher) }
 
-      # assign a course to the teacher
-      course.teacher = teacher
-      course.save
+      it "returns those Courses that the teacher teaches as JSON" do
+        authenticate(teacher)
 
-      # ensure courses are being returned
-      get "/api/courses/visible"
-      expect(response).to have_http_status(200)
-      parsed = ActiveSupport::JSON.decode(response.body)
-      expect(parsed.size).to eq(1)
-      validate_course(parsed[0], course)
+        get "/api/courses/visible"
+        expect(response).to have_http_status(200)
+        parsed = ActiveSupport::JSON.decode(response.body)
+        expect(parsed.size).to eq(1)
+        validate_course(parsed[0], course)
+      end
     end
   end
 
