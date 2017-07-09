@@ -3,101 +3,117 @@ require 'helpers/api_helper'
 
 RSpec.describe "Courses", type: :request do
   include_context "with authenticated requests"
+  include_context "with JSON responses"
+
   let(:student) { create(:student) }
   let(:teacher) { create(:teacher) }
   let!(:course) { create(:course) }
-
-  describe "POST /api/courses" do
-    it_behaves_like "an admin-only POST endpoint", "/api/courses"
-
-    it "allows teachers to create a course" do
-      authenticate(teacher)
-
-      params = {
+  let(:default_params) do
+    {
+      "/api/courses" => {
         "course_code" => "CS348",
         "title" => "Introduction to Databases",
-        "description" => "This course introduces students to databases"
+        "description" => "This course introduces students to databases",
       }
-
-      post "/api/courses", params: params, headers: headers
-      expect(response).to have_http_status(201)
-      parsed = ActiveSupport::JSON.decode(response.body)
-      expect(parsed).to include(
-        "course_code" => params["course_code"],
-        "title" => params["title"],
-        "description" => params["description"],
-        "teacher_id" => teacher.id
-      )
-    end
+    }
+  end
+  let(:course_properties) do
+    {
+      "id" => course.id,
+      "course_code" => course.course_code,
+      "title" => course.title,
+      "description" => course.description,
+      "teacher_id" => course.teacher_id,
+    }
   end
 
-  describe "GET /api/courses" do
-    it "returns the Course as JSON for students" do
-      authenticate(student)
+  context "when a teacher is authenticated" do
+    before { authenticate(teacher) }
 
-      get "/api/courses/#{course.id}"
-      expect(response).to have_http_status(200)
-      parsed = ActiveSupport::JSON.decode(response.body)
-      validate_course(parsed, course)
-    end
-  end
+    describe "POST /api/courses" do
+      let(:params) { default_params["/api/courses"] }
+      let(:expected_properties) do
+        {
+          "course_code" => params["course_code"],
+          "title" => params["title"],
+          "description" => params["description"],
+          "teacher_id" => teacher.id,
+        }
+      end
 
-  describe "GET /api/courses/visible" do
-    it "returns no courses when a student is not enrolled" do
-      authenticate(student)
+      it "creates a course" do
+        post "/api/courses", params: params
 
-      get "/api/courses/visible"
-      expect(response).to have_http_status(200)
-      parsed = ActiveSupport::JSON.decode(response.body)
-      expect(parsed).to eq([])
-    end
-
-    context "when a student is enrolled in courses" do
-      let(:course) { create(:course, students: [student]) }
-
-      it "returns those Courses that the student is enrolled in as JSON" do
-        authenticate(student)
-
-        get "/api/courses/visible"
-        expect(response).to have_http_status(200)
-        parsed = ActiveSupport::JSON.decode(response.body)
-        expect(parsed.size).to eq(1)
-        validate_course(parsed[0], course)
+        expect(response).to have_http_status(201)
+        expect(json_response).to include(expected_properties)
       end
     end
 
-
-    it "returns no courses when the teacher is not teaching" do
-      authenticate(teacher)
-
-      get "/api/courses/visible"
-      expect(response).to have_http_status(200)
-      parsed = ActiveSupport::JSON.decode(response.body)
-      expect(parsed).to eq([])
+    describe "GET /api/courses" do
+      it "returns the Course as JSON" do
+        get "/api/courses/#{course.id}"
+        expect(response).to have_http_status(200)
+        expect(response.body).to eq(course.to_json)
+      end
     end
 
-    context "when the teacher teaches the course" do
-      let(:course) { create(:course, teacher: teacher) }
-
-      it "returns those Courses that the teacher teaches as JSON" do
-        authenticate(teacher)
-
+    describe "GET /api/courses/visible" do
+      it "returns no courses when the teacher is not teaching" do
         get "/api/courses/visible"
         expect(response).to have_http_status(200)
-        parsed = ActiveSupport::JSON.decode(response.body)
-        expect(parsed.size).to eq(1)
-        validate_course(parsed[0], course)
+        expect(json_response).to eq([])
+      end
+
+      context "when the teacher teaches the course" do
+        let(:course) { create(:course, teacher: teacher) }
+
+        it "returns those Courses that the teacher teaches as JSON" do
+          get "/api/courses/visible"
+          expect(response).to have_http_status(200)
+          expect(json_response.size).to eq(1)
+          expect(json_response.first).to include(course_properties)
+        end
       end
     end
   end
 
-  def validate_course(actual, expected)
-    expect(actual).to include(
-      "id" => expected.id,
-      "course_code" => expected.course_code,
-      "title" => expected.title,
-      "description" => expected.description,
-      "teacher_id" => expected.teacher_id
-    )
+  context "when a student is authenticated" do
+    before { authenticate(student) }
+
+    describe "POST /api/courses" do
+      let(:params) { default_params["/api/courses"] }
+
+      it "is inaccessible" do
+        post "/api/courses"
+        expect(response).to be_forbidden
+      end
+    end
+
+    describe "GET /api/courses" do
+      it "returns the Course as JSON" do
+        get "/api/courses/#{course.id}"
+        expect(response).to have_http_status(200)
+        expect(response.body).to eq(course.to_json)
+      end
+    end
+
+    describe "GET /api/courses/visible" do
+      it "returns no courses when the student is not enrolled in any" do
+        get "/api/courses/visible"
+        expect(response).to have_http_status(200)
+        expect(json_response).to eq([])
+      end
+
+      context "when the student is enrolled in a course" do
+        let(:course) { create(:course, students: [student]) }
+
+        it "returns the Courses that the student is enrolled in" do
+          get "/api/courses/visible"
+          expect(response).to have_http_status(200)
+          expect(json_response.size).to eq(1)
+          expect(json_response.first).to include(course_properties)
+        end
+      end
+    end
   end
 end
