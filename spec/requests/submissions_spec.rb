@@ -12,8 +12,8 @@ RSpec.describe "Submissions", type: :request do
   let(:assignment) { create(:assignment, course_id: course.id) }
   let!(:problem) { create(:problem, assignment_id: assignment.id) }
   let(:uploaded_file) { fixture_file_upload("#{fixture_path}/files/Solution.java") }
-  let(:db_file) { create(:submission_db_file, name: uploaded_file.original_filename, contents: uploaded_file.read, has_a_file_id: submission.id) }
-  let!(:submission) { create(:submission, user_id: student.id, problem_id: problem.id) }
+  let(:db_file) { create(:submission_db_file, name: uploaded_file.original_filename, contents: uploaded_file.read) }
+  let!(:submission) { create(:submission, user_id: student.id, problem_id: problem.id, db_file_id: db_file.id) }
 
   # TODO(rwongone): Currently, we only check if a user is in a course's
   # list of enrolled students to decide whether the resource is accessible.
