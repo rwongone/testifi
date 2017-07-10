@@ -5,6 +5,10 @@ shared_context "with authenticated requests" do
   end
 end
 
+shared_context "with JSON responses" do
+  let(:json_response) { ActiveSupport::JSON.decode(response.body) }
+end
+
 shared_examples "an admin-only GET endpoint" do |endpoint|
   let(:student) { create(:student) }
 

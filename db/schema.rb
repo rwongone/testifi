@@ -51,10 +51,10 @@ ActiveRecord::Schema.define(version: 20170531005146) do
   end
 
   create_table "submissions", force: :cascade do |t|
-    t.bigint "user_id"
-    t.bigint "problem_id"
+    t.bigint "user_id", null: false
+    t.bigint "problem_id", null: false
     t.string "language", null: false
-    t.string "filename"
+    t.string "filename", null: false
     t.string "content_type"
     t.binary "file_contents"
     t.datetime "created_at", null: false
