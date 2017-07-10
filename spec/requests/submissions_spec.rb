@@ -52,7 +52,7 @@ RSpec.describe "Submissions", type: :request do
       let(:course) { create(:course, students: [student]) }
 
       describe "GET /api/problems/:problem_id/submissions" do
-        let!(:submission2) { create(:submission, user_id: student.id, problem_id: problem.id) }
+        let!(:submission2) { create(:submission, user_id: student.id, problem_id: problem.id, db_file_id: db_file.id) }
         it "returns a list of all of user's Submissions for a Problem" do
           get "/api/problems/#{problem.id}/submissions"
           expect(response).to have_http_status(200)
@@ -98,7 +98,7 @@ RSpec.describe "Submissions", type: :request do
 
     context "and the student is not enrolled" do
       let(:course) { create(:course) }
-      let(:submission) { create(:submission, user_id: student.id, problem_id: problem.id) }
+      let(:submission) { create(:submission, user_id: student.id, problem_id: problem.id, db_file_id: db_file.id) }
       let(:restricted_get_endpoints) do
         [
           "/api/problems/#{problem.id}/submissions",
