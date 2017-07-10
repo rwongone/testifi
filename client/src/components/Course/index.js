@@ -6,6 +6,7 @@ import { Route, Switch } from 'react-router-dom';
 import { fetchCourses } from '../../actions/course';
 import Assignment from '../Assignment';
 import CourseNew from './CourseNew';
+import CourseNone from './CourseNone';
 
 class Course extends Component {
     static propTypes = {
@@ -41,12 +42,11 @@ class Course extends Component {
                     history.push(`/courses/${course.get('courses').first().get('id')}/assignments`);
                 }
             } else {
-                if (course.get('courses').isEmpty()) {
-                    // TODO show a splash screen telling the student to ask the teacher to enroll them
-                } else {
+                if (!course.get('courses').isEmpty()) {
                     // redirect to the first available course
                     history.push(`/courses/${course.get('courses').first().get('id')}/assignments`);
                 }
+                // if there are no courses, do not redirect and the splash screen will display
             }
         }
     }
@@ -65,12 +65,15 @@ class Course extends Component {
     }
 
     render() {
-        return (
+        const { course } = this.props;
+
+        return course.get('fetched') ? (
                 <Switch>
+                    <Route exact path="/courses" component={ CourseNone } />
                     <Route path="/courses/create" component={ CourseNew } />
                     <Route path="/courses/:courseId/assignments" component={ Assignment } />
                 </Switch>
-                );
+                ) : null;
     }
 }
 
