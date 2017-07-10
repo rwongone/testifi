@@ -11,8 +11,9 @@ RSpec.describe "Submissions", type: :request do
   let(:course) { create(:course) }
   let(:assignment) { create(:assignment, course_id: course.id) }
   let!(:problem) { create(:problem, assignment_id: assignment.id) }
-  let!(:submission) { create(:submission, user_id: student.id, problem_id: problem.id) }
   let(:uploaded_file) { fixture_file_upload("#{fixture_path}/files/Solution.java") }
+  let(:db_file) { create(:submission_db_file, name: uploaded_file.original_filename, contents: uploaded_file.read) }
+  let!(:submission) { create(:submission, user_id: student.id, problem_id: problem.id, db_file_id: db_file.id) }
 
   # TODO(rwongone): Currently, we only check if a user is in a course's
   # list of enrolled students to decide whether the resource is accessible.
@@ -51,7 +52,7 @@ RSpec.describe "Submissions", type: :request do
       let(:course) { create(:course, students: [student]) }
 
       describe "GET /api/problems/:problem_id/submissions" do
-        let!(:submission2) { create(:submission, user_id: student.id, problem_id: problem.id) }
+        let!(:submission2) { create(:submission, user_id: student.id, problem_id: problem.id, db_file_id: db_file.id) }
         it "returns a list of all of user's Submissions for a Problem" do
           get "/api/problems/#{problem.id}/submissions"
           expect(response).to have_http_status(200)
@@ -73,7 +74,6 @@ RSpec.describe "Submissions", type: :request do
             user_id: student.id,
             problem_id: problem.id,
             language: 'java',
-            filename: 'Solution.java',
           }
         end
 
@@ -88,7 +88,6 @@ RSpec.describe "Submissions", type: :request do
         it "synchronously executes the test case and returns the result" do
           post "/api/problems/#{problem.id}/submissions", params: submission_params
           post "/api/exec", params: { id: JSON.parse(response.body)['id'] }
-
           expect(response).to have_http_status(200)
           expect(response.body).to include_json(
             result: /.*/,
@@ -99,7 +98,7 @@ RSpec.describe "Submissions", type: :request do
 
     context "and the student is not enrolled" do
       let(:course) { create(:course) }
-      let(:submission) { create(:submission, user_id: student.id, problem_id: problem.id) }
+      let(:submission) { create(:submission, user_id: student.id, problem_id: problem.id, db_file_id: db_file.id) }
       let(:restricted_get_endpoints) do
         [
           "/api/problems/#{problem.id}/submissions",

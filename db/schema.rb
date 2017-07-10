@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170531005146) do
+ActiveRecord::Schema.define(version: 20170709210034) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -41,33 +41,45 @@ ActiveRecord::Schema.define(version: 20170531005146) do
     t.index ["student_id"], name: "index_courses_students_on_student_id"
   end
 
+  create_table "db_files", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "type"
+    t.binary "contents", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "problems", force: :cascade do |t|
     t.string "name"
     t.text "description"
     t.bigint "assignment_id"
+    t.bigint "solution_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["assignment_id"], name: "index_problems_on_assignment_id"
+    t.index ["solution_id"], name: "index_problems_on_solution_id"
   end
 
   create_table "submissions", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "problem_id", null: false
     t.string "language", null: false
-    t.string "filename", null: false
-    t.string "content_type"
-    t.binary "file_contents"
+    t.bigint "db_file_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["db_file_id"], name: "index_submissions_on_db_file_id"
     t.index ["problem_id"], name: "index_submissions_on_problem_id"
     t.index ["user_id"], name: "index_submissions_on_user_id"
   end
 
   create_table "tests", force: :cascade do |t|
     t.string "name"
+    t.string "hint"
     t.bigint "problem_id"
+    t.bigint "db_file_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["db_file_id"], name: "index_tests_on_db_file_id"
     t.index ["problem_id"], name: "index_tests_on_problem_id"
   end
 
