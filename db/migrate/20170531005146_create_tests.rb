@@ -4,6 +4,7 @@ class CreateTests < ActiveRecord::Migration[5.1]
       t.string :name
       t.string :hint
       t.references :problem
+      t.references :user
       t.bigint :db_file_id, null: false
 
       t.timestamps
