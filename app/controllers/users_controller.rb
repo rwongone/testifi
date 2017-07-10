@@ -59,8 +59,12 @@ class UsersController < ApplicationController
     github_name = parsed_response['name']
 
     user = User.find_or_create_by(github_id: github_id) do |u|
-      u.name = github_name
       u.admin = false
+      a = User.where(admin: true).first
+      if a.blank?
+        u.admin = true
+      end
+      u.name = github_name
       u.save!
     end
     jwt = Auth.issue({user_id: user.id})
@@ -81,9 +85,13 @@ class UsersController < ApplicationController
       email = google_jwt['email']
 
       user = User.find_or_create_by(google_id: google_id) do |u|
+        u.admin = false
+        a = User.where(admin: true).first
+        if a.blank?
+          u.admin = true
+        end
         u.name = google_name
         u.email = email
-        u.admin = false
         u.save!
       end
       jwt = Auth.issue({user_id: user.id})
