@@ -30,7 +30,7 @@ class CourseNew extends Component {
 
     render() {
         return (
-                <div className="courseCreate">
+                <div className="courseNew">
                     <div className="frame">
                         <h2>Create new course</h2>
                         <form className="newCourseForm" onSubmit={ this.onSubmit }>

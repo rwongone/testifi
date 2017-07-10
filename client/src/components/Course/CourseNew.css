@@ -1,22 +1,22 @@
-.courseCreate {
+.courseNew {
   margin-top: 40px;
   display: flex;
   justify-content: center;
 }
 
-.courseCreate .frame {
+.courseNew .frame {
   width: 50%;
   min-width: 768px;
 }
 
-.courseCreate .newCourseForm {
+.courseNew .newCourseForm {
   display: grid;
   grid-template-columns: auto 1fr;
   grid-gap: 20px;
   align-items: center;
 }
 
-.courseCreate .submitButton {
+.courseNew .submitButton {
   grid-column-start: 1;
   grid-column-end: 3;
 }
