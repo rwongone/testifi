@@ -52,13 +52,15 @@ class AssignmentList extends Component {
             match: { params: { courseId } }
         } = this.props;
         const parsedCourseId = parseInt(courseId, 10);
+        const assignments = assignment.getIn([parsedCourseId, 'assignments']);
 
+        // TODO assignment none screen
         return (
                 <div>
                     <AssignmentNav />
                     <div className="assignmentList">
                         {
-                        assignment.getIn([parsedCourseId, 'assignments']).map(
+                        assignments.map(
                         a => <AssignmentTile
                             key={ a.get('id') }
                             name={ a.get('name') }
@@ -72,6 +74,12 @@ class AssignmentList extends Component {
                             name="Create New Assignment"
                             onClick={ this.goToAssignment(NEW_ASSIGNMENT_ID) } />
                         ) : null
+                        }
+                        {
+                        !user.get('isAdmin') && assignments.isEmpty()
+                        ? (
+                        )
+                        : null
                         }
                     </div>
                 </div>
