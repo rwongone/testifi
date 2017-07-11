@@ -14,9 +14,17 @@ export default class TestTile extends Component {
         const {
             test
         } = this.props;
+        // TODO input link
         return (
                 <div className="testTile">
-                    { test.get('name') }
+                    <div className="testTileFrame frame">
+                        <h3>{ test.get('name') }</h3>
+                        {
+                        test.get('hint')
+                        ? <div>Hint: { test.get('hint') }</div>
+                        : null
+                        }
+                    </div>
                 </div>
                 );
     }
