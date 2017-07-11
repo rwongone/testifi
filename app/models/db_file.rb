@@ -1,0 +1,2 @@
+class DbFile < ApplicationRecord
+end

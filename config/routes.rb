@@ -19,9 +19,11 @@ Rails.application.routes.draw do
     end
     resources :problems, only: [:show, :update, :destroy] do
       resources :submissions, only: [:create, :index]
+      resources :tests, only: [:create, :index]
     end
 
     resources :submissions, only: [:show]
+    resources :tests, only: [:show, :update, :destroy]
 
   end
 end
