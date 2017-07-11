@@ -6,7 +6,7 @@ import { Route, Switch } from 'react-router-dom';
 import { fetchCourses } from '../../actions/course';
 import Assignment from '../Assignment';
 import CourseNew from './CourseNew';
-import CourseNone from './CourseNone';
+import NoCourses from './NoCourses';
 
 class Course extends Component {
     static propTypes = {
@@ -69,7 +69,7 @@ class Course extends Component {
 
         return course.get('fetched') ? (
                 <Switch>
-                    <Route exact path="/courses" component={ CourseNone } />
+                    <Route exact path="/courses" component={ NoCourses } />
                     <Route path="/courses/create" component={ CourseNew } />
                     <Route path="/courses/:courseId/assignments" component={ Assignment } />
                 </Switch>

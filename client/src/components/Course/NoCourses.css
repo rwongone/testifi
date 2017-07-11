@@ -1,13 +1,13 @@
-.courseNone {
+.noCourses {
   display: flex;
   justify-content: center;
 }
 
-.courseNone .frame {
+.noCourses .frame {
   margin: 20px;
   max-width: 768px;
 }
 
-.courseNone .frown {
+.noCourses .frown {
   margin-left: 20px;
 }

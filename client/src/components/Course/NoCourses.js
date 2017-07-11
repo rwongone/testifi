@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
-import './CourseNone.css';
+import './NoCourses.css';
 
-class Course extends Component {
+class NoCourses extends Component {
     static propTypes = {
         user: ImmutablePropTypes.contains({
             isAdmin: PropTypes.bool.isRequired,
@@ -15,7 +15,7 @@ class Course extends Component {
         const { user } = this.props;
 
         return (
-                <div className="courseNone">
+                <div className="noCourses">
                     <div className="frame">
                         <h2>
                             You are not enrolled in any classes<i className="fa fa-frown-o frown" aria-hidden="true"></i>
@@ -31,4 +31,4 @@ class Course extends Component {
 
 export default connect(state => ({
     user: state.user
-}))(Course);
+}))(NoCourses);
