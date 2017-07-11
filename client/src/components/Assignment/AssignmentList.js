@@ -5,6 +5,7 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { NEW_ASSIGNMENT_ID } from '../../constants';
 import AssignmentTile from './AssignmentTile';
 import AssignmentNav from './AssignmentNav';
+import AssignmentNone from './AssignmentNone';
 import './AssignmentList.css';
 
 class AssignmentList extends Component {
@@ -54,7 +55,6 @@ class AssignmentList extends Component {
         const parsedCourseId = parseInt(courseId, 10);
         const assignments = assignment.getIn([parsedCourseId, 'assignments']);
 
-        // TODO assignment none screen
         return (
                 <div>
                     <AssignmentNav />
@@ -78,6 +78,7 @@ class AssignmentList extends Component {
                         {
                         !user.get('isAdmin') && assignments.isEmpty()
                         ? (
+                        <AssignmentNone />
                         )
                         : null
                         }
