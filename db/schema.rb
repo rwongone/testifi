@@ -76,11 +76,13 @@ ActiveRecord::Schema.define(version: 20170709210034) do
     t.string "name"
     t.string "hint"
     t.bigint "problem_id"
+    t.bigint "user_id"
     t.bigint "db_file_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["db_file_id"], name: "index_tests_on_db_file_id"
     t.index ["problem_id"], name: "index_tests_on_problem_id"
+    t.index ["user_id"], name: "index_tests_on_user_id"
   end
 
   create_table "users", id: :serial, force: :cascade do |t|
