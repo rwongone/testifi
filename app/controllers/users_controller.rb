@@ -59,8 +59,8 @@ class UsersController < ApplicationController
     github_name = parsed_response['name']
 
     user = User.find_or_create_by(github_id: github_id) do |u|
+      u.admin = !admin_exists
       u.name = github_name
-      u.admin = false
       u.save!
     end
     jwt = Auth.issue({user_id: user.id})
@@ -81,9 +81,9 @@ class UsersController < ApplicationController
       email = google_jwt['email']
 
       user = User.find_or_create_by(google_id: google_id) do |u|
+        u.admin = !admin_exists
         u.name = google_name
         u.email = email
-        u.admin = false
         u.save!
       end
       jwt = Auth.issue({user_id: user.id})
@@ -106,5 +106,9 @@ class UsersController < ApplicationController
 
   def google_client
     OpenStruct.new Rails.application.secrets.google_client
+  end
+
+  def admin_exists
+    return User.exists?(:admin => true)
   end
 end

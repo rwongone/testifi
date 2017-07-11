@@ -2,23 +2,21 @@ import { handleErrors } from './util';
 
 export function fetchTests(problemId) {
     return function(dispatch) {
-        // TODO uncomment when endpoint is implemented
-        // let headers = new Headers();
-        // headers.append('Accept', 'application/json');
-        // headers.append('Content-Type', 'application/json');
-        // return fetch(`/api/problems/${problemId}/tests`, {
-        //     method: 'GET',
-        //     headers,
-        //     credentials: 'include'
-        // })
-        // .then(handleErrors)
-        // .then(resp => resp.json())
-        // .then(tests => {
-        //     dispatch(receiveTestsSuccess(problemId, tests));
-        //     return tests;
-        // })
-        // .catch(e => console.error(e));
-        dispatch(receiveTestsSuccess(problemId, []));
+        let headers = new Headers();
+        headers.append('Accept', 'application/json');
+        headers.append('Content-Type', 'application/json');
+        return fetch(`/api/problems/${problemId}/tests`, {
+            method: 'GET',
+            headers,
+            credentials: 'include'
+        })
+        .then(handleErrors)
+        .then(resp => resp.json())
+        .then(tests => {
+            dispatch(receiveTestsSuccess(problemId, tests));
+            return tests;
+        })
+        .catch(e => console.error(e));
     }
 }
 

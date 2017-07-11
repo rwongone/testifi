@@ -9,8 +9,10 @@ RSpec.describe "User authentication", type: :request do
     let(:email) { "larry@downtolearn.com" }
     # code is a token that might come back from an auth service like google
     let(:code) { "google_auth_token_123" }
+    let(:second_code) { "google_auth_token_125" }
     # google_id is a permanent user id that might come back from google
     let(:google_id) { "google_id_123" }
+    let(:second_google_id) { "google_id_125" }
     let(:g_validator_response) do
       {
         "sub" => google_id,
@@ -62,6 +64,33 @@ RSpec.describe "User authentication", type: :request do
 
       get("/api/users/oauth/google", params: {code: code})
       expect(response).to be_forbidden
+    end
+
+    it "makes the first user in the system an admin" do
+      expect(validator).to receive(:check).with(code, google_client.id, google_client.id).and_return(g_validator_response)
+
+      get("/api/users/oauth/google", params: {code: code})
+      expect(response).to have_http_status(200)
+      expect(json_response['admin']).to eq(true)
+    end
+
+    it "does not make any subsequent users admin" do
+      # create first user as admin
+      teacher = create(:teacher)
+      teacher.admin = true
+      teacher.save
+
+      # create second user
+      expect(validator).to receive(:check).with(second_code, google_client.id, google_client.id).and_return(
+      {
+        "sub" => second_google_id,
+        "name" => "Some random name",
+        "email" => "email@sendpics.com",
+      }
+      )
+      get("/api/users/oauth/google", params: {code: second_code})
+      expect(response).to have_http_status(200)
+      expect(json_response['admin']).to eq(false)
     end
   end
 

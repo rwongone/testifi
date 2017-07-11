@@ -3,19 +3,6 @@ class SubmissionExecutor
   WORKDIR = '/tmp/sandbox'
 
   def self.run_tests(submission=nil)
-    # submission: Submission
-    #   problem: Problem
-    #   language: String or Symbol or Enum
-    #   filepath: String representing filepath of user-submitted source file.
-    #
-    # problem: Problem
-    #   cmd: String
-    #   submissions: [Submission]
-    #   test_set: [Test]
-
-    # submission.problem.test_set.map do |test|
-    # end
-
     image = create_testing_image(submission)
     run_test(submission, image)
   end
@@ -29,7 +16,7 @@ class SubmissionExecutor
 
     container = Docker::Container.create(opts)
     container.store_file("#{WORKDIR}/input/sample_test", File.read('var/test/sample_test.in'))
-    container.store_file("#{WORKDIR}/submission/Solution.java", submission.file_contents)
+    container.store_file("#{WORKDIR}/submission/Solution.java", submission.db_file.contents)
     container.start!
 
     container.attach(:stream => true, :stdin => nil, :stdout => true, :stderr => true, :logs => true, :tty => false)
