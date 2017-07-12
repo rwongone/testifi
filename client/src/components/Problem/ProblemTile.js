@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import Filedrop from '../Filedrop';
+import { submitSolution } from '../../actions/submission';
 
 class ProblemTile extends Component {
     static propTypes = {
@@ -14,7 +15,8 @@ class ProblemTile extends Component {
         }),
         history: PropTypes.shape({
             push: PropTypes.func.isRequired
-        }).isRequired
+        }).isRequired,
+        dispatch: PropTypes.func.isRequired
     }
 
     constructor(props) {
@@ -26,17 +28,17 @@ class ProblemTile extends Component {
     }
 
     onAccept = accepted => {
+        const { dispatch, problem } = this.props;
+
         this.setState({
-            accepted,
             rejected: null,
         });
 
-        // TODO upload submission
+        dispatch(submitSolution(problem.get('id'), accepted));
     }
 
     onReject = rejected => {
         this.setState({
-            accepted: null,
             rejected
         });
     }
