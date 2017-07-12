@@ -34,7 +34,8 @@ export function createTest(problemId, info) {
         // since tests contain an input file, they must be posted as form data
         const fd = new FormData();
         fd.append("name", info.name);
-        fd.append("input", info.input);
+        fd.append("hint", info.hint);
+        fd.append("file", info.file);
         let headers = new Headers();
         headers.append('Accept', 'application/json');
         return fetch(`/api/problems/${problemId}/tests`, {

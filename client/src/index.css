@@ -23,6 +23,10 @@ h2 {
   font-weight: 500;
 }
 
+h3 {
+  margin: 10px 0;
+}
+
 input, textarea {
   -webkit-transition: all 0.30s ease-in-out;
   -moz-transition: all 0.30s ease-in-out;

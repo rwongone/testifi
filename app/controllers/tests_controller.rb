@@ -17,10 +17,13 @@ class TestsController < ApplicationController
         contents: uploaded_file.read,
       )
 
-      test = Test.create(create_params.merge(
-        user_id: current_user.id,
-        db_file_id: file.id,
-      ))
+      test = Test.create(
+        :user_id => current_user.id,
+        :name => params[:name],
+        :hint => params[:hint],
+        :problem_id => params[:problem_id],
+        :db_file_id => file.id,
+      )
 
       render status: :created, json: test
     end

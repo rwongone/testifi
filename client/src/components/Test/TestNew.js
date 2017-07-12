@@ -29,10 +29,19 @@ class TestNew extends Component {
 
         const test = {
             name: e.target.name.value,
-            input: this.state.accepted
+            hint: e.target.hint.value,
+            file: this.state.accepted
         }
 
-        dispatch(createTest(problemId, test));
+        const target = e.target;
+        dispatch(createTest(problemId, test)).then(() => {
+            // clear the form
+            target.reset();
+            this.setState({
+                accepted: null,
+                rejected: null
+            });
+        });
         e.preventDefault();
     }
 
@@ -62,6 +71,12 @@ class TestNew extends Component {
                             </div>
                             <div>
                                 <input type="text" name="name" className="testInputField" />
+                            </div>
+                            <div>
+                                <label htmlFor="hint">Hint (optional): </label>
+                            </div>
+                            <div>
+                                <input type="text" name="hint" className="testInputField" />
                             </div>
                             <div>
                                 <label htmlFor="input">Input: </label>
