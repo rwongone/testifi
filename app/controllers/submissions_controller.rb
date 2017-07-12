@@ -1,4 +1,4 @@
-require 'submission_executor'
+require 'test_executor'
 require 'mimemagic'
 
 class SubmissionsController < ApplicationController
@@ -57,7 +57,7 @@ class SubmissionsController < ApplicationController
 
   def exec
     submission = Submission.find(params[:id])
-    result = SubmissionExecutor.run_tests(submission)
+    result = TestExecutor.run_tests(submission)
     render status: :ok, json: { 'result': result }
   end
 

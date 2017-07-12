@@ -1,4 +1,4 @@
-class SubmissionExecutor
+class TestExecutor
   HOST_WORKDIR = '/usr/src/app'
   WORKDIR = '/tmp/sandbox'
 
