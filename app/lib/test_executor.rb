@@ -1,7 +1,10 @@
 class TestExecutor
   HOST_WORKDIR = '/usr/src/app'
   WORKDIR = '/tmp/sandbox'
-  @@images = { }
+
+  def self.images
+    @images ||= {}
+  end
 
   def self.run_tests(submission)
     problem = submission.problem
@@ -12,9 +15,23 @@ class TestExecutor
     end
   end
 
+  def self.run_test(submission, test)
+    output = output_of(submission, test)
+
+    if test.expected_output.nil?
+      puts submission
+      puts submission.problem
+      puts submission.problem.solution
+      test.expected_output = output_of(submission.problem.solution, test)
+      test.save!
+    end
+
+    output == test.expected_output
+  end
+
   def self.output_of(submission, test)
     cmd =  ["sh", "-c", "javac submission/Solution.java -d . && java Solution < input/test.in > output/test.out"]
-    image = @@images[submission.language]
+    image = images[submission.language]
     opts = {
       'Image' => image.id,
       'Cmd' => cmd,
@@ -40,12 +57,12 @@ class TestExecutor
   end
 
   def self.create_testing_image(submission)
-    if not @@images.key?(submission.language)
-      @@images[submission.language] = Docker::Image.build_from_dir("#{HOST_WORKDIR}", {
+    if not images.key?(submission.language)
+      images[submission.language] = Docker::Image.build_from_dir("#{HOST_WORKDIR}", {
         'dockerfile' => "docker/lang/#{lang_to_image[submission.language]}",
       } )
     end
-    @@images[submission.language]
+    images[submission.language]
   end
 
   def self.lang_to_image

@@ -14,7 +14,7 @@ FactoryGirl.define do
       n 1
     end
 
-    name "consec_#{n}.in"
+    name { "consec_#{n}.in" }
     contents do
       ((1..n).map do |i|
         i.to_s

@@ -75,6 +75,7 @@ ActiveRecord::Schema.define(version: 20170709210034) do
   create_table "tests", force: :cascade do |t|
     t.string "name"
     t.string "hint"
+    t.string "expected_output"
     t.bigint "problem_id"
     t.bigint "user_id"
     t.bigint "db_file_id", null: false
