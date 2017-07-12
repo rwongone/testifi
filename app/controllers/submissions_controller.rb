@@ -16,7 +16,7 @@ class SubmissionsController < ApplicationController
     ActiveRecord::Base.transaction do
       file = DbFile.create(
         name: uploaded_file.original_filename,
-        content_type: MimeMagic.by_magic(uploaded_file),
+        content_type: 'text/plain',
         contents: uploaded_file.read,
       )
 
@@ -36,6 +36,19 @@ class SubmissionsController < ApplicationController
       return
     end
     render status: :ok, json: submission
+  end
+
+  def show_file
+    submission = Submission.includes(:db_file).find(params[:id])
+    if submission.user_id != current_user.id && !current_user.admin?
+      head :forbidden
+      return
+    end
+
+    file = submission.db_file
+    send_data(file.contents,
+              filename: file.name,
+              type: file.content_type)
   end
 
   def index
