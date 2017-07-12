@@ -25,5 +25,7 @@ Rails.application.routes.draw do
     resources :submissions, only: [:show]
     resources :tests, only: [:show, :update, :destroy]
 
+    get '/files/:id', to: 'db_files#show'
+
   end
 end
