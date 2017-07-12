@@ -7,14 +7,14 @@ RSpec.describe TestExecutor do
 
   let(:student) { create(:student) }
   let(:teacher) { create(:teacher) }
-  let(:course) { create(:course) }
+  let(:course) { create(:course, teacher: teacher, students: [student]) }
   let(:assignment) { create(:assignment, course: course) }
   let!(:problem) { create(:problem, assignment: assignment) }
-  let(:good_solution_file) { fixture_file_upload("#{fixture_path}/files/Solution.java") }
-  let(:submission_db_file) { create(:submission_db_file,
-                                    name: good_solution_file.original_filename,
-                                    contents: good_solution_file.read) }
-  let!(:submission) { create(:submission, user: student, problem: problem, db_file_id: submission_db_file.id) }
+  let(:solution_file) { fixture_file_upload("#{fixture_path}/files/Solution.java") }
+  let(:solution_db_file) { create(:submission_db_file,
+                                    name: solution_file.original_filename,
+                                    contents: solution_file.read) }
+  let!(:solution) { create(:submission, user: student, problem: problem, db_file_id: solution_db_file.id) }
 
   subject { described_class }
 
@@ -24,11 +24,11 @@ RSpec.describe TestExecutor do
       expect(subject.images).to be_empty
       expect(Docker::Image).to receive(:build_from_dir).once.and_call_original
 
-      image = subject.create_testing_image(submission)
-      subject.create_testing_image(submission)
+      image = subject.create_testing_image(solution)
+      subject.create_testing_image(solution)
 
       expect(image).to be_instance_of(Docker::Image)
-      expect(subject.images[submission.language]).to eq(image)
+      expect(subject.images[solution.language]).to eq(image)
     end
   end
 
@@ -37,31 +37,31 @@ RSpec.describe TestExecutor do
     let(:consec_5) { create(:consec, n: 5) }
     let(:test_consec_3) { create(:test, user: student, problem: problem, db_file_id: consec_3.id) }
     let(:test_consec_5) { create(:test, user: student, problem: problem, db_file_id: consec_5.id) }
-    let(:bad_solution_file) { fixture_file_upload("#{fixture_path}/files/BadSolution.java") }
+    let(:bad_submission_file) { fixture_file_upload("#{fixture_path}/files/BadSolution.java") }
     let(:bad_submission_db_file) { create(:submission_db_file,
-                                          name: bad_solution_file.original_filename,
-                                          contents: bad_solution_file.read) }
+                                          name: bad_submission_file.original_filename,
+                                          contents: bad_submission_file.read) }
     let!(:bad_submission) { create(:submission, user: student, problem: problem, db_file_id: bad_submission_db_file.id) }
 
     before do
-      subject.create_testing_image(submission)
+      subject.create_testing_image(solution)
 
       # solution_id needs to be set after both objects have been created
-      problem.solution_id = submission.id
+      problem.solution_id = solution.id
     end
 
     describe ".run_tests" do
       it "executes all Tests for the Submission's Problem using the Submission" do
         expect(subject).to receive(:run_test).exactly(problem.tests.length).times
 
-        subject.run_tests(submission)
+        subject.run_tests(solution)
       end
     end
 
     describe ".run_test" do
       it "returns true if the Submission output matches expected output" do
-        expect(subject.run_test(submission, test_consec_3)).to be true
-        expect(subject.run_test(submission, test_consec_5)).to be true
+        expect(subject.run_test(solution, test_consec_3)).to be true
+        expect(subject.run_test(solution, test_consec_5)).to be true
       end
 
       it "returns false if the Submission output differs from expected output" do
@@ -83,7 +83,7 @@ RSpec.describe TestExecutor do
 
     describe ".output_of" do
       it "returns the result of executing the Test on the Submission code" do
-        output = subject.output_of(submission, test_consec_3)
+        output = subject.output_of(solution, test_consec_3)
         expect(output).to eq("6\n")
       end
     end

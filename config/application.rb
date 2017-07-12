@@ -32,7 +32,5 @@ module Testifi
     config.generators do |g|
       g.test_framework :rspec
     end
-
-    config.autoload_paths += %W(app/lib)
   end
 end

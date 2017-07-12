@@ -7,6 +7,8 @@ class CreateProblems < ActiveRecord::Migration[5.1]
       t.bigint :solution_id # this is a foreign key for a canonical submission
 
       t.timestamps
+
+      t.index :solution_id
     end
 
   end
