@@ -50,7 +50,7 @@ class TestExecutor
   end
 
   def self.create_testing_image(submission)
-    if not images.key?(submission.language)
+    if !images.key?(submission.language)
       images[submission.language] = Docker::Image.build_from_dir("#{HOST_WORKDIR}", {
         'dockerfile' => "docker/lang/#{lang_to_image[submission.language]}",
       } )

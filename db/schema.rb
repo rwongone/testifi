@@ -57,6 +57,7 @@ ActiveRecord::Schema.define(version: 20170709210034) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["assignment_id"], name: "index_problems_on_assignment_id"
+    t.index ["solution_id"], name: "index_problems_on_solution_id"
   end
 
   create_table "submissions", force: :cascade do |t|
