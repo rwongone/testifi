@@ -18,7 +18,7 @@ RSpec.describe TestExecutor do
 
   subject { described_class }
 
-  describe "#create_testing_image" do
+  describe ".create_testing_image" do
     # All expectations in one test, so we only actually create the image once.
     it "creates a singleton Docker::Image for the Submission" do
       expect(subject.images).to be_empty
@@ -35,13 +35,13 @@ RSpec.describe TestExecutor do
   context "when executing tests with an existing image" do
     let(:consec_3) { create(:consec, n: 3) }
     let(:consec_5) { create(:consec, n: 5) }
-    let(:test_consec_3) { create(:test, user_id: student.id, problem_id: problem.id, db_file_id: consec_3.id) }
-    let(:test_consec_5) { create(:test, user_id: student.id, problem_id: problem.id, db_file_id: consec_5.id) }
-    let(:bad_solution_file) { fixture_file_upload("#{fixture_path}/files/Solution.java") }
+    let(:test_consec_3) { create(:test, user: student, problem: problem, db_file_id: consec_3.id) }
+    let(:test_consec_5) { create(:test, user: student, problem: problem, db_file_id: consec_5.id) }
+    let(:bad_solution_file) { fixture_file_upload("#{fixture_path}/files/BadSolution.java") }
     let(:bad_submission_db_file) { create(:submission_db_file,
                                           name: bad_solution_file.original_filename,
                                           contents: bad_solution_file.read) }
-    let!(:bad_submission) { create(:submission, user_id: student.id, problem_id: problem.id, db_file_id: bad_submission_db_file.id) }
+    let!(:bad_submission) { create(:submission, user: student, problem: problem, db_file_id: bad_submission_db_file.id) }
 
     before do
       subject.create_testing_image(submission)
@@ -50,38 +50,41 @@ RSpec.describe TestExecutor do
       allow(problem).to receive(:solution).and_return(submission)
     end
 
-    describe "#run_tests" do
-      it "executes all associated Tests for the Problem on a given Submission" do
-        pending("to be implemented")
+    describe ".run_tests" do
+      it "executes all Tests for the Submission's Problem using the Submission" do
+        expect(subject).to receive(:run_test).exactly(problem.tests.length).times
+
+        subject.run_tests(submission)
       end
     end
 
-    describe "#run_test" do
+    describe ".run_test" do
       it "returns true if the Submission output matches expected output" do
+        expect(subject.run_test(submission, test_consec_3)).to be true
+        expect(subject.run_test(submission, test_consec_5)).to be true
       end
 
       it "returns false if the Submission output differs from expected output" do
-        expect(subject.run_test(bad_submission, test_consec_3)).to be_false
+        expect(subject.run_test(bad_submission, test_consec_3)).to be false
+        expect(subject.run_test(bad_submission, test_consec_5)).to be false
       end
 
       it "computes expected output iff expected output is missing on the Test" do
+        expect(test_consec_3.expected_output).to be_nil
+        expect(subject).to receive(:fill_expected_output).
+          with(problem, test_consec_3).
+          once.
+          and_call_original
+
+        subject.run_test(bad_submission, test_consec_3)
+        expect(test_consec_3.expected_output).to eq("6\n")
       end
     end
 
-    describe "#output_of" do
+    describe ".output_of" do
       it "returns the result of executing the Test on the Submission code" do
         output = subject.output_of(submission, test_consec_3)
         expect(output).to eq("6\n")
-      end
-    end
-
-    describe "#run_solution" do
-      it "executes the canonical solution for a Problem" do
-        pending("to be implemented")
-      end
-
-      it "stores the expected output in the associated Test" do
-        pending("to be implemented")
       end
     end
   end

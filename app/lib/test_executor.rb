@@ -9,7 +9,6 @@ class TestExecutor
   def self.run_tests(submission)
     problem = submission.problem
 
-
     problem.tests.each do |test|
       run_test(submission, test)
     end
@@ -19,11 +18,7 @@ class TestExecutor
     output = output_of(submission, test)
 
     if test.expected_output.nil?
-      puts submission
-      puts submission.problem
-      puts submission.problem.solution
-      test.expected_output = output_of(submission.problem.solution, test)
-      test.save!
+      fill_expected_output(submission.problem, test)
     end
 
     output == test.expected_output
@@ -47,13 +42,10 @@ class TestExecutor
     container.read_file("#{WORKDIR}/output/test.out")
   end
 
-  def self.fill_expected_output(problem)
-    problem.tests.each do |test|
-      if test.expected_output.nil?
-        test.expected_output = output_of(problem.solution, test)
-        test.save!
-      end
-    end
+  def self.fill_expected_output(problem, test)
+    test.expected_output = output_of(problem.solution, test)
+    test.save!
+    test.expected_output
   end
 
   def self.create_testing_image(submission)
