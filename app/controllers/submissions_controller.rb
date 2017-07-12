@@ -1,4 +1,4 @@
-require 'submission_executor'
+require 'test_executor'
 require 'mimemagic'
 
 class SubmissionsController < ApplicationController
@@ -16,7 +16,7 @@ class SubmissionsController < ApplicationController
     ActiveRecord::Base.transaction do
       file = DbFile.create(
         name: uploaded_file.original_filename,
-        type: MimeMagic.by_magic(uploaded_file),
+        content_type: MimeMagic.by_magic(uploaded_file),
         contents: uploaded_file.read,
       )
 
@@ -57,7 +57,7 @@ class SubmissionsController < ApplicationController
 
   def exec
     submission = Submission.find(params[:id])
-    result = SubmissionExecutor.run_tests(submission)
+    result = TestExecutor.run_tests(submission)
     render status: :ok, json: { 'result': result }
   end
 

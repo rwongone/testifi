@@ -67,6 +67,7 @@ RSpec.describe "User authentication", type: :request do
     end
 
     it "makes the first user in the system an admin" do
+      expect(User.count).to eq(0)
       expect(validator).to receive(:check).with(code, google_client.id, google_client.id).and_return(g_validator_response)
 
       get("/api/users/oauth/google", params: {code: code})
