@@ -3,6 +3,7 @@ class CreateTests < ActiveRecord::Migration[5.1]
     create_table :tests do |t|
       t.string :name
       t.string :hint
+      t.string :expected_output
       t.references :problem
       t.references :user
       t.bigint :db_file_id, null: false
