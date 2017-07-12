@@ -46,8 +46,8 @@ RSpec.describe TestExecutor do
     before do
       subject.create_testing_image(submission)
 
-      # TODO(rwongone): Use this until we can properly set the solution for a Problem
-      allow(problem).to receive(:solution).and_return(submission)
+      # solution_id needs to be set after both objects have been created
+      problem.solution_id = submission.id
     end
 
     describe ".run_tests" do
