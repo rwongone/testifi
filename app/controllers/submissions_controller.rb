@@ -1,17 +1,24 @@
 require 'test_executor'
-require 'mimemagic'
+require 'file_helper'
 
 class SubmissionsController < ApplicationController
   skip_before_action :check_admin
 
   def create
-    course = Problem.find(params[:problem_id]).course
+    problem = Problem.find(params[:problem_id])
+    course = problem.course
     if !current_user_in_course?(course)
       head :forbidden
       return
     end
 
     uploaded_file = params[:file]
+
+    submission_lang = FileHelper.filename_to_language(uploaded_file.original_filename)
+    if submission_lang.nil?
+      render status: :bad_request, json: {message: "No file extension to infer submission language"}
+      return
+    end
 
     ActiveRecord::Base.transaction do
       file = DbFile.create(
@@ -20,10 +27,12 @@ class SubmissionsController < ApplicationController
         contents: uploaded_file.read,
       )
 
-      submission = Submission.create(create_params.merge(
+      submission = Submission.create(
         user_id: current_user.id,
+        problem_id: problem.id,
         db_file_id: file.id,
-      ))
+        language: submission_lang
+      )
 
       render status: :created, json: submission
     end
@@ -72,11 +81,5 @@ class SubmissionsController < ApplicationController
     submission = Submission.find(params[:id])
     result = TestExecutor.run_tests(submission)
     render status: :ok, json: { 'result': result }
-  end
-
-  private
-
-  def create_params
-    params.permit(:user_id, :problem_id, :language)
   end
 end

@@ -1,5 +1,3 @@
-require 'mimemagic'
-
 class TestsController < ApplicationController
   skip_before_action :check_admin, except: [:index]
 

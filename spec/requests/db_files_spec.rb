@@ -12,7 +12,7 @@ RSpec.describe "DbFiles", type: :request do
   let(:student) { create(:student) }
   let(:uploaded_file) { fixture_file_upload("#{fixture_path}/files/Solution.java") }
   let(:db_file) { create(:submission_db_file, name: uploaded_file.original_filename, contents: uploaded_file.read, content_type: 'text/plain') }
-  let!(:submission) { create(:submission, user_id: student.id, problem_id: problem.id, db_file_id: db_file.id) }
+  let!(:submission) { create(:submission, user_id: student.id, problem_id: problem.id, db_file_id: db_file.id, language: FileHelper.filename_to_language(uploaded_file.original_filename)) }
 
   context "when a teacher is authenticated" do
     before(:each) do
