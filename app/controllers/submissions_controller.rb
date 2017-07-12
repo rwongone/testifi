@@ -16,7 +16,7 @@ class SubmissionsController < ApplicationController
     ActiveRecord::Base.transaction do
       file = DbFile.create(
         name: uploaded_file.original_filename,
-        type: MimeMagic.by_magic(uploaded_file),
+        content_type: MimeMagic.by_magic(uploaded_file),
         contents: uploaded_file.read,
       )
 
