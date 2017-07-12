@@ -1,3 +1,11 @@
+.problemTileFrame .submitSection {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-gap: 20px;
+  align-items: center;
+  margin-top: 20px;
+}
+
 .problemList .problemTileFrame.frame {
   width: 50%;
   min-width: 768px;

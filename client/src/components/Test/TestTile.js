@@ -14,7 +14,6 @@ export default class TestTile extends Component {
         const {
             test
         } = this.props;
-        // TODO input link
         return (
                 <div className="testTile">
                     <div className="testTileFrame frame">
