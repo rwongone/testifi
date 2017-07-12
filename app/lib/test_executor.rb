@@ -1,44 +1,57 @@
 class TestExecutor
   HOST_WORKDIR = '/usr/src/app'
   WORKDIR = '/tmp/sandbox'
+  @@images = { }
 
-  def self.run_tests(submission=nil)
-    image = create_testing_image(submission)
-    run_test(submission, image)
+  def self.run_tests(submission)
+    problem = submission.problem
+
+
+    problem.tests.each do |test|
+      run_test(submission, test)
+    end
   end
 
-  def self.run_test(submission=nil, image=nil)
-    cmd =  ["sh", "-c", "javac submission/Solution.java -d . && java Solution < input/sample_test > output/program_output"]
+  def self.output_of(submission, test)
+    cmd =  ["sh", "-c", "javac submission/Solution.java -d . && java Solution < input/test.in > output/test.out"]
+    image = @@images[submission.language]
     opts = {
       'Image' => image.id,
-      'Cmd' => (cmd.is_a?(String) ? cmd.split(/\s+/) : cmd),
+      'Cmd' => cmd,
     }
 
     container = Docker::Container.create(opts)
-    container.store_file("#{WORKDIR}/input/sample_test", File.read('var/test/sample_test.in'))
+    container.store_file("#{WORKDIR}/input/test.in", test.db_file.contents)
     container.store_file("#{WORKDIR}/submission/Solution.java", submission.db_file.contents)
     container.start!
 
     container.attach(:stream => true, :stdin => nil, :stdout => true, :stderr => true, :logs => true, :tty => false)
     container.streaming_logs(stderr: true) { |stream, chunk| puts chunk }
-    container.read_file("#{WORKDIR}/output/program_output")
+    container.read_file("#{WORKDIR}/output/test.out")
   end
 
-  def self.create_testing_image(submission=nil)
-    language = submission&.language || :java
+  def self.fill_expected_output(problem)
+    problem.tests.each do |test|
+      if test.expected_output.nil?
+        test.expected_output = output_of(problem.solution, test)
+        test.save!
+      end
+    end
+  end
 
-    # Use src_dir build arugment to specify to directory to copy.
-    # Currently, specifying an absolute path does not work.
-    # Use a relative path from HOST_WORKDIR.
-    image = Docker::Image.build_from_dir("#{HOST_WORKDIR}", {
-      'dockerfile' => "docker/lang/#{lang_to_image[language.to_sym]}",
-    } )
+  def self.create_testing_image(submission)
+    if not @@images.key?(submission.language)
+      @@images[submission.language] = Docker::Image.build_from_dir("#{HOST_WORKDIR}", {
+        'dockerfile' => "docker/lang/#{lang_to_image[submission.language]}",
+      } )
+    end
+    @@images[submission.language]
   end
 
   def self.lang_to_image
     {
-      cpp: 'Dockerfile.cpp',
-      java: 'Dockerfile.java',
+      'cpp' => 'Dockerfile.cpp',
+      'java' => 'Dockerfile.java',
     }
   end
 end
