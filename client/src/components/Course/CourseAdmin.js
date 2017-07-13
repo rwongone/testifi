@@ -3,7 +3,8 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Redirect } from 'react-router-dom';
 import classNames from 'classnames';
-import { Set } from 'immutable';
+import { List, Set } from 'immutable';
+import { invite } from '../../actions/invite';
 import AssignmentNav from '../Assignment/AssignmentNav';
 import './CourseAdmin.css';
 
@@ -12,23 +13,34 @@ class CourseAdmin extends Component {
         history: PropTypes.shape({
             push: PropTypes.func.isRequired
         }).isRequired,
-        isAdmin: PropTypes.bool.isRequired
+        isAdmin: PropTypes.bool.isRequired,
+        dispatch: PropTypes.func.isRequired
     }
 
     constructor(props) {
         super(props);
         this.state = {
             rawEmails: "",
-            parsedEmails: []
+            parsedEmails: List()
         };
     }
 
     emailChange = e => {
-        const parsedEmails = Set(e.target.value.split(/[\s,]+/g)).toList().sort();
+        const parsedEmails = Set(e.target.value.split(/[\s,]+/g)).remove("").toList().sort();
         this.setState({
             parsedEmails,
             rawEmails: e.target.value
         });
+    }
+
+    sendInvites = () => {
+        const { parsedEmails } = this.state;
+        const { dispatch } = this.props;
+        if (parsedEmails.isEmpty()) {
+            return;
+        }
+
+        dispatch(invite(parsedEmails)).then(() => this.setState({ rawEmails: "", parsedEmails: List() }));
     }
 
     render() {
@@ -39,7 +51,7 @@ class CourseAdmin extends Component {
         } = this.props;
         const { parsedEmails, rawEmails } = this.state;
         const parsedCourseId = parseInt(courseId, 10);
-        const showParsedEmails = rawEmails !== '' && parsedEmails.size;
+        const showParsedEmails = parsedEmails.size;
 
         // TODO add list of pending invitations (with resend button)
         // TODO add list of registered students in the course
@@ -59,7 +71,7 @@ class CourseAdmin extends Component {
                                     { parsedEmails.map(e => <div key={ e }>{ e }</div>) }
                                 </div>
                             </div>
-                            <button className="inviteButton">Invite</button>
+                            <button className="inviteButton" onClick={ this.sendInvites }>Invite</button>
                         </div>
                     </div>
                 </div>
