@@ -1,5 +1,5 @@
 class RunSubmissionsJob < ApplicationJob
-  queue_as :submission
+  queue_as :pending_execution
 
   def perform(*submission_ids)
     submissions = Submission.find(submission_ids)
