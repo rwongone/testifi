@@ -12,8 +12,8 @@ RSpec.describe "Submissions", type: :request do
   let(:assignment) { create(:assignment, course_id: course.id) }
   let!(:problem) { create(:problem, assignment_id: assignment.id) }
   let(:uploaded_file) { fixture_file_upload("#{fixture_path}/files/Solution.java") }
-  let(:db_file) { create(:submission_db_file, name: uploaded_file.original_filename, contents: uploaded_file.read) }
-  let!(:submission) { create(:submission, user_id: student.id, problem_id: problem.id, db_file_id: db_file.id) }
+  let(:db_file) { create(:submission_db_file, name: uploaded_file.original_filename, contents: uploaded_file.read, content_type: 'text/plain') }
+  let!(:submission) { create(:submission, user_id: student.id, problem_id: problem.id, db_file_id: db_file.id, language: FileHelper.filename_to_language(uploaded_file.original_filename)) }
 
   # TODO(rwongone): Currently, we only check if a user is in a course's
   # list of enrolled students to decide whether the resource is accessible.
@@ -28,7 +28,7 @@ RSpec.describe "Submissions", type: :request do
       {
         user_id: teacher.id,
         problem_id: problem.id,
-        language: 'java',
+        language: FileHelper.filename_to_language(uploaded_file.original_filename),
         file: uploaded_file,
       }
     end
@@ -43,16 +43,40 @@ RSpec.describe "Submissions", type: :request do
       {
         user_id: student.id,
         problem_id: problem.id,
-        language: 'java',
+        language: FileHelper.filename_to_language(uploaded_file.original_filename),
         file: uploaded_file,
       }
+    end
+
+    context "and the student requests a file they own" do
+      describe "GET /api/submissions/:id/file" do
+        it "returns the file" do
+          get "/api/submissions/#{submission.id}/file"
+          expect(response).to have_http_status(200)
+          expect(response.header['Content-Type']).to eq(db_file.content_type)
+          uploaded_file.rewind
+          expect(response.body).to eq(uploaded_file.read)
+        end
+      end
+    end
+
+    context "and the student requests a file they do not own" do
+      describe "GET /api/submissions/:id/file" do
+        let(:student2) { create(:student) }
+        it "prevents access" do
+          authenticate(student2)
+
+          get "/api/submissions/#{submission.id}/file"
+          expect(response).to have_http_status(403)
+        end
+      end
     end
 
     context "and the student is enrolled" do
       let(:course) { create(:course, students: [student]) }
 
       describe "GET /api/problems/:problem_id/submissions" do
-        let!(:submission2) { create(:submission, user_id: student.id, problem_id: problem.id, db_file_id: db_file.id) }
+        let!(:submission2) { create(:submission, user_id: student.id, problem_id: problem.id, db_file_id: db_file.id, language: FileHelper.filename_to_language(uploaded_file.original_filename)) }
         it "returns a list of all of user's Submissions for a Problem" do
           get "/api/problems/#{problem.id}/submissions"
           expect(response).to have_http_status(200)
@@ -98,7 +122,7 @@ RSpec.describe "Submissions", type: :request do
 
     context "and the student is not enrolled" do
       let(:course) { create(:course) }
-      let(:submission) { create(:submission, user_id: student.id, problem_id: problem.id, db_file_id: db_file.id) }
+      let(:submission) { create(:submission, user_id: student.id, problem_id: problem.id, db_file_id: db_file.id, language: FileHelper.filename_to_language(uploaded_file.original_filename)) }
       let(:restricted_get_endpoints) do
         [
           "/api/problems/#{problem.id}/submissions",

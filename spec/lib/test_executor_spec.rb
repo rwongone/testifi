@@ -14,7 +14,7 @@ RSpec.describe TestExecutor do
   let(:solution_db_file) { create(:submission_db_file,
                                     name: solution_file.original_filename,
                                     contents: solution_file.read) }
-  let!(:solution) { create(:submission, user: student, problem: problem, db_file_id: solution_db_file.id) }
+  let!(:solution) { create(:submission, user: student, problem: problem, db_file_id: solution_db_file.id, language: FileHelper.filename_to_language(solution_file.original_filename)) }
 
   subject { described_class }
 
@@ -41,7 +41,7 @@ RSpec.describe TestExecutor do
     let(:bad_submission_db_file) { create(:submission_db_file,
                                           name: bad_submission_file.original_filename,
                                           contents: bad_submission_file.read) }
-    let!(:bad_submission) { create(:submission, user: student, problem: problem, db_file_id: bad_submission_db_file.id) }
+    let!(:bad_submission) { create(:submission, user: student, problem: problem, db_file_id: bad_submission_db_file.id, language: FileHelper.filename_to_language(bad_submission_file.original_filename)) }
 
     before do
       subject.create_testing_image(solution)
