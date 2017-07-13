@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
+import Filedrop from '../Filedrop';
+import { submitSubmission } from '../../actions/submission';
 
 class ProblemTile extends Component {
     static propTypes = {
@@ -13,7 +15,32 @@ class ProblemTile extends Component {
         }),
         history: PropTypes.shape({
             push: PropTypes.func.isRequired
-        }).isRequired
+        }).isRequired,
+        dispatch: PropTypes.func.isRequired
+    }
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            accepted: null,
+            rejected: null
+        };
+    }
+
+    onAccept = accepted => {
+        const { dispatch, problem } = this.props;
+
+        this.setState({
+            rejected: null,
+        });
+
+        dispatch(submitSubmission(problem.get('id'), accepted));
+    }
+
+    onReject = rejected => {
+        this.setState({
+            rejected
+        });
     }
 
     goToProblem = () => {
@@ -21,24 +48,37 @@ class ProblemTile extends Component {
             assignmentId,
             courseId,
             problem,
-            history
+            history,
+            user,
         } = this.props;
-        history.push(`/courses/${courseId}/assignments/${assignmentId}/problems/${problem.get('id')}`);
+        if (user.get('isAdmin')) {
+            history.push(`/courses/${courseId}/assignments/${assignmentId}/problems/${problem.get('id')}`);
+        }
     }
 
     render() {
-        const {
-            problem
-        } = this.props;
+        const { problem, user } = this.props;
+        const { accepted, rejected } = this.state;
 
         return (
                 <div>
                     <div className="problemTileFrame frame existing" onClick={ this.goToProblem } >
-                        { problem.get('name') }
+                        <h3>{ problem.get('name') }</h3>
+                        {
+                        !user.get('isAdmin')
+                        ? (
+                        <div className="submitSection">
+                            <label htmlFor="input">Submit: </label>
+                            <Filedrop onAccept={ this.onAccept } onReject={ this.onReject } accepted={ accepted } rejected={ rejected } accept=".java,.py" />
+                        </div>
+                        ) : null
+                        }
                     </div>
                 </div>
                 );
     }
 }
 
-export default connect()(ProblemTile);
+export default connect(state => ({
+    user: state.user,
+}))(ProblemTile);

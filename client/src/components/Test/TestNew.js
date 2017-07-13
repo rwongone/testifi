@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import Dropzone from 'react-dropzone';
-import classNames from 'classnames';
 import { createTest } from '../../actions/test';
+import Filedrop from '../Filedrop';
 import './TestTile.css';
 import './TestNew.css';
 
@@ -45,23 +44,22 @@ class TestNew extends Component {
         e.preventDefault();
     }
 
-    filedrop = (accepted, rejected) => {
-        if (rejected.length) {
-            this.setState({
-                rejected: rejected[0],
-                accepted: null
-            });
-            return;
-        }
+    onAccept = accepted => {
         this.setState({
-            accepted: accepted[0],
-            rejected: null
+            accepted,
+            rejected: null,
+        });
+    }
+
+    onReject = rejected => {
+        this.setState({
+            accepted: null,
+            rejected
         });
     }
 
     render() {
-        const accepted = this.state.accepted;
-        const rejected = this.state.rejected;
+        const { accepted, rejected } = this.state;
         return (
                 <div className="testNew">
                     <div className="testTileFrame frame">
@@ -82,20 +80,7 @@ class TestNew extends Component {
                                 <label htmlFor="input">Input: </label>
                             </div>
                             <div>
-                                <Dropzone className={ classNames('dropzone', { accepted, rejected }) } activeClassName="active" maxSize={ 5000 } multiple={ false } onDrop={ this.filedrop }>
-                                    {
-                                    rejected
-                                    ? (
-                                    <div>
-                                        <div>{ rejected.name }<i className="fa fa-times rejectedX" aria-hidden="true"></i></div>
-                                        <div>Please use a file under 5kB</div>
-                                    </div>
-                                    ) :
-                                    accepted
-                                    ? <div>{ accepted.name }<i className="fa fa-check-square acceptedCheck" aria-hidden="true"></i></div>
-                                    : <div>Drop input file here or click to upload...</div>
-                                    }
-                                </Dropzone>
+                                <Filedrop onAccept={ this.onAccept } onReject={ this.onReject } accepted={ accepted } rejected={ rejected } />
                             </div>
                             <button className="submitButton" type="submit">Create</button>
                         </form>

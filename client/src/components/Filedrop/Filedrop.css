@@ -1,0 +1,16 @@
+.filedrop {
+  border: 2px dashed #4a4a4a;
+  border-radius: 4px;
+  background: #f8f8f8;
+  cursor: pointer;
+  padding: 50px 20px;
+}
+
+.filedrop.accepted {
+  border-color: green;
+}
+
+.filedrop.rejected {
+  border-color: red;
+}
+
