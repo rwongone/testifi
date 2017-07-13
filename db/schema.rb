@@ -10,10 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170709210034) do
+ActiveRecord::Schema.define(version: 20170713021445) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+  enable_extension "pgcrypto"
 
   create_table "assignments", force: :cascade do |t|
     t.string "name"
@@ -47,6 +48,15 @@ ActiveRecord::Schema.define(version: 20170709210034) do
     t.binary "contents", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "invites", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "email"
+    t.bigint "inviter_id"
+    t.bigint "course_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["inviter_id"], name: "index_invites_on_inviter_id"
   end
 
   create_table "problems", force: :cascade do |t|

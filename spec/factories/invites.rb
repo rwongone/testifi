@@ -1,6 +1,13 @@
 FactoryGirl.define do
   factory :invite do
-    email "MyString"
-    invited_by 1
+    transient do
+      student { create(:student) }
+      course { create(:course) }
+      teacher { create(:teacher) }
+    end
+
+    email { student.email }
+    course_id { course.id }
+    inviter_id { teacher.id }
   end
 end
