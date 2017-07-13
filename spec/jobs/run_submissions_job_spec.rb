@@ -31,8 +31,8 @@ RSpec.describe RunSubmissionsJob, type: :job do
 
   it "queues the job" do
     expect { job }.to have_enqueued_job(described_class)
-        .with(good_submission.id)
-        .on_queue("submission")
+      .with(good_submission.id)
+      .on_queue("submission")
   end
 
   describe "queuing a submission" do
@@ -44,6 +44,8 @@ RSpec.describe RunSubmissionsJob, type: :job do
 
     it "runs the submission on the tests" do
       expect{ perform_enqueued_jobs { job } }.to change{ Execution.count }.by(2)
+      expect(Execution.where(submission_id: good_submission.id).pluck(:output)).to match_array(
+        Test.find([test_consec_3.id, test_consec_5.id]).pluck(:expected_output))
     end
 
     it "does not create duplicate Execution records" do
