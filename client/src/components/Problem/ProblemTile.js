@@ -69,7 +69,7 @@ class ProblemTile extends Component {
                         ? (
                         <div className="submitSection">
                             <label htmlFor="input">Submit: </label>
-                            <Filedrop onAccept={ this.onAccept } onReject={ this.onReject } accepted={ accepted } rejected={ rejected } />
+                            <Filedrop onAccept={ this.onAccept } onReject={ this.onReject } accepted={ accepted } rejected={ rejected } accept=".java,.py" />
                         </div>
                         ) : null
                         }

@@ -6,10 +6,13 @@ import './Filedrop.css';
 
 export default class Filedrop extends Component {
     static propTypes = {
+        // accepted is a file that has been accepted by the dropzone
         accepted: PropTypes.instanceOf(File),
         rejected: PropTypes.instanceOf(File),
         onAccept: PropTypes.func.isRequired,
         onReject: PropTypes.func.isRequired,
+        // accept is a string representing accepted filetypes
+        accept: PropTypes.string,
     }
 
     filedrop = (accepted, rejected) => {
@@ -22,9 +25,9 @@ export default class Filedrop extends Component {
     }
 
     render() {
-        const { accepted, rejected } = this.props;
+        const { accepted, rejected, accept } = this.props;
         return (
-                <Dropzone className={ classNames('filedrop', { accepted, rejected }) } activeClassName="active" maxSize={ 10000 } multiple={ false } onDrop={ this.filedrop }>
+                <Dropzone className={ classNames('filedrop', { accepted, rejected }) } activeClassName="active" maxSize={ 10000 } multiple={ false } onDrop={ this.filedrop } accept={ accept }>
                     {
                     rejected
                     ? (
