@@ -7,7 +7,7 @@ RSpec.describe "Invites", type: :request do
 
   let(:student) { create(:student) }
   let(:teacher) { create(:teacher) }
-  let(:course) { create(:course) }
+  let(:course) { create(:course, teacher: :teacher) }
   let!(:invite) { create(:invite) }
   let(:default_params) do
     {

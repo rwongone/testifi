@@ -1,9 +1,4 @@
-require "http"
-
 class InvitesController < ApplicationController
-  skip_before_action :authenticate, only: []
-  skip_before_action :check_admin, only: []
-
   def create
     course_id = params[:course_id]
     emails = params[:emails]
