@@ -1,6 +1,6 @@
 import { handleErrors } from './util';
 
-export function submitSolution(problemId, file) {
+export function submitSubmission(problemId, file) {
     return function(dispatch) {
         // submit file as formdata
         const fd = new FormData();

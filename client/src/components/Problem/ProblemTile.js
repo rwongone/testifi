@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import Filedrop from '../Filedrop';
-import { submitSolution } from '../../actions/submission';
+import { submitSubmission } from '../../actions/submission';
 
 class ProblemTile extends Component {
     static propTypes = {
@@ -34,7 +34,7 @@ class ProblemTile extends Component {
             rejected: null,
         });
 
-        dispatch(submitSolution(problem.get('id'), accepted));
+        dispatch(submitSubmission(problem.get('id'), accepted));
     }
 
     onReject = rejected => {
