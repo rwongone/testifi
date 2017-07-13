@@ -12,8 +12,39 @@ RSpec.describe "Tests", type: :request do
   let(:assignment) { create(:assignment, course_id: course.id) }
   let!(:problem) { create(:problem, assignment_id: assignment.id) }
   let(:uploaded_file) { fixture_file_upload("#{fixture_path}/files/input.txt") }
-  let(:db_file) { create(:test_db_file, name: uploaded_file.original_filename, contents: uploaded_file.read) }
+  let(:db_file) { create(:test_db_file, name: uploaded_file.original_filename, contents: uploaded_file.read, content_type: 'text/plain') }
   let!(:test) { create(:test, user_id: teacher.id, problem_id: problem.id, db_file_id: db_file.id) }
+  let!(:student_test) { create(:test, user_id: student.id, problem_id: problem.id, db_file_id: db_file.id) }
+
+  context "when a student is authenticated" do
+    before(:each) do
+      authenticate(student)
+    end
+
+    context "and the student requests a file they own" do
+      describe "GET /api/tests/:id/file" do
+        it "returns the file" do
+          get "/api/tests/#{student_test.id}/file"
+          expect(response).to have_http_status(200)
+          expect(response.header['Content-Type']).to eq(db_file.content_type)
+          uploaded_file.rewind
+          expect(response.body).to eq(uploaded_file.read)
+        end
+      end
+    end
+
+    context "and the student requests a file they do not own" do
+      describe "GET /api/tests/:id/file" do
+        let(:student2) { create(:student) }
+        it "prevents access" do
+          authenticate(student2)
+
+          get "/api/tests/#{student_test.id}/file"
+          expect(response).to have_http_status(403)
+        end
+      end
+    end
+  end
 
   context "when a teacher is authenticated" do
     before(:each) do
@@ -34,7 +65,7 @@ RSpec.describe "Tests", type: :request do
         it "returns a list of all of teachers's Tests for a Problem" do
           get "/api/problems/#{problem.id}/tests"
           expect(response).to have_http_status(200)
-          expect(response.body).to eq([test, test2].to_json)
+          expect(response.body).to eq([test, student_test, test2].to_json)
         end
       end
 
