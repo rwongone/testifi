@@ -6,18 +6,16 @@ class TestExecutor
     @@images ||= {}
   end
 
-  def self.run_tests(submission)
-    problem = Problem.includes(:tests).find(submission.problem_id)
+  def self.correct_submission?(submission)
+    tests = Test.where(problem_id: submission.problem_id)
 
-    problem.tests.each do |test|
-      run_test(submission, test)
+    tests.all? do |test|
+      correct_output?(submission, test)
     end
   end
 
-  def self.run_test(submission, test)
-    create_testing_image(submission)
-
-    output = output_of(submission, test)
+  def self.correct_output?(submission, test)
+    output = run_test(submission, test)
     if test.expected_output.nil?
       fill_expected_output(submission.problem, test)
     end
@@ -25,7 +23,17 @@ class TestExecutor
     output == test.expected_output
   end
 
-  def self.output_of(submission, test)
+  def self.run_tests(submission)
+    tests = Test.where(problem_id: submission.problem_id)
+
+    tests.each do |test|
+      run_test(submission, test)
+    end
+  end
+
+  def self.run_test(submission, test)
+    create_testing_image(submission)
+
     docker_cmd =  ["sh", "-c", cmd[submission.language]]
     image = images[submission.language]
     opts = {
@@ -44,7 +52,7 @@ class TestExecutor
   end
 
   def self.fill_expected_output(problem, test)
-    test.expected_output = output_of(problem.solution, test)
+    test.expected_output = run_test(problem.solution, test)
     test.save!
     test.expected_output
   end
