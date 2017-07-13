@@ -8,7 +8,7 @@ export function invite(courseId, emails) {
         return fetch(`/api/courses/${courseId}/invites`, {
             method: 'POST',
             headers,
-            body: JSON.stringify(emails),
+            body: JSON.stringify({ emails }),
             credentials: 'include'
         })
         .then(handleErrors)

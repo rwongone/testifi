@@ -33,6 +33,13 @@ class CourseAdmin extends Component {
         });
     }
 
+    getCourseId = () => {
+        const {
+            match: { params: { courseId } },
+        } = this.props;
+        return parseInt(courseId, 10);
+    }
+
     sendInvites = () => {
         const { parsedEmails } = this.state;
         const { dispatch } = this.props;
@@ -40,17 +47,16 @@ class CourseAdmin extends Component {
             return;
         }
 
-        dispatch(invite(parsedEmails)).then(() => this.setState({ rawEmails: "", parsedEmails: List() }));
+        dispatch(invite(this.getCourseId(), parsedEmails)).then(() => this.setState({ rawEmails: "", parsedEmails: List() }));
     }
 
     render() {
         const {
-            match: { params: { courseId } },
             history,
             isAdmin
         } = this.props;
         const { parsedEmails, rawEmails } = this.state;
-        const parsedCourseId = parseInt(courseId, 10);
+        const courseId = this.getCourseId();
         const showParsedEmails = parsedEmails.size;
 
         // TODO add list of pending invitations (with resend button)
@@ -58,7 +64,7 @@ class CourseAdmin extends Component {
         // TODO add a way of seeing user progress in the course
         return isAdmin ? (
                 <div className="courseAdmin">
-                    <AssignmentNav history={ history } courseId={ parsedCourseId } backEnabled={ true } />
+                    <AssignmentNav history={ history } courseId={ courseId } backEnabled={ true } />
                     <div className="frame">
                         <h2>Student Registration</h2>
                         <div className="filedropSection">
