@@ -50,14 +50,15 @@ class AssignmentList extends Component {
         const {
             assignment,
             user,
-            match: { params: { courseId } }
+            match: { params: { courseId } },
+            history
         } = this.props;
         const parsedCourseId = parseInt(courseId, 10);
         const assignments = assignment.getIn([parsedCourseId, 'assignments']);
 
         return (
                 <div>
-                    <AssignmentNav />
+                    <AssignmentNav history={ history } courseId={ parsedCourseId } />
                     <div className="assignmentList">
                         {
                         assignments.map(
