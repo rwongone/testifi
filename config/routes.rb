@@ -12,6 +12,7 @@ Rails.application.routes.draw do
 
     get '/courses/visible', to: 'courses#get_visible'
     resources :courses, only: [:create, :show, :update, :destroy] do
+      resources :invites, only: [:create]
       resources :assignments, only: [:create, :index]
     end
     resources :assignments, only: [:show, :update, :destroy] do
