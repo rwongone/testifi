@@ -4,6 +4,10 @@
   background: #f8f8f8;
   cursor: pointer;
   padding: 50px 20px;
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
 }
 
 .filedrop.accepted {
