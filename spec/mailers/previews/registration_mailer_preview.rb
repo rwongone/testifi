@@ -21,6 +21,11 @@ class RegistrationMailerPreview < ActionMailer::Preview
       teacher: teacher
     })
     url = "http://www.google.com"
-    RegistrationMailer.welcome_email(student.email, course, url)
+    invite = Invite.new({
+      email: student.email,
+      inviter: teacher,
+      course: course,
+    })
+    RegistrationMailer.welcome_email(invite, url)
   end
 end
