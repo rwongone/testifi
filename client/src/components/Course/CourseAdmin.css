@@ -5,3 +5,43 @@
   max-width: 1000px;
   justify-content: center;
 }
+
+.courseAdmin .instructions {
+  margin-bottom: 10px;
+}
+
+.courseAdmin .emailsContainer {
+  display: flex;
+  align-items: stretch;
+  max-height: 300px;
+}
+
+.courseAdmin .emailInput {
+  flex-basis: 100%;
+  min-height: 100px;
+  margin: 0 10px 0 0;
+  box-sizing: border-box;
+}
+
+.courseAdmin .emailInput.showParsedEmails {
+  flex-basis: 50%;
+}
+
+.courseAdmin .frame.emails {
+  margin: 0 0 0 10px;
+  flex-basis: 50%;
+  background: #f0f0f0;
+  overflow-y: auto;
+  cursor: not-allowed;
+  box-sizing: border-box;
+  display: none;
+}
+
+.courseAdmin .frame.emails.showParsedEmails {
+  display: block;
+}
+
+.courseAdmin .inviteButton {
+  width: 100%;
+  margin-top: 20px;
+}

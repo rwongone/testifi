@@ -46,6 +46,10 @@ input:focus, textarea:focus {
   border: 1px solid rgba(81, 203, 238, 1);
 }
 
+textarea {
+  font-size: 16px;
+}
+
 select {
   padding: 10px;
   border: 1px solid #4a4a4a;
