@@ -1,11 +1,12 @@
-require 'submission_executor'
-require 'mimemagic'
+require 'test_executor'
+require 'file_helper'
 
 class SubmissionsController < ApplicationController
   skip_before_action :check_admin
 
   def create
-    course = Problem.find(params[:problem_id]).course
+    problem = Problem.find(params[:problem_id])
+    course = problem.course
     if !current_user_in_course?(course)
       head :forbidden
       return
@@ -13,17 +14,25 @@ class SubmissionsController < ApplicationController
 
     uploaded_file = params[:file]
 
+    submission_lang = FileHelper.filename_to_language(uploaded_file.original_filename)
+    if submission_lang.nil?
+      render status: :bad_request, json: {message: "No file extension to infer submission language"}
+      return
+    end
+
     ActiveRecord::Base.transaction do
       file = DbFile.create(
         name: uploaded_file.original_filename,
-        type: MimeMagic.by_magic(uploaded_file),
+        content_type: 'text/plain',
         contents: uploaded_file.read,
       )
 
-      submission = Submission.create(create_params.merge(
+      submission = Submission.create(
         user_id: current_user.id,
+        problem_id: problem.id,
         db_file_id: file.id,
-      ))
+        language: submission_lang
+      )
 
       render status: :created, json: submission
     end
@@ -36,6 +45,19 @@ class SubmissionsController < ApplicationController
       return
     end
     render status: :ok, json: submission
+  end
+
+  def show_file
+    submission = Submission.includes(:db_file).find(params[:id])
+    if submission.user_id != current_user.id && !current_user.admin?
+      head :forbidden
+      return
+    end
+
+    file = submission.db_file
+    send_data(file.contents,
+              filename: file.name,
+              type: file.content_type)
   end
 
   def index
@@ -57,13 +79,7 @@ class SubmissionsController < ApplicationController
 
   def exec
     submission = Submission.find(params[:id])
-    result = SubmissionExecutor.run_tests(submission)
+    result = TestExecutor.run_tests(submission)
     render status: :ok, json: { 'result': result }
-  end
-
-  private
-
-  def create_params
-    params.permit(:user_id, :problem_id, :language)
   end
 end

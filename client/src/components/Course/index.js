@@ -5,6 +5,7 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { Route, Switch } from 'react-router-dom';
 import { fetchCourses } from '../../actions/course';
 import Assignment from '../Assignment';
+import CourseAdmin from './CourseAdmin';
 import CourseNew from './CourseNew';
 import NoCourses from './NoCourses';
 
@@ -72,6 +73,7 @@ class Course extends Component {
                     <Route exact path="/courses" component={ NoCourses } />
                     <Route path="/courses/create" component={ CourseNew } />
                     <Route path="/courses/:courseId/assignments" component={ Assignment } />
+                    <Route path="/courses/:courseId/admin" component={ CourseAdmin } />
                 </Switch>
                 ) : null;
     }

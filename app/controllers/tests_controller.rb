@@ -1,6 +1,6 @@
-require 'mimemagic'
-
 class TestsController < ApplicationController
+  skip_before_action :check_admin, except: [:index]
+
   def create
     course = Problem.find(params[:problem_id]).course
     if !current_user_in_course?(course)
@@ -13,7 +13,7 @@ class TestsController < ApplicationController
     ActiveRecord::Base.transaction do
       file = DbFile.create(
         name: uploaded_file.original_filename,
-        type: MimeMagic.by_magic(uploaded_file),
+        content_type: 'text/plain',
         contents: uploaded_file.read,
       )
 
@@ -39,6 +39,19 @@ class TestsController < ApplicationController
     render status: :ok, json: test
   end
 
+  def show_file
+    test = Test.includes(:db_file).find(params[:id])
+    if test.user_id != current_user.id && !current_user.admin?
+      head :forbidden
+      return
+    end
+
+    file = test.db_file
+    send_data(file.contents,
+              filename: file.name,
+              type: file.content_type)
+  end
+
   def index
     course = Problem.find(params[:problem_id]).course
     if !current_user_in_course?(course)
@@ -54,6 +67,16 @@ class TestsController < ApplicationController
     end
 
     render status: :ok, json: tests
+  end
+
+  def destroy
+    test = Test.find(params[:id])
+    if test.user_id != current_user.id
+      head :forbidden
+      return
+    end
+
+    test.destroy
   end
 
   private

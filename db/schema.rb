@@ -43,7 +43,7 @@ ActiveRecord::Schema.define(version: 20170709210034) do
 
   create_table "db_files", force: :cascade do |t|
     t.string "name", null: false
-    t.string "type"
+    t.string "content_type"
     t.binary "contents", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -75,6 +75,7 @@ ActiveRecord::Schema.define(version: 20170709210034) do
   create_table "tests", force: :cascade do |t|
     t.string "name"
     t.string "hint"
+    t.string "expected_output"
     t.bigint "problem_id"
     t.bigint "user_id"
     t.bigint "db_file_id", null: false

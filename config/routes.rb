@@ -23,7 +23,11 @@ Rails.application.routes.draw do
     end
 
     resources :submissions, only: [:show]
+    get '/submissions/:id/file', to: 'submissions#show_file'
     resources :tests, only: [:show, :update, :destroy]
+    get '/tests/:id/file', to: 'tests#show_file'
+
+    get '/files/:id', to: 'db_files#show'
 
   end
 end
