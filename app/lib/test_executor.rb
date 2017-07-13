@@ -9,12 +9,9 @@ class TestExecutor
   def self.correct_submission?(submission)
     tests = Test.where(problem_id: submission.problem_id)
 
-    tests.each do |test|
-      if !correct_output?(submission, test)
-        return false
-      end
+    tests.all? do |test|
+      correct_output?(submission, test)
     end
-    true
   end
 
   def self.correct_output?(submission, test)
