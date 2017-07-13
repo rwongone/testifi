@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { Link, Redirect, Route } from 'react-router-dom';
+import { UNKNOWN_USER_ID } from '../../constants';
 import Course from '../Course';
 import './Home.css';
 
@@ -23,7 +24,7 @@ class Home extends Component {
         const id = this.props.user.get('id');
         const location = this.props.location;
         // if the user is not logged in
-        if (id === -1) {
+        if (id === UNKNOWN_USER_ID) {
             // if not at the home page, redirect to the home page
             if (location.pathname !== '/') {
                 return <Redirect to="/" />
