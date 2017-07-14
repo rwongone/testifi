@@ -1,4 +1,6 @@
 class InvitesController < ApplicationController
+  skip_before_action :check_admin, only: [:redeem]
+
   def create
     course_id = params[:course_id]
     emails = params[:emails]
@@ -16,5 +18,19 @@ class InvitesController < ApplicationController
       }
     end
     render status: :created, json: invites
+  end
+
+  def redeem
+    invite_id = params[:invite_id]
+    begin
+      invite = Invite.find(invite_id)
+    rescue ActiveRecord::RecordNotFound
+      head :forbidden
+      return
+    end
+    invite.redeemer = current_user
+    invite.save!
+    invite.course.students << current_user
+    render status: :ok, json: invite
   end
 end

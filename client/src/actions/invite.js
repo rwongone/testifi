@@ -35,7 +35,7 @@ export function redeemInvite(inviteId) {
         let headers = new Headers();
         headers.append('Accept', 'application/json');
         headers.append('Content-Type', 'application/json');
-        return fetch(`/api/invites/redeem/${inviteId}`, {
+        return fetch(`/api/invites/${inviteId}/redeem`, {
             method: 'GET',
             headers,
             credentials: 'include'

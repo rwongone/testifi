@@ -1,4 +1,4 @@
-import { Map, List } from 'immutable';
+import { Map, List, Set } from 'immutable';
 import { INVITE_SUCCESS } from '../actions/invite';
 import { CREATE_COURSE_SUCCESS, RECEIVE_COURSES_SUCCESS } from '../actions/course';
 
