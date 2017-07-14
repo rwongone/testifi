@@ -11,10 +11,6 @@ RSpec.describe "Problems", type: :request do
   let(:assignment) { create(:assignment, course_id: course.id) }
   let!(:problem) { create(:problem, assignment_id: assignment.id) }
   let(:solution_file) { fixture_file_upload("#{fixture_path}/files/Solution.java") }
-#  let(:solution_db_file) { create(:submission_db_file,
-#                                    name: solution_file.original_filename,
-#                                    contents: solution_file.read) }
-#  let!(:solution) { create(:submission, user: teacher, problem: problem, db_file_id: solution_db_file.id, language: FileHelper.filename_to_language(solution_file.original_filename)) }
 
   context "when a teacher is authenticated" do
     before(:each) do

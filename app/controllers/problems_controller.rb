@@ -14,9 +14,9 @@ class ProblemsController < ApplicationController
   def create
     problem = Problem.create!(create_params)
 
-    ActiveRecord::Base.transaction do
-      uploaded_file = params[:file]
-      if uploaded_file
+    uploaded_file = params[:file]
+    if uploaded_file.present?
+      ActiveRecord::Base.transaction do
         file = DbFile.create(
           name: uploaded_file.original_filename,
           content_type: 'text/plain',
@@ -24,8 +24,8 @@ class ProblemsController < ApplicationController
         )
 
         solution = Submission.create(
-          user_id: current_user.id,
-          problem_id: problem.id,
+          user: current_user,
+          problem: problem,
           db_file_id: file.id,
           language: FileHelper.filename_to_language(uploaded_file.original_filename)
         )
