@@ -30,7 +30,7 @@ RSpec.describe "Invites", type: :request do
 
       it "creates an invite" do
         post "/api/courses/#{course.id}/invites", params: params
-        expect(response).to have_http_status(201)
+        expect(response).to be_created
         expect(json_response.size).to eq(1)
         expect(json_response.first).to include(invite_properties)
       end
@@ -43,7 +43,7 @@ RSpec.describe "Invites", type: :request do
     describe "GET /api/invites/:id/redeem" do
       it "redeems the invite successfully" do
         get "/api/invites/#{invite.id}/redeem"
-        expect(response).to have_http_status(200)
+        expect(response).to be_ok
         expect(json_response).to include(invite_properties.merge({
           "redeemer_id" => student.id
         }))
@@ -53,7 +53,7 @@ RSpec.describe "Invites", type: :request do
 
       it "rejects invalid invite ids" do
         get "/api/invites/INVALID_INVITE_UUID/redeem"
-        expect(response).to have_http_status(403)
+        expect(response).to be_forbidden
       end
 
       it "rejects used invites" do
@@ -61,7 +61,7 @@ RSpec.describe "Invites", type: :request do
         invite.redeemer = old_redeemer
         invite.save!
         get "/api/invites/#{invite.id}/redeem"
-        expect(response).to have_http_status(403)
+        expect(response).to be_forbidden
       end
     end
 

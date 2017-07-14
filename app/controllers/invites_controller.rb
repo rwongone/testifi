@@ -23,7 +23,7 @@ class InvitesController < ApplicationController
   def redeem
     invite_id = params[:invite_id]
     invite = Invite.find_by(id: invite_id, redeemer_id: nil)
-    if !invite
+    if invite.nil?
       head :forbidden
       return
     end
