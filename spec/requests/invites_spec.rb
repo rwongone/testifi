@@ -55,6 +55,14 @@ RSpec.describe "Invites", type: :request do
         get "/api/invites/INVALID_INVITE_UUID/redeem"
         expect(response).to have_http_status(403)
       end
+
+      it "rejects used invites" do
+        old_redeemer = create(:student)
+        invite.redeemer = old_redeemer
+        invite.save!
+        get "/api/invites/#{invite.id}/redeem"
+        expect(response).to have_http_status(403)
+      end
     end
 
     describe "POST /api/courses/:id/invites" do

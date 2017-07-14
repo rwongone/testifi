@@ -22,13 +22,12 @@ class InvitesController < ApplicationController
 
   def redeem
     invite_id = params[:invite_id]
-    begin
-      invite = Invite.find(invite_id)
-    rescue ActiveRecord::RecordNotFound
+    invite = Invite.find_by(id: invite_id, redeemer_id: nil)
+    if !invite
       head :forbidden
       return
     end
-    invite.redeemer = current_user
+    invite.redeemer_id = current_user.id
     invite.save!
     invite.course.students << current_user
     render status: :ok, json: invite
