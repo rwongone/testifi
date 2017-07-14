@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+    </head>
+    <body>
+        <p>Hi,</p>
+        <p>
+            Here is your enrollment link for <%= @inviter.name %>'s course, <%= @course.title %>:
+        </p>
+        <p><a href=<%= @url %>><%= @url %></a></p>
+        <p>Cheers,</p>
+        <p>The Testifi Team</p>
+    </body>
+</html>
