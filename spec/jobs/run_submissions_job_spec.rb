@@ -30,6 +30,8 @@ RSpec.describe RunSubmissionsJob, type: :job do
 
   before do
     problem.update(solution_id: solution.id)
+
+    FillExpectedOutputJob.perform_now(test_consec_3.id, test_consec_5.id)
   end
 
   subject(:job) { described_class.perform_later(good_submission.id) }
