@@ -47,14 +47,18 @@ RSpec.describe TestExecutor do
       subject.create_testing_image(solution)
 
       # solution_id needs to be set after both objects have been created
-      problem.solution_id = solution.id
+      problem.update(solution_id: solution.id)
+
+      FillExpectedOutputJob.perform_now(test_consec_3.id, test_consec_5.id)
+      test_consec_3.reload
+      test_consec_5.reload
     end
 
-    describe ".correct_submission?" do
+    describe ".run_tests" do
       it "executes all Tests for the Submission's Problem using the Submission" do
-        expect(subject).to receive(:correct_output?).exactly(problem.tests.length).times
+        expect(subject).to receive(:run_test).exactly(problem.tests.length).times
 
-        subject.correct_submission?(solution)
+        subject.run_tests(solution)
       end
     end
 
@@ -67,17 +71,6 @@ RSpec.describe TestExecutor do
       it "returns false if the Submission output differs from expected output" do
         expect(subject.correct_output?(bad_submission, test_consec_3)).to be false
         expect(subject.correct_output?(bad_submission, test_consec_5)).to be false
-      end
-
-      it "computes expected output iff expected output is missing on the Test" do
-        expect(test_consec_3.expected_output).to be_nil
-        expect(subject).to receive(:fill_expected_output).
-          with(problem, test_consec_3).
-          once.
-          and_call_original
-
-        subject.correct_output?(bad_submission, test_consec_3)
-        expect(test_consec_3.expected_output).to eq("6\n")
       end
     end
 

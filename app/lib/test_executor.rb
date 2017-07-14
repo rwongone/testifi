@@ -16,9 +16,8 @@ class TestExecutor
 
   def self.correct_output?(submission, test)
     output = run_test(submission, test)
-    if test.expected_output.nil?
-      fill_expected_output(submission.problem, test)
-    end
+
+    raise "Missing expected output" if test.expected_output.nil?
 
     output == test.expected_output
   end
@@ -49,12 +48,6 @@ class TestExecutor
     container.attach(:stream => true, :stdin => nil, :stdout => true, :stderr => true, :logs => true, :tty => false)
     container.streaming_logs(stderr: true) { |stream, chunk| puts chunk }
     container.read_file("#{WORKDIR}/output/test.out")
-  end
-
-  def self.fill_expected_output(problem, test)
-    test.expected_output = run_test(problem.solution, test)
-    test.save!
-    test.expected_output
   end
 
   def self.create_testing_image(submission)
