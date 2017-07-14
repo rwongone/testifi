@@ -14,7 +14,7 @@ RSpec.describe TestExecutor do
   let(:solution_db_file) { create(:submission_db_file,
                                     name: solution_file.original_filename,
                                     contents: solution_file.read) }
-  let!(:solution) { create(:submission, user: student, problem: problem, db_file_id: solution_db_file.id, language: FileHelper.filename_to_language(solution_file.original_filename)) }
+  let!(:solution) { create(:submission, user: teacher, problem: problem, db_file_id: solution_db_file.id, language: FileHelper.filename_to_language(solution_file.original_filename)) }
 
   subject { described_class }
 
@@ -35,8 +35,8 @@ RSpec.describe TestExecutor do
   context "when executing tests with an existing image" do
     let(:consec_3) { create(:consec, n: 3) }
     let(:consec_5) { create(:consec, n: 5) }
-    let(:test_consec_3) { create(:test, user: student, problem: problem, db_file_id: consec_3.id) }
-    let(:test_consec_5) { create(:test, user: student, problem: problem, db_file_id: consec_5.id) }
+    let(:test_consec_3) { create(:test, user: teacher, problem: problem, db_file_id: consec_3.id) }
+    let(:test_consec_5) { create(:test, user: teacher, problem: problem, db_file_id: consec_5.id) }
     let(:bad_submission_file) { fixture_file_upload("#{fixture_path}/files/BadSolution.java") }
     let(:bad_submission_db_file) { create(:submission_db_file,
                                           name: bad_submission_file.original_filename,
