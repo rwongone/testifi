@@ -21,7 +21,7 @@ RSpec.describe TestExecutor do
   describe ".create_testing_image" do
     # All expectations in one test, so we only actually create the image once.
     it "creates a singleton Docker::Image for the Submission" do
-      expect(subject.images).to be_empty
+      subject.class_variable_set(:@@images, {})
       expect(Docker::Image).to receive(:build_from_dir).once.and_call_original
 
       image = subject.create_testing_image(solution)
