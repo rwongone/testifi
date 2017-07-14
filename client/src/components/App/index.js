@@ -6,8 +6,12 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import Home from '../Home';
 import Login from '../Login';
 import Nav from '../Nav';
+import Notifications from '../Notifications';
 import { fetchUser } from '../../actions/user';
 import './App.css';
+// TODO remove
+import { notify } from '../../actions/notification';
+import { NOTIFICATION_TYPE } from '../../constants';
 
 class App extends Component {
     static propTypes = {
@@ -26,6 +30,11 @@ class App extends Component {
         if (!fetched) {
             dispatch(fetchUser());
         }
+
+        // TODO remove
+        dispatch(notify('Normal', NOTIFICATION_TYPE.NORMAL));
+        dispatch(notify('Success', NOTIFICATION_TYPE.SUCCESS));
+        dispatch(notify('Error', NOTIFICATION_TYPE.ERROR));
     }
 
     render() {
@@ -36,6 +45,7 @@ class App extends Component {
                         <Route path="/login" component={ Login } />
                         <Route path="/" component={ Home } />
                     </Switch>
+                    <Notifications />
                 </div>
                 );
     }
