@@ -27,12 +27,13 @@ class TestList extends Component {
             problemId
         } = this.props;
         const tests = test.getIn([problemId, 'tests']);
+        const isAdmin = user.get('isAdmin');
 
         return (
                 <div className="testList">
                     <h2>Tests</h2>
                     {
-                    tests.map(t => <TestTile key={ t.get('id') } test={ t } />)
+                    tests.map(t => <TestTile key={ t.get('id') } test={ t } isAdmin={ isAdmin } />)
                     }
                     {
                     user.get('isAdmin')
