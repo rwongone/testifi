@@ -59,13 +59,15 @@ ActiveRecord::Schema.define(version: 20170713142139) do
   end
 
   create_table "invites", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "email"
-    t.bigint "inviter_id"
-    t.bigint "course_id"
+    t.string "email", null: false
+    t.bigint "inviter_id", null: false
+    t.bigint "redeemer_id"
+    t.bigint "course_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["course_id"], name: "index_invites_on_course_id"
     t.index ["inviter_id"], name: "index_invites_on_inviter_id"
+    t.index ["redeemer_id"], name: "index_invites_on_redeemer_id"
   end
 
   create_table "problems", force: :cascade do |t|

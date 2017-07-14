@@ -30,5 +30,6 @@ Rails.application.routes.draw do
 
     get '/files/:id', to: 'db_files#show'
 
+    get '/invites/:invite_id/redeem', to: 'invites#redeem'
   end
 end

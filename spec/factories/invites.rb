@@ -9,5 +9,6 @@ FactoryGirl.define do
     email { student.email }
     course_id { course.id }
     inviter_id { teacher.id }
+    redeemer { nil }
   end
 end

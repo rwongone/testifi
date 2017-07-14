@@ -4,6 +4,7 @@ import { Link, withRouter } from 'react-router-dom';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import PropTypes from 'prop-types';
 import CourseDropdown from './CourseDropdown';
+import { UNKNOWN_USER_ID } from '../../constants';
 import './Nav.css';
 
 class Nav extends Component {
@@ -28,7 +29,7 @@ class Nav extends Component {
                     <CourseDropdown />
                     <div className="greeting">
                         {
-                        user.get('fetched') && user.get('id') !== -1
+                        user.get('fetched') && user.get('id') !== UNKNOWN_USER_ID
                         ? `Hello ${user.get('name')}`
                         : <Link to="/login"><button>Login</button></Link>
                         }
