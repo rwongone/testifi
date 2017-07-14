@@ -1,6 +1,6 @@
 namespace :db do
   desc "Populate the database with a course, assignment, problem and test"
-  task :populate do
+  task :populate => :environment do
     c = Course.create({
       "course_code" => "JAVA101",
       "title" => "Introduction to Java",
