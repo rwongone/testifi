@@ -9,6 +9,7 @@ RSpec.describe "Invites", type: :request do
   let(:student) { create(:student) }
   let(:teacher) { create(:teacher) }
   let(:course) { create(:course, teacher: teacher) }
+  let!(:invite) { create(:invite, course: course, inviter: teacher, email: student.email) }
   let(:default_params) do
     {
       "emails" => [student.email]
@@ -33,8 +34,7 @@ RSpec.describe "Invites", type: :request do
 
       it "creates an invite" do
         subject
-
-        expect(response).to have_http_status(201)
+        expect(response).to be_created
         expect(json_response.size).to eq(1)
         expect(json_response.first).to include(invite_properties)
       end
@@ -54,6 +54,31 @@ RSpec.describe "Invites", type: :request do
 
   context "when a student is authenticated" do
     before { authenticate(student) }
+
+    describe "GET /api/invites/:id/redeem" do
+      it "redeems the invite successfully" do
+        get "/api/invites/#{invite.id}/redeem"
+        expect(response).to be_ok
+        expect(json_response).to include(invite_properties.merge({
+          "redeemer_id" => student.id
+        }))
+        expect(student.enrolled_courses.size).to eq(1)
+        expect(student.enrolled_courses.first).to eq(course)
+      end
+
+      it "rejects invalid invite ids" do
+        get "/api/invites/INVALID_INVITE_UUID/redeem"
+        expect(response).to be_forbidden
+      end
+
+      it "rejects used invites" do
+        old_redeemer = create(:student)
+        invite.redeemer = old_redeemer
+        invite.save!
+        get "/api/invites/#{invite.id}/redeem"
+        expect(response).to be_forbidden
+      end
+    end
 
     describe "POST /api/courses/:id/invites" do
       let(:params) { default_params }

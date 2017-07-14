@@ -14,11 +14,6 @@ class RunSubmissionsJob < ApplicationJob
     tests.each do |test|
       execution = Execution.find_or_initialize_by(submission_id: submission.id, test_id: test.id)
       
-      if test.expected_output.nil?
-        problem = Problem.find(submission.problem_id)
-        TestExecutor.fill_expected_output(problem, test)
-      end
-
       execution.output = TestExecutor.run_test(submission, test)
 
       execution.save!

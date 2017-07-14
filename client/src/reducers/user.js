@@ -1,12 +1,13 @@
 import { Map } from 'immutable';
 import { RECEIVE_USER_SUCCESS, RECEIVE_USER_FAILURE } from '../actions/user';
+import { UNKNOWN_USER_ID } from '../constants';
 
 export default function(state = Map({
     fetched: false,
     isAdmin: false,
     email: '',
     name: '',
-    id: -1
+    id: UNKNOWN_USER_ID,
 }), action) {
     switch (action.type) {
         case RECEIVE_USER_SUCCESS:

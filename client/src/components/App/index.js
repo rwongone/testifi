@@ -8,6 +8,7 @@ import Login from '../Login';
 import Nav from '../Nav';
 import Notifications from '../Notifications';
 import { fetchUser } from '../../actions/user';
+import RedeemInvite from '../RedeemInvite';
 import './App.css';
 
 class App extends Component {
@@ -35,6 +36,7 @@ class App extends Component {
                     <Nav />
                     <Switch>
                         <Route path="/login" component={ Login } />
+                        <Route path="/redeem/:inviteId" component={ RedeemInvite } />
                         <Route path="/" component={ Home } />
                     </Switch>
                     <Notifications />
