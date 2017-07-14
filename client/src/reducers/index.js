@@ -5,6 +5,7 @@ import assignment from './assignment';
 import invite from './invite';
 import problem from './problem';
 import test from './test';
+import notification from './notification';
 
 export default combineReducers({
     assignment,
@@ -12,5 +13,6 @@ export default combineReducers({
     invite,
     problem,
     test,
-    user
+    user,
+    notification,
 });
