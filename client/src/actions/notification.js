@@ -1,16 +1,12 @@
-function guid() {
-    function s4() {
-        return Math.floor((1 + Math.random()) * 0x10000)
-            .toString(16)
-            .substring(1);
-    }
-    return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+let idCounter = 0;
+function nextId() {
+    return ++idCounter;
 }
 
 export const NOTIFY = 'NOTIFY';
 export function notify(message, notificationType) {
     return function(dispatch) {
-        const id = guid();
+        const id = nextId();
         setTimeout(() => {
             dispatch(unnotify(id));
         }, 5000);
