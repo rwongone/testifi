@@ -12,10 +12,30 @@ class ProblemsController < ApplicationController
   end
 
   def create
-    problem = Problem.new(create_params)
-    if problem.save!
-      render status: :created, json: problem
+    problem = Problem.create!(create_params)
+
+    uploaded_file = params[:file]
+    if uploaded_file.present?
+      ActiveRecord::Base.transaction do
+        file = DbFile.create(
+          name: uploaded_file.original_filename,
+          content_type: 'text/plain',
+          contents: uploaded_file.read
+        )
+
+        solution = Submission.create(
+          user: current_user,
+          problem: problem,
+          db_file_id: file.id,
+          language: FileHelper.filename_to_language(uploaded_file.original_filename)
+        )
+
+        problem.solution_id = solution.id
+      end
+      problem.save!
     end
+
+    render status: :created, json: problem
   end
 
   def show
@@ -59,6 +79,6 @@ class ProblemsController < ApplicationController
   private
 
   def create_params
-    params.permit(:name, :description, :assignment_id, :cmd)
+    params.permit(:name, :description, :assignment_id)
   end
 end
