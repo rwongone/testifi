@@ -5,7 +5,6 @@ RSpec.describe "Invites", type: :request do
   include ActiveJob::TestHelper
   include_context "with authenticated requests"
   include_context "with JSON responses"
-  include_context "with mailing"
 
   let(:student) { create(:student) }
   let(:teacher) { create(:teacher) }

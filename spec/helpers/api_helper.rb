@@ -9,12 +9,6 @@ shared_context "with JSON responses" do
   let(:json_response) { ActiveSupport::JSON.decode(response.body) }
 end
 
-shared_context "with mailing" do
-  before do
-    ActiveJob::Base.queue_adapter = :test
-  end
-end
-
 shared_examples "an admin-only GET endpoint" do |endpoint|
   let(:student) { create(:student) }
 
