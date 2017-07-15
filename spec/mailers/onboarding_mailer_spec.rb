@@ -10,7 +10,7 @@ RSpec.describe OnboardingMailer, type: :mailer do
   let(:url) { "https://www.google.com" }
 
   describe "#welcome_email" do
-    subject { described_class.welcome_email(invite, url) }
+    subject { described_class.welcome_email(invite) }
 
     it 'renders the appropriate headers' do
       expect(subject).to have_attributes({
@@ -21,8 +21,12 @@ RSpec.describe OnboardingMailer, type: :mailer do
     end
 
     it 'renders the body' do
-      expect(subject.html_part.body.to_s).to eq(file_fixture("welcome_email.html").read)
-      expect(subject.text_part.body.to_s).to eq(file_fixture("welcome_email.txt").read)
+      expect(subject.html_part.body.to_s).to include(invite.url)
+      expect(subject.html_part.body.to_s).to include(course.title)
+      expect(subject.html_part.body.to_s).to include(teacher.name)
+      expect(subject.text_part.body.to_s).to include(invite.url)
+      expect(subject.text_part.body.to_s).to include(course.title)
+      expect(subject.text_part.body.to_s).to include(teacher.name)
     end
 
     it 'delivers a welcome email' do

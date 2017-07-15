@@ -112,7 +112,7 @@ RSpec.describe "Courses", type: :request do
     end
 
     describe "GET /api/courses/:id/students" do
-      it "returns forbidden" do
+      it "is inaccessible" do
         get "/api/courses/#{course.id}/students"
         expect(response).to be_forbidden
       end

@@ -65,8 +65,7 @@ RSpec.describe "Invites", type: :request do
       end
 
       it "404s when the invite has been claimed" do
-        invite.redeemer = student
-        invite.save!
+        invite.update(redeemer: student)
         subject
         expect(response).to be_not_found
       end
@@ -81,8 +80,7 @@ RSpec.describe "Invites", type: :request do
       end
 
       it "does not return invites that have been redeemed" do
-        invite.redeemer = student
-        invite.save!
+        invite.update(redeemer: student)
         get "/api/courses/#{course.id}/unused"
         expect(response).to be_ok
         expect(json_response).to be_empty
@@ -130,14 +128,14 @@ RSpec.describe "Invites", type: :request do
     describe "POST /api/invites/:id/resend" do
       subject { post "/api/invites/#{invite.id}/resend" }
 
-      it "403s for a student" do
+      it "is inaccessible" do
         subject
         expect(response).to be_forbidden
       end
     end
 
     describe "GET /api/courses/:id/unused" do
-      it "rejects student requests" do
+      it "is inaccessible" do
         get "/api/courses/#{course.id}/unused"
         expect(response).to be_forbidden
       end
