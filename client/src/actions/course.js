@@ -28,34 +28,6 @@ function receiveCoursesSuccess(courses) {
     }
 }
 
-export function fetchCourse(courseId) {
-    return function(dispatch) {
-        let headers = new Headers();
-        headers.append('Accept', 'application/json');
-        headers.append('Content-Type', 'application/json');
-        return fetch(`/api/courses/${courseId}`, {
-            method: 'GET',
-            headers,
-            credentials: 'include'
-        })
-        .then(handleErrors)
-        .then(resp => resp.json())
-        .then(course => {
-            dispatch(receiveCourseSuccess(course));
-            return course;
-        })
-        .catch(e => console.error(e));
-    }
-}
-
-export const RECEIVE_COURSE_SUCCESS = 'RECEIVE_COURSE_SUCCESS';
-function receiveCourseSuccess(course) {
-    return {
-        type: RECEIVE_COURSE_SUCCESS,
-        course
-    }
-}
-
 export function createCourse(info) {
     return function(dispatch) {
         let headers = new Headers();

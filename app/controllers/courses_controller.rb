@@ -9,11 +9,6 @@ class CoursesController < ApplicationController
     end
   end
 
-  def show
-    course = Course.includes(:students, :invites).find(params[:id])
-    render status: :ok, json: course.to_json(include: [:students, :invites])
-  end
-
   def update
     # cannot update someone else's course
     course = Course.find(params[:id])

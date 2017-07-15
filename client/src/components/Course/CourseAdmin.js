@@ -5,8 +5,8 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { Redirect } from 'react-router-dom';
 import classNames from 'classnames';
 import { List, Set } from 'immutable';
-import { invite } from '../../actions/courseAdmin';
-import { fetchCourse } from '../../actions/course';
+import { invite, resendInvite } from '../../actions/courseAdmin';
+import { fetchUnusedInvites, fetchStudents } from '../../actions/courseAdmin';
 import AssignmentNav from '../Assignment/AssignmentNav';
 import './CourseAdmin.css';
 
@@ -23,11 +23,12 @@ class CourseAdmin extends Component {
         isAdmin: PropTypes.bool.isRequired,
         dispatch: PropTypes.func.isRequired,
         courseAdmin: ImmutablePropTypes.mapOf(ImmutablePropTypes.contains({
-            fetched: PropTypes.bool.isRequired,
+            studentsFetched: PropTypes.bool.isRequired,
             students: ImmutablePropTypes.listOf(ImmutablePropTypes.contains({
                 email: PropTypes.string,
                 name: PropTypes.string,
             })).isRequired,
+            invitesFetched: PropTypes.bool.isRequired,
             invites: ImmutablePropTypes.listOf(ImmutablePropTypes.contains({
                 email: PropTypes.string.isRequired,
             })).isRequired,
@@ -45,8 +46,12 @@ class CourseAdmin extends Component {
     componentWillMount() {
         const { courseAdmin, dispatch } = this.props;
         const courseId = this.getCourseId();
-        if (!courseAdmin.getIn([courseId, 'fetched'])) {
-            dispatch(fetchCourse(courseId));
+        if (!courseAdmin.getIn([courseId, 'invitesFetched'])) {
+            dispatch(fetchUnusedInvites(courseId));
+        }
+        if (!courseAdmin.getIn([courseId, 'studentsFetched'])) {
+            console.log('should fetch students');
+            // dispatch(fetchStudents(courseId));
         }
     }
 
@@ -72,7 +77,13 @@ class CourseAdmin extends Component {
             return;
         }
 
-        dispatch(invite(this.getCourseId(), parsedEmails)).then(() => this.setState({ rawEmails: "", parsedEmails: List() }));
+        dispatch(invite(this.getCourseId(), parsedEmails))
+            .then(() => this.setState({ rawEmails: "", parsedEmails: List() }));
+    }
+
+    resend = id => () => {
+        const { dispatch } = this.props;
+        dispatch(resendInvite(id));
     }
 
     render() {
@@ -97,10 +108,16 @@ class CourseAdmin extends Component {
                         ? (
                         <div>
                             <h2>Students</h2>
-                            <div className="studentList frame">
-                                {
-                                students.map(s => <div key={ s.get('id') }>{ s.get('email') || s.get('name') }</div>)
-                                }
+                            <div className="studentListFrame frame">
+                                <div className="studentList">
+                                    {
+                                    students.map(s => (
+                                    <div key={ s.get('id') }>
+                                        { s.get('email') || s.get('name') }
+                                    </div>
+                                    ))
+                                    }
+                                </div>
                             </div>
                         </div>
                         ) : null
@@ -110,10 +127,23 @@ class CourseAdmin extends Component {
                         ? (
                         <div>
                             <h2>Pending Invites</h2>
-                            <div className="inviteList frame">
-                                {
-                                invites.map(i => <div key={ i.get('id') }>{ i.get('email') }</div>)
-                                }
+                            <div className="inviteListFrame frame">
+                                <div className="inviteTableHeaders">
+                                    <div>Email</div>
+                                    <div>Date sent</div>
+                                    <button className="hiddenButton inviteResendButton">Resend</button>
+                                </div>
+                                <div className="inviteList">
+                                    {
+                                    invites.map(i => (
+                                    <div key={ i.get('id') } className="pendingInvite">
+                                        <div>{ i.get('email') }</div>
+                                        <div>{ i.get('created_at').toLocaleDateString() }</div>
+                                        <button className="inviteResendButton" onClick={ this.resend(i.get('id')) }>Resend</button>
+                                    </div>
+                                    ))
+                                    }
+                                </div>
                             </div>
                         </div>
                         ) : null

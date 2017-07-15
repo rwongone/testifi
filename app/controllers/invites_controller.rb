@@ -6,7 +6,6 @@ class InvitesController < ApplicationController
     emails = params[:emails]
     current_user_id = current_user.id
     invites = []
-    url = "https://www.placeholder.com"
 
     ActiveRecord::Base.transaction do
       invites = emails.map do |email|
@@ -15,11 +14,22 @@ class InvitesController < ApplicationController
           "email" => email,
           "inviter_id" => current_user_id
         })
-        OnboardingMailer.welcome_email(invite, url).deliver_later
+        OnboardingMailer.welcome_email(invite).deliver_later
         invite
       end
     end
     render status: :created, json: invites
+  end
+
+  def resend
+    invite_id = params[:invite_id]
+    invite = Invite.find_by(id: invite_id, redeemer_id: nil)
+    if invite.nil?
+      head :not_found
+      return
+    end
+    OnboardingMailer.welcome_email(invite).deliver_later
+    head :no_content
   end
 
   def redeem
@@ -33,5 +43,11 @@ class InvitesController < ApplicationController
     invite.save!
     invite.course.students << current_user
     render status: :ok, json: invite
+  end
+
+  def unused
+    course_id = params[:course_id]
+    invs = Invite.where(course_id: course_id, redeemer_id: nil)
+    render status: :ok, json: invs
   end
 end
