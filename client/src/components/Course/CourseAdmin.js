@@ -108,11 +108,20 @@ class CourseAdmin extends Component {
                         <div>
                             <h2>Students</h2>
                             <div className="studentListFrame frame">
+                                <div className="studentTableHeaders">
+                                    <div className="halfField">Name</div>
+                                    <div className="halfField">Email</div>
+                                </div>
                                 <div className="studentList">
                                     {
                                     students.map(s => (
-                                    <div key={ s.get('id') }>
-                                        { s.get('email') || s.get('name') }
+                                    <div key={ s.get('id') } className="student">
+                                        <div className="halfField">
+                                            { s.get('name') }
+                                        </div>
+                                        <div className="halfField">
+                                            { s.get('email') }
+                                        </div>
                                     </div>
                                     ))
                                     }
@@ -128,17 +137,16 @@ class CourseAdmin extends Component {
                             <h2>Pending Invites</h2>
                             <div className="inviteListFrame frame">
                                 <div className="inviteTableHeaders">
-                                    <div>Email</div>
-                                    <div>Date sent</div>
-                                    <button className="hiddenButton inviteResendButton">Resend</button>
+                                    <div className="halfField">Email</div>
+                                    <div className="halfField">Date sent</div>
                                 </div>
                                 <div className="inviteList">
                                     {
                                     invites.map(i => (
                                     <div key={ i.get('id') } className="pendingInvite">
-                                        <div>{ i.get('email') }</div>
-                                        <div>{ i.get('created_at').toLocaleDateString() }</div>
-                                        <button className="inviteResendButton" onClick={ this.resend(i.get('id')) }>Resend</button>
+                                        <div className="halfField">{ i.get('email') }</div>
+                                        <div className="quarterField">{ i.get('created_at').toLocaleDateString() }</div>
+                                        <div className="quarterField"><button className="inviteResendButton quarterField" onClick={ this.resend(i.get('id')) }>Resend</button></div>
                                     </div>
                                     ))
                                     }

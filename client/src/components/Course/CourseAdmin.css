@@ -14,7 +14,7 @@
   box-sizing: border-box;
 }
 
-.courseAdmin .inviteTableHeaders {
+.courseAdmin .inviteTableHeaders, .courseAdmin .studentTableHeaders {
   display: flex;
   justify-content: space-between;
   flex-shrink: 0;
@@ -36,12 +36,20 @@
   overflow-y: auto;
 }
 
-.courseAdmin .pendingInvite {
+.courseAdmin .pendingInvite, .courseAdmin .student {
   display: flex;
   justify-content: space-between;
   flex-shrink: 0;
   align-items: center;
   margin: 5px 0;
+}
+
+.courseAdmin .quarterField {
+  flex-basis: 25%;
+}
+
+.courseAdmin .halfField {
+  flex-basis: 50%;
 }
 
 .courseAdmin .instructions {
