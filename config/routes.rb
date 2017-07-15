@@ -11,7 +11,8 @@ Rails.application.routes.draw do
     get '/user', to: 'users#current'
 
     get '/courses/visible', to: 'courses#get_visible'
-    resources :courses, only: [:create, :show, :update, :destroy] do
+    get '/courses/:course_id/students', to: 'courses#students'
+    resources :courses, only: [:create, :update, :destroy] do
       resources :invites, only: [:create]
       resources :assignments, only: [:create, :index]
     end

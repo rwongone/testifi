@@ -50,8 +50,7 @@ class CourseAdmin extends Component {
             dispatch(fetchUnusedInvites(courseId));
         }
         if (!courseAdmin.getIn([courseId, 'studentsFetched'])) {
-            console.log('should fetch students');
-            // dispatch(fetchStudents(courseId));
+            dispatch(fetchStudents(courseId));
         }
     }
 

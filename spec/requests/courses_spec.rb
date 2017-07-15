@@ -44,23 +44,15 @@ RSpec.describe "Courses", type: :request do
       it "creates a course" do
         post "/api/courses", params: params
 
-        expect(response).to have_http_status(201)
+        expect(response).to be_created
         expect(json_response).to include(expected_properties)
-      end
-    end
-
-    describe "GET /api/courses" do
-      it "returns the Course as JSON" do
-        get "/api/courses/#{course.id}"
-        expect(response).to have_http_status(200)
-        expect(response.body).to eq(course.to_json)
       end
     end
 
     describe "GET /api/courses/visible" do
       it "returns no courses when the teacher is not teaching" do
         get "/api/courses/visible"
-        expect(response).to have_http_status(200)
+        expect(response).to be_ok
         expect(json_response).to eq([])
       end
 
@@ -69,10 +61,21 @@ RSpec.describe "Courses", type: :request do
 
         it "returns those Courses that the teacher teaches as JSON" do
           get "/api/courses/visible"
-          expect(response).to have_http_status(200)
+          expect(response).to be_ok
           expect(json_response.size).to eq(1)
           expect(json_response.first).to include(course_properties)
         end
+      end
+    end
+
+    describe "GET /api/courses/:id/students" do
+      let(:course) { create(:course, students: [student]) }
+
+      it "returns the students enrolled in the class" do
+        get "/api/courses/#{course.id}/students"
+        expect(response).to be_ok
+        expect(json_response.size).to eq(1)
+        expect(json_response.first).to include(student.attributes.except("created_at", "updated_at"))
       end
     end
   end
@@ -89,18 +92,10 @@ RSpec.describe "Courses", type: :request do
       end
     end
 
-    describe "GET /api/courses" do
-      it "returns the Course as JSON" do
-        get "/api/courses/#{course.id}"
-        expect(response).to have_http_status(200)
-        expect(response.body).to eq(course.to_json)
-      end
-    end
-
     describe "GET /api/courses/visible" do
       it "returns no courses when the student is not enrolled in any" do
         get "/api/courses/visible"
-        expect(response).to have_http_status(200)
+        expect(response).to be_ok
         expect(json_response).to eq([])
       end
 
@@ -109,10 +104,17 @@ RSpec.describe "Courses", type: :request do
 
         it "returns the Courses that the student is enrolled in" do
           get "/api/courses/visible"
-          expect(response).to have_http_status(200)
+          expect(response).to be_ok
           expect(json_response.size).to eq(1)
           expect(json_response.first).to include(course_properties)
         end
+      end
+    end
+
+    describe "GET /api/courses/:id/students" do
+      it "returns forbidden" do
+        get "/api/courses/#{course.id}/students"
+        expect(response).to be_forbidden
       end
     end
   end
