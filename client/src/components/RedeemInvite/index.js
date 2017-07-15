@@ -40,7 +40,7 @@ class RedeemInvite extends Component {
 
         dispatch(redeemInvite(this.getInviteId())).then(inv => {
             if (inv) {
-                push(`/courses/${inv.course_id}`);
+                push(`/courses/${inv.course_id}/assignments`);
             }
         });
     }
