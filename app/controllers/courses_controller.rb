@@ -11,8 +11,7 @@ class CoursesController < ApplicationController
 
   def show
     course = Course.includes(:students, :invites).find(params[:id])
-    logger.info course.inspect
-    render status: :ok, json: course
+    render status: :ok, json: course.to_json(include: [:students, :invites])
   end
 
   def update
