@@ -34,7 +34,7 @@ export default function(state = defaultUserState, action) {
             });
 
         case LOGOUT_SUCCESS:
-            return defaultUserState;
+            return defaultUserState.set('fetched', true);
 
         default:
             return state;

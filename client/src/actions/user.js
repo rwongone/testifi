@@ -4,7 +4,7 @@ import { handleErrors } from './util';
 export function logout() {
     return function(dispatch) {
         let headers = new Headers();
-        fetch(`/api/users/logout`, {
+        return fetch(`/api/logout`, {
             credentials: 'include',
             headers: headers,
         })
@@ -36,7 +36,7 @@ export function loginGoogle(googleUser) {
         let headers = new Headers();
         headers.append('Accept', 'application/json');
         headers.append('Content-Type', 'application/json');
-        fetch(`/api/users/oauth/google?code=${googleUser.getAuthResponse().id_token}`, {
+        return fetch(`/api/users/oauth/google?code=${googleUser.getAuthResponse().id_token}`, {
             credentials: 'include',
             headers: headers
         })

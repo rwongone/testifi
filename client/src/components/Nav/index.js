@@ -13,12 +13,15 @@ class Nav extends Component {
         user: ImmutablePropTypes.contains({
             name: PropTypes.string.isRequired
         }).isRequired,
-        dispatch: PropTypes.func.isRequired
+        dispatch: PropTypes.func.isRequired,
+        history: PropTypes.shape({
+            push: PropTypes.func.isRequired,
+        }).isRequired,
     }
 
     logout = () => {
-        const { dispatch } = this.props;
-        dispatch(logout());
+        const { dispatch, history: { push } } = this.props;
+        dispatch(logout()).then(push('/'));
     }
 
     render() {

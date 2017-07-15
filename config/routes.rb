@@ -8,6 +8,7 @@ Rails.application.routes.draw do
     post '/admin',    to: 'users#create_admin'
     get '/users/oauth/github', to: 'users#oauth_github'
     get '/users/oauth/google', to: 'users#oauth_google'
+    get '/logout', to: 'users#logout'
     get '/user', to: 'users#current'
 
     get '/courses/visible', to: 'courses#get_visible'

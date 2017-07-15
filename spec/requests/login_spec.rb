@@ -95,6 +95,14 @@ RSpec.describe "User authentication", type: :request do
     end
   end
 
+  describe "GET /api/logout" do
+    it "resets the auth cookie" do
+      get("/api/logout")
+      expect(cookies['Authorization']).to be_nil
+      expect(response).to be_ok
+    end
+  end
+
   def google_client
     OpenStruct.new Rails.application.secrets.google_client
   end
