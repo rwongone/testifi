@@ -10,6 +10,7 @@ RSpec.describe "Problems", type: :request do
   let(:course) { create(:course) }
   let(:assignment) { create(:assignment, course_id: course.id) }
   let!(:problem) { create(:problem, assignment_id: assignment.id) }
+  let(:solution_file) { fixture_file_upload("#{fixture_path}/files/Solution.java") }
 
   context "when a teacher is authenticated" do
     before(:each) do
@@ -32,6 +33,33 @@ RSpec.describe "Problems", type: :request do
           get "/api/assignments/#{assignment.id}/problems"
           expect(response).to have_http_status(200)
           expect(response.body).to include(problem.to_json)
+        end
+      end
+
+      describe "POST /api/assignments/:assignment_id/problems" do
+        let(:problem_params) do
+          {
+            name: "Sum array",
+            description: "Return the sum of an array of integers"
+          }
+        end
+
+        it "creates a problem" do
+          post "/api/assignments/#{assignment.id}/problems", params: problem_params
+          expect(response).to have_http_status(201)
+          expect(response.body).to include_json(problem_params.merge(assignment_id: assignment.id))
+        end
+
+        let(:problem_params_with_file) do
+          problem_params.merge(file: solution_file)
+        end
+
+        it "creates a problem with a solution if a solution file is provided" do
+          post "/api/assignments/#{assignment.id}/problems", params: problem_params_with_file
+          expect(response).to have_http_status(201)
+          expect(response.body).to include_json(problem_params.merge(assignment_id: assignment.id))
+          solution_id = ActiveSupport::JSON.decode(response.body)['solution_id']
+          expect(Submission.find(solution_id).db_file.contents).to eq(solution_file.read)
         end
       end
     end
