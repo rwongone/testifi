@@ -6,11 +6,12 @@ import {
     RECEIVE_ASSIGNMENTS_FAILURE,
     RECEIVE_ASSIGNMENTS_SUCCESS
 } from '../actions/assignment';
+import { LOGOUT_SUCCESS } from '../actions/user';
 
 const defaultStateForCourse = Map({
     fetched: false,
     fetching: false,
-    assignments: List()
+    assignments: List(),
 });
 export default function(state = Map(), action) {
     switch (action.type) {
@@ -54,6 +55,9 @@ export default function(state = Map(), action) {
                 fetched: false,
                 fetching: false
             }));
+
+        case LOGOUT_SUCCESS:
+            return Map();
 
         default:
             return state;
