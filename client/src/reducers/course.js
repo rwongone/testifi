@@ -1,5 +1,9 @@
 import { Map, List, fromJS } from 'immutable';
-import { CREATE_COURSE_SUCCESS, RECEIVE_COURSES_SUCCESS } from '../actions/course';
+import {
+    CREATE_COURSE_SUCCESS,
+    RECEIVE_COURSES_SUCCESS,
+    RECEIVE_COURSE_SUCCESS,
+} from '../actions/course';
 
 export default function(state = Map({
     fetched: false,
@@ -14,6 +18,14 @@ export default function(state = Map({
                 fetched: true,
                 courses: fromJS(action.courses)
             });
+
+        case RECEIVE_COURSE_SUCCESS:
+            return state.update('courses', courses => courses.map(c => {
+                if (c.get('id') !== action.course.id) {
+                    return c;
+                }
+                return fromJS(action.course);
+            }));
 
         default:
             return state;

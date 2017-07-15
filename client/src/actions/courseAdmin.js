@@ -15,7 +15,7 @@ export function invite(courseId, emails) {
         .then(handleErrors)
         .then(resp => resp.json())
         .then(invites => {
-            dispatch(inviteSuccess(invites));
+            dispatch(inviteSuccess(courseId, invites));
             return invites;
         })
         .catch(e => console.error(e));
@@ -23,10 +23,11 @@ export function invite(courseId, emails) {
 }
 
 export const INVITE_SUCCESS = 'INVITE_SUCCESS';
-function inviteSuccess(invites) {
+function inviteSuccess(courseId, invites) {
     return {
         type: INVITE_SUCCESS,
-        invites
+        courseId,
+        invites,
     }
 }
 

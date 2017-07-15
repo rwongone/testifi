@@ -6,6 +6,11 @@
   justify-content: center;
 }
 
+.courseAdmin .studentList.frame, .courseAdmin .inviteList.frame {
+  margin: 0;
+  background: #f8f8f8;
+}
+
 .courseAdmin .instructions {
   margin-bottom: 10px;
 }

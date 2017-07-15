@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { UNKNOWN_USER_ID } from '../../constants';
-import { redeemInvite } from '../../actions/invite';
+import { redeemInvite } from '../../actions/courseAdmin';
 import Login from '../Login';
 
 class RedeemInvite extends Component {

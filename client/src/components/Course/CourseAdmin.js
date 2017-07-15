@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import ImmutablePropTypes from 'react-immutable-proptypes';
 import { Redirect } from 'react-router-dom';
 import classNames from 'classnames';
 import { List, Set } from 'immutable';
-import { invite } from '../../actions/invite';
+import { invite } from '../../actions/courseAdmin';
+import { fetchCourse } from '../../actions/course';
 import AssignmentNav from '../Assignment/AssignmentNav';
 import './CourseAdmin.css';
 
@@ -13,8 +15,23 @@ class CourseAdmin extends Component {
         history: PropTypes.shape({
             push: PropTypes.func.isRequired
         }).isRequired,
+        match: PropTypes.shape({
+            params: PropTypes.shape({
+                courseId: PropTypes.string.isRequired,
+            }).isRequired,
+        }).isRequired,
         isAdmin: PropTypes.bool.isRequired,
-        dispatch: PropTypes.func.isRequired
+        dispatch: PropTypes.func.isRequired,
+        courseAdmin: ImmutablePropTypes.mapOf(ImmutablePropTypes.contains({
+            fetched: PropTypes.bool.isRequired,
+            students: ImmutablePropTypes.listOf(ImmutablePropTypes.contains({
+                email: PropTypes.string,
+                name: PropTypes.string,
+            })).isRequired,
+            invites: ImmutablePropTypes.listOf(ImmutablePropTypes.contains({
+                email: PropTypes.string.isRequired,
+            })).isRequired,
+        }).isRequired).isRequired,
     }
 
     constructor(props) {
@@ -23,6 +40,14 @@ class CourseAdmin extends Component {
             rawEmails: "",
             parsedEmails: List()
         };
+    }
+
+    componentWillMount() {
+        const { courseAdmin, dispatch } = this.props;
+        const courseId = this.getCourseId();
+        if (!courseAdmin.getIn([courseId, 'fetched'])) {
+            dispatch(fetchCourse(courseId));
+        }
     }
 
     emailChange = e => {
@@ -52,20 +77,47 @@ class CourseAdmin extends Component {
 
     render() {
         const {
+            courseAdmin,
             history,
-            isAdmin
+            isAdmin,
         } = this.props;
         const { parsedEmails, rawEmails } = this.state;
         const courseId = this.getCourseId();
+        const invites = courseAdmin.getIn([courseId, 'invites']);
+        const students = courseAdmin.getIn([courseId, 'students']);
         const showParsedEmails = parsedEmails.size;
 
-        // TODO add list of pending invitations (with resend button)
-        // TODO add list of registered students in the course
         // TODO add a way of seeing user progress in the course
         return isAdmin ? (
                 <div className="courseAdmin">
                     <AssignmentNav history={ history } courseId={ courseId } backEnabled={ true } />
                     <div className="frame">
+                        {
+                        !students.isEmpty()
+                        ? (
+                        <div>
+                            <h2>Students</h2>
+                            <div className="studentList frame">
+                                {
+                                students.map(s => <div key={ s.get('id') }>{ s.get('email') || s.get('name') }</div>)
+                                }
+                            </div>
+                        </div>
+                        ) : null
+                        }
+                        {
+                        !invites.isEmpty()
+                        ? (
+                        <div>
+                            <h2>Pending Invites</h2>
+                            <div className="inviteList frame">
+                                {
+                                invites.map(i => <div key={ i.get('id') }>{ i.get('email') }</div>)
+                                }
+                            </div>
+                        </div>
+                        ) : null
+                        }
                         <h2>Student Registration</h2>
                         <div className="filedropSection">
                             <div className="instructions">
@@ -86,5 +138,6 @@ class CourseAdmin extends Component {
 }
 
 export default connect(state => ({
-    isAdmin: state.user.get('isAdmin')
+    isAdmin: state.user.get('isAdmin'),
+    courseAdmin: state.courseAdmin,
 }))(CourseAdmin);

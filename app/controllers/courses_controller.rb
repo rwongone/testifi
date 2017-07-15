@@ -1,5 +1,5 @@
 class CoursesController < ApplicationController
-  skip_before_action :check_admin, only: [:show, :get_visible]
+  skip_before_action :check_admin, only: [:get_visible]
 
   def create
     course = Course.new(create_params)
@@ -10,7 +10,8 @@ class CoursesController < ApplicationController
   end
 
   def show
-    course = Course.find(params[:id])
+    course = Course.includes(:students, :invites).find(params[:id])
+    logger.info course.inspect
     render status: :ok, json: course
   end
 
