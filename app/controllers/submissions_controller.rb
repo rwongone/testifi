@@ -20,22 +20,26 @@ class SubmissionsController < ApplicationController
       return
     end
 
+    submission = Submission.new(
+      user_id: current_user.id,
+      problem_id: problem.id,
+      language: submission_lang
+    )
+
     ActiveRecord::Base.transaction do
       file = DbFile.create(
         name: uploaded_file.original_filename,
         content_type: 'text/plain',
-        contents: uploaded_file.read,
+        contents: uploaded_file.read
       )
 
-      submission = Submission.create(
-        user_id: current_user.id,
-        problem_id: problem.id,
-        db_file_id: file.id,
-        language: submission_lang
-      )
-
-      render status: :created, json: submission
+      submission.db_file_id = file.id
+      submission.save!
     end
+
+    RunSubmissionsJob.perform_later(submission.id)
+
+    render status: :created, json: submission
   end
 
   def show

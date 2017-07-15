@@ -3,6 +3,7 @@ require 'helpers/rails_helper'
 require 'rspec/json_expectations'
 
 RSpec.describe "Submissions", type: :request do
+  include ActiveJob::TestHelper
   include_context "with authenticated requests"
   include_context "with JSON responses"
 
@@ -15,10 +16,6 @@ RSpec.describe "Submissions", type: :request do
   let(:db_file) { create(:submission_db_file, name: uploaded_file.original_filename, contents: uploaded_file.read, content_type: 'text/plain') }
   let!(:submission) { create(:submission, user_id: student.id, problem_id: problem.id, db_file_id: db_file.id, language: FileHelper.filename_to_language(uploaded_file.original_filename)) }
 
-  # TODO(rwongone): Currently, we only check if a user is in a course's
-  # list of enrolled students to decide whether the resource is accessible.
-  # We will want to handle Submissions differently for teachers. How will
-  # a teacher submit a canon solution?
   context "when a teacher is authenticated" do
     before(:each) do
       authenticate(teacher)
@@ -102,7 +99,9 @@ RSpec.describe "Submissions", type: :request do
         end
 
         it "creates a Submission with the right attributes" do
-          post "/api/problems/#{problem.id}/submissions", params: submission_params
+          expect {
+            post "/api/problems/#{problem.id}/submissions", params: submission_params
+          }.to enqueue_job( RunSubmissionsJob )
           expect(response).to have_http_status(201)
           expect(response.body).to include_json(**expected_properties)
         end
