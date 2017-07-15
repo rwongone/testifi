@@ -54,6 +54,8 @@ ActiveRecord::Schema.define(version: 20170713142139) do
     t.binary "output", null: false
     t.bigint "submission_id", null: false
     t.bigint "test_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["submission_id"], name: "index_executions_on_submission_id"
     t.index ["test_id"], name: "index_executions_on_test_id"
   end
