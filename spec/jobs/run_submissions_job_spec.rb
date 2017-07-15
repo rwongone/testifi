@@ -3,7 +3,6 @@ require 'helpers/rails_helper'
 RSpec.describe RunSubmissionsJob, type: :job do
   include ActiveJob::TestHelper
   include ActionDispatch::TestProcess
-
   let(:student) { create(:student) }
   let(:teacher) { create(:teacher) }
   let(:course) { create(:course, teacher: teacher, students: [student]) }
@@ -43,15 +42,34 @@ RSpec.describe RunSubmissionsJob, type: :job do
   end
 
   describe "queuing a submission" do
+    before do
+      perform_enqueued_jobs { described_class.perform_later(good_submission.id) }
+    end
+
     it "runs the submission on the tests" do
-      perform_enqueued_jobs { job }
       expect(Execution.where(submission_id: good_submission.id).pluck(:output)).to match_array(
         Test.find([test_consec_3.id, test_consec_5.id]).pluck(:expected_output))
     end
 
     it "does not create duplicate Execution records" do
-      perform_enqueued_jobs { job }
-      expect{ perform_enqueued_jobs { job } }.to_not change{ Execution.count }
+      expect {
+        perform_enqueued_jobs { described_class.perform_later(good_submission.id) }
+      }.to_not change{ Execution.count }
+    end
+
+    it "does not rerun on old tests" do
+      expect(TestExecutor).to_not receive(:run_test)
+      perform_enqueued_jobs { described_class.perform_later(good_submission.id) }
+    end
+
+    let(:consec_6) { create(:consec, n: 6) }
+    let(:test_consec_6) { create(:test, user: teacher, problem: problem, db_file_id: consec_6.id) }
+    it "will run only new tests" do
+      FillExpectedOutputJob.perform_now(test_consec_6.id)
+      test_consec_6.reload
+
+      expect(TestExecutor).to receive(:run_test).once.with(good_submission, test_consec_6).and_call_original
+      perform_enqueued_jobs { described_class.perform_later(good_submission.id) }
     end
   end
 

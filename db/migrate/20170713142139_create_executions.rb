@@ -4,6 +4,8 @@ class CreateExecutions < ActiveRecord::Migration[5.1]
       t.binary :output, null: false
       t.references :submission, null: false
       t.references :test, null: false
+
+      t.timestamps
     end
   end
 end
