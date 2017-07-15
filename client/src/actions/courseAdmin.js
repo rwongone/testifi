@@ -49,9 +49,7 @@ export function redeemInvite(inviteId) {
     return function(dispatch) {
         let headers = new Headers();
         headers.append('Accept', 'application/json');
-        headers.append('Content-Type', 'application/json');
         return fetch(`/api/invites/${inviteId}/redeem`, {
-            method: 'GET',
             headers,
             credentials: 'include'
         })
@@ -70,7 +68,6 @@ export function fetchUnusedInvites(courseId) {
     return function(dispatch) {
         let headers = new Headers();
         headers.append('Accept', 'application/json');
-        headers.append('Content-Type', 'application/json');
         return fetch(`/api/courses/${courseId}/unused`, {
             headers,
             credentials: 'include'
@@ -98,7 +95,6 @@ export function fetchStudents(courseId) {
     return function(dispatch) {
         let headers = new Headers();
         headers.append('Accept', 'application/json');
-        headers.append('Content-Type', 'application/json');
         return fetch(`/api/courses/${courseId}/students`, {
             headers,
             credentials: 'include'
