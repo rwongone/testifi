@@ -14,9 +14,7 @@ class RunSubmissionsJob < ApplicationJob
     tests.each do |test|
       execution = Execution.find_or_initialize_by(submission_id: submission.id, test_id: test.id)
       
-      if execution.persisted?
-        next if execution.updated_at >= test.updated_at
-      end
+      next if execution.persisted? && execution.updated_at >= test.updated_at
       execution.output = TestExecutor.run_test(submission, test)
 
       execution.save!
