@@ -9,40 +9,23 @@ UID=$(shell id -u)
 GID=$(shell id -g)
 DOCKER_DIR=docker/sys
 
+
 # When a phony target is declared, make will execute the recipe regardless of whether a file with the same name exists.
-.PHONY: all install dev build run console c stop deploy deploy_build deploy_run
+.PHONY: all deploy deploy_build deploy_run stop bootstrap build run ui client_build load_static node console c test
 
-all: dev
 
-install: build create_db
+# default `all` target to run backend and client development server from testifi_deploy.
+# `make install` to deploy backend and generate static client assets.
+all: bootstrap
+install: deploy ui
 
-dev: build run_dev
 
-build:
-	docker build -f $(DOCKER_DIR)/Dockerfile.rails -t testifi_app .
-
-# If we get a reverse proxy going, we can scale the app to 2 instances.
-run_dev:
-	docker-compose -f $(DOCKER_DIR)/docker-compose.yml -f $(DOCKER_DIR)/docker-compose.dev.yml up --scale app=1 -d
-
-console:
-	docker exec -it testifi_app bash
-
-c: console
-
-stop:
-	echo "Force stopping all containers";
-	-docker rm -f testifi_app testifi_db client_dev;
-	sudo rm -rf tmp
-
+# deploy the application, and forcefully stop its execution.
 deploy: copy_secret deploy_build deploy_run
-
 copy_secret:
 	cp -n config/secrets.yml{.base,}
-
 deploy_build:
 	docker build -f $(DOCKER_DIR)/Dockerfile.testifi -t testifi_deploy .
-
 deploy_run:
 	docker run --rm -it \
 		--name testifi_deploy \
@@ -51,17 +34,36 @@ deploy_run:
 		-e HOST_UID=$(UID) \
 		-e HOST_GID=$(GID) \
 		testifi_deploy:latest \
-		sh -c make dev
+		sh -c "make bootstrap"
+stop:
+	echo "Force stopping all containers";
+	-docker rm -f testifi_app testifi_db client_dev;
+	sudo rm -rf tmp
+
+
+# bootstrap, build, run are to be executed from a testifi_deploy container,
+# as `make deploy` would create.
+bootstrap: build run
+build:
+	docker build -f $(DOCKER_DIR)/Dockerfile.rails -t testifi_app .
+run:
+	docker-compose -f $(DOCKER_DIR)/docker-compose.yml -f $(DOCKER_DIR)/docker-compose.client.yml up --scale app=1 -d
+
 
 # creates an optimized production build of the frontend
-ui:
+ui: client_build load_static
+client_build:
 	docker container run --rm -it \
 		-v $(PWD)/client:/usr/src/app \
 		-w /usr/src/app \
 		-u $(UID):$(GID) \
 		node \
 		sh -c 'npm install; npm run build'
+load_static:
+	cp -R client/build/* public
 
+
+# for installing node packages
 node:
 	docker container run --rm -it \
 		-v $(PWD)/client:/usr/src/app \
@@ -70,5 +72,12 @@ node:
 		node \
 		bash
 
+
+console:
+	docker exec -it testifi_app bash
+c: console
+
+
+# for running tests without entering container
 test:
 	docker exec -it testifi_app bash -c 'rspec -fd'
