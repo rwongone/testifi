@@ -1,0 +1,7 @@
+.submissionShow .backButtonAndText {
+  cursor: pointer;
+}
+
+.submissionShow .backButton {
+  margin-right: 20px;
+}
