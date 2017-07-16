@@ -35,6 +35,10 @@ class SubmissionsController < ApplicationController
 
       submission.db_file_id = file.id
       submission.save!
+
+      if current_user.admin?
+        problem.update(solution_id: submission.id)
+      end
     end
 
     RunSubmissionsJob.perform_later(submission.id)

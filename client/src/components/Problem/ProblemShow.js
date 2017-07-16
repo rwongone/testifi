@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { fetchTests } from '../../actions/test';
+import { submitSubmission } from '../../actions/submission';
+import Filedrop from '../Filedrop';
 import TestList from '../Test/TestList';
 import './ProblemShow.css';
 
@@ -43,7 +45,15 @@ class ProblemShow extends Component {
         }).isRequired,
         history: PropTypes.shape({
             push: PropTypes.func.isRequired
-        }).isRequired
+        }).isRequired,
+        isAdmin: PropTypes.bool.required,
+    }
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            rejected: null
+        };
     }
 
     getCourseId = () => {
@@ -62,9 +72,9 @@ class ProblemShow extends Component {
 
     getProblemId = () => {
         const {
-            match: { params: { assignmentId } }
+            match: { params: { problemId } }
         } = this.props;
-        return parseInt(assignmentId, 10);
+        return parseInt(problemId, 10);
     }
 
     componentWillMount() {
@@ -98,29 +108,56 @@ class ProblemShow extends Component {
         push(`/courses/${courseId}/assignments/${assignment.get('id')}`);
     }
 
+    onAccept = accepted => {
+        const { dispatch, problem } = this.props;
+
+        this.setState({
+            rejected: null
+        })
+
+        dispatch(submitSubmission(this.getProblemId(), accepted))
+    }
+
+    onReject = rejected => {
+        this.setState({
+            rejected
+        })
+    }
+
     render() {
-        const test = this.props.test;
         const assignment = this.getAssignment();
         const problem = this.getProblem(assignment);
+        const { isAdmin, test } = this.props;
+        const { rejected } = this.state;
 
         return (
-                <div className="problemShow">
-                    <h1>
-                        <div className="backButtonAndText" onClick={ this.goBackToProblems }><i className="fa fa-angle-left backButton" aria-hidden="true"></i>{ assignment.get('name') } - { problem.get('name') }</div>
-                    </h1>
-                    {
+            <div className="problemShow">
+                <h1>
+                    <div className="backButtonAndText" onClick={ this.goBackToProblems }><i className="fa fa-angle-left backButton" aria-hidden="true"></i>{ assignment.get('name') } - { problem.get('name') }</div>
+                </h1>
+                {
                     test.getIn([problem.get('id'), 'fetched'])
-                    ? (
+                ? (
                     <TestList problemId={ problem.get('id') } />
-                    ) : null
-                    }
-                </div>
-                );
+                ) : null
+                }
+                {
+                    isAdmin
+                ? (
+                    <div classname="submitSection">
+                        <label>Upload canonical solution:</label>
+                        <Filedrop onAccept={ this.onAccept } onReject={ this.onReject } rejected={ rejected } accept=".java,.py" />
+                    </div>
+                ) : null
+                }
+            </div>
+        );
     }
 }
 
 export default connect(state => ({
     assignment: state.assignment,
     problem: state.problem,
-    test: state.test
+    test: state.test,
+    isAdmin: state.user.get('isAdmin'),
 }))(ProblemShow);
