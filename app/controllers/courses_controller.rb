@@ -44,7 +44,7 @@ class CoursesController < ApplicationController
   end
 
   def students
-    stds = User.joins("join courses_students on users.id = courses_students.student_id").where(["courses_students.course_id = ?", params[:course_id]])
+    stds = Course.find(params[:course_id]).students
     render status: :ok, json: stds
   end
 
