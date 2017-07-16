@@ -11,7 +11,8 @@ Rails.application.routes.draw do
     get '/user', to: 'users#current'
 
     get '/courses/visible', to: 'courses#get_visible'
-    resources :courses, only: [:create, :show, :update, :destroy] do
+    get '/courses/:course_id/students', to: 'courses#students'
+    resources :courses, only: [:create, :update, :destroy] do
       resources :invites, only: [:create]
       resources :assignments, only: [:create, :index]
     end
@@ -30,6 +31,8 @@ Rails.application.routes.draw do
 
     get '/files/:id', to: 'db_files#show'
 
+    get '/courses/:course_id/invites/unused', to: 'invites#unused'
     get '/invites/:invite_id/redeem', to: 'invites#redeem'
+    post '/invites/:invite_id/resend', to: 'invites#resend'
   end
 end

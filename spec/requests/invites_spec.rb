@@ -50,6 +50,42 @@ RSpec.describe "Invites", type: :request do
         subject
       end
     end
+
+    describe "POST /api/invites/:id/resend" do
+      let(:mail) { double("Mail::Message") }
+
+      subject { post "/api/invites/#{invite.id}/resend" }
+
+      it "sends a message" do
+        expect(OnboardingMailer).to receive(:welcome_email).and_return(mail)
+        expect(mail).to receive(:deliver_later)
+
+        subject
+        expect(response).to be_no_content
+      end
+
+      it "404s when the invite has been claimed" do
+        invite.update(redeemer: student)
+        subject
+        expect(response).to be_not_found
+      end
+    end
+
+    describe "GET /api/courses/:id/invites/unused" do
+      it "returns invites that have not been redeemed" do
+        get "/api/courses/#{course.id}/invites/unused"
+        expect(response).to be_ok
+        expect(json_response.size).to eq(1)
+        expect(json_response.first).to include(invite_properties)
+      end
+
+      it "does not return invites that have been redeemed" do
+        invite.update(redeemer: student)
+        get "/api/courses/#{course.id}/invites/unused"
+        expect(response).to be_ok
+        expect(json_response).to be_empty
+      end
+    end
   end
 
   context "when a student is authenticated" do
@@ -85,6 +121,22 @@ RSpec.describe "Invites", type: :request do
 
       it "is inaccessible" do
         post "/api/courses/#{course.id}/invites"
+        expect(response).to be_forbidden
+      end
+    end
+
+    describe "POST /api/invites/:id/resend" do
+      subject { post "/api/invites/#{invite.id}/resend" }
+
+      it "is inaccessible" do
+        subject
+        expect(response).to be_forbidden
+      end
+    end
+
+    describe "GET /api/courses/:id/invites/unused" do
+      it "is inaccessible" do
+        get "/api/courses/#{course.id}/invites/unused"
         expect(response).to be_forbidden
       end
     end

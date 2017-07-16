@@ -1,5 +1,8 @@
 import { Map, List, fromJS } from 'immutable';
-import { CREATE_COURSE_SUCCESS, RECEIVE_COURSES_SUCCESS } from '../actions/course';
+import {
+    CREATE_COURSE_SUCCESS,
+    RECEIVE_COURSES_SUCCESS,
+} from '../actions/course';
 
 export default function(state = Map({
     fetched: false,

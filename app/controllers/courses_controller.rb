@@ -1,5 +1,5 @@
 class CoursesController < ApplicationController
-  skip_before_action :check_admin, only: [:show, :get_visible]
+  skip_before_action :check_admin, only: [:get_visible]
 
   def create
     course = Course.new(create_params)
@@ -7,11 +7,6 @@ class CoursesController < ApplicationController
     if course.save!
       render status: :created, json: course
     end
-  end
-
-  def show
-    course = Course.find(params[:id])
-    render status: :ok, json: course
   end
 
   def update
@@ -46,6 +41,11 @@ class CoursesController < ApplicationController
     else
       render status: :ok, json: current_user.enrolled_courses
     end
+  end
+
+  def students
+    stds = Course.find(params[:course_id]).students
+    render status: :ok, json: stds
   end
 
   private

@@ -24,7 +24,7 @@ export default class TestTile extends Component {
                         <h3>{ test.get('name') }</h3>
                         {
                         isAdmin
-                        ? <a target="_blank" href={ `/api/files/${test.get('db_file_id')}` }>Input</a>
+                        ? <a target="_blank" rel="noopener noreferrer" href={ `/api/files/${test.get('db_file_id')}` }>Input</a>
                         : null
                         }
                         {
