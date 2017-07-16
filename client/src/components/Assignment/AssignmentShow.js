@@ -6,6 +6,7 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import AssignmentNav from './AssignmentNav';
 import AssignmentDetails from './AssignmentDetails';
 import ProblemShow from '../Problem/ProblemShow';
+import SubmissionShow from '../Submission/SubmissionShow';
 import { fetchProblems } from '../../actions/problem';
 import './AssignmentShow.css';
 
@@ -61,7 +62,8 @@ class AssignmentShow extends Component {
                         ? (
                         <div className="frame">
                             <Route exact path="/courses/:courseId/assignments/:assignmentId" component={ AssignmentDetails } />
-                            <Route path="/courses/:courseId/assignments/:assignmentId/problems/:problemId" component={ ProblemShow } />
+                            <Route exact path="/courses/:courseId/assignments/:assignmentId/problems/:problemId" component={ ProblemShow } />
+                            <Route exact path="/courses/:courseId/assignments/:assignmentId/problems/:problemId/submissions/:submissionId" component={ SubmissionShow } />
                         </div>
                         ) : null
                         }

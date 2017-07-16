@@ -6,6 +6,7 @@ import { fetchTests } from '../../actions/test';
 import { submitSubmission } from '../../actions/submission';
 import Filedrop from '../Filedrop';
 import TestList from '../Test/TestList';
+import SubmissionList from '../Submission/SubmissionList';
 import './ProblemShow.css';
 
 class ProblemShow extends Component {
@@ -46,7 +47,7 @@ class ProblemShow extends Component {
         history: PropTypes.shape({
             push: PropTypes.func.isRequired
         }).isRequired,
-        isAdmin: PropTypes.bool.required,
+        isAdmin: PropTypes.bool.isRequired,
     }
 
     constructor(props) {
@@ -78,9 +79,9 @@ class ProblemShow extends Component {
     }
 
     componentWillMount() {
-        const { test, dispatch } = this.props;
+        const { isAdmin, test, dispatch } = this.props;
         const problemId = this.getProblemId();
-        if (!test.getIn([problemId, 'fetched'])) {
+        if (isAdmin && !test.getIn([problemId, 'fetched'])) {
             dispatch(fetchTests(problemId));
         }
     }
@@ -109,7 +110,7 @@ class ProblemShow extends Component {
     }
 
     onAccept = accepted => {
-        const { dispatch, problem } = this.props;
+        const { dispatch } = this.props;
 
         this.setState({
             rejected: null
@@ -127,31 +128,43 @@ class ProblemShow extends Component {
     render() {
         const assignment = this.getAssignment();
         const problem = this.getProblem(assignment);
-        const { isAdmin, test } = this.props;
+        const { history, isAdmin, test } = this.props;
         const { rejected } = this.state;
 
         return (
-            <div className="problemShow">
-                <h1>
-                    <div className="backButtonAndText" onClick={ this.goBackToProblems }><i className="fa fa-angle-left backButton" aria-hidden="true"></i>{ assignment.get('name') } - { problem.get('name') }</div>
-                </h1>
-                {
-                    test.getIn([problem.get('id'), 'fetched'])
-                ? (
-                    <TestList problemId={ problem.get('id') } />
-                ) : null
-                }
-                {
+                <div className="problemShow">
+                    <h1>
+                        <div className="backButtonAndText" onClick={ this.goBackToProblems }><i className="fa fa-angle-left backButton" aria-hidden="true"></i>{ assignment.get('name') } - { problem.get('name') }</div>
+                    </h1>
+                    {
                     isAdmin
-                ? (
-                    <div classname="submitSection">
-                        <label>Upload canonical solution:</label>
-                        <Filedrop onAccept={ this.onAccept } onReject={ this.onReject } rejected={ rejected } accept=".java,.py" />
+                    // *** begin isAdmin
+                    ? (
+                    test.getIn([problem.get('id'), 'fetched'])
+                    ? (
+                    <div>
+                        <div>
+                            <label>Upload canonical solution:</label>
+                            <Filedrop onAccept={ this.onAccept } onReject={ this.onReject } rejected={ rejected } accept=".java,.py" />
+                        </div>
+                        <TestList problemId={ problem.get('id') } />
                     </div>
-                ) : null
-                }
-            </div>
-        );
+                    ) : null
+                    )
+                    // *** end isAdmin
+                    // *** begin !isAdmin
+                    : (
+                    <SubmissionList
+                        courseId={ this.getCourseId() }
+                        assignmentId={ assignment.get('id') }
+                        problemId={ problem.get('id') }
+                        history={ history }
+                    />
+                    )
+                    // *** end !isAdmin
+                    }
+                </div>
+                );
     }
 }
 

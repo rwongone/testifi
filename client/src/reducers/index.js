@@ -5,6 +5,7 @@ import assignment from './assignment';
 import courseAdmin from './courseAdmin';
 import problem from './problem';
 import test from './test';
+import submission from './submission';
 import notification from './notification';
 
 export default combineReducers({
@@ -12,6 +13,7 @@ export default combineReducers({
     course,
     courseAdmin,
     problem,
+    submission,
     test,
     user,
     notification,

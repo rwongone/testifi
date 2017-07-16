@@ -31,6 +31,7 @@ class CourseAdmin extends Component {
             invitesFetched: PropTypes.bool.isRequired,
             invites: ImmutablePropTypes.listOf(ImmutablePropTypes.contains({
                 email: PropTypes.string.isRequired,
+                created_at: PropTypes.instanceOf(Date).isRequired,
             })).isRequired,
         }).isRequired).isRequired,
     }
