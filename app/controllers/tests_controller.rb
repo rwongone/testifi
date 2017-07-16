@@ -2,7 +2,8 @@ class TestsController < ApplicationController
   skip_before_action :check_admin, except: [:index]
 
   def create
-    course = Problem.find(params[:problem_id]).course
+    problem = Problem.includes(assignment: :course).find(params[:problem_id])
+    course = problem.course
     if !current_user_in_course?(course)
       head :forbidden
       return
@@ -10,6 +11,12 @@ class TestsController < ApplicationController
 
     uploaded_file = params[:file]
 
+    test = Test.new(
+      :user_id => current_user.id,
+      :name => params[:name],
+      :hint => params[:hint],
+      :problem_id => params[:problem_id],
+    )
     ActiveRecord::Base.transaction do
       file = DbFile.create(
         name: uploaded_file.original_filename,
@@ -17,16 +24,20 @@ class TestsController < ApplicationController
         contents: uploaded_file.read,
       )
 
-      test = Test.create(
-        :user_id => current_user.id,
-        :name => params[:name],
-        :hint => params[:hint],
-        :problem_id => params[:problem_id],
-        :db_file_id => file.id,
-      )
-
-      render status: :created, json: test
+      test.db_file_id = file.id
+      test.save!
     end
+
+    FillExpectedOutputJob.perform_later(test.id)
+
+    # Rerun most recent submissions of each user on this new test case
+    newest_submission_ids_by_user = problem.submissions.group(:user_id).maximum(:id).values
+    newest_submission_ids_by_user.delete(problem.solution_id)
+    if newest_submission_ids_by_user.size > 0
+      RunSubmissionsJob.perform_later(*newest_submission_ids_by_user)
+    end
+
+    render status: :created, json: test
   end
 
   def show

@@ -3,6 +3,7 @@ require 'helpers/rails_helper'
 require 'rspec/json_expectations'
 
 RSpec.describe "Tests", type: :request do
+  include ActiveJob::TestHelper
   include_context "with authenticated requests"
   include_context "with JSON responses"
 
@@ -11,10 +12,17 @@ RSpec.describe "Tests", type: :request do
   let(:course) { create(:course, teacher_id: teacher.id) }
   let(:assignment) { create(:assignment, course_id: course.id) }
   let!(:problem) { create(:problem, assignment_id: assignment.id) }
-  let(:uploaded_file) { fixture_file_upload("#{fixture_path}/files/input.txt") }
-  let(:db_file) { create(:test_db_file, name: uploaded_file.original_filename, contents: uploaded_file.read, content_type: 'text/plain') }
-  let!(:test) { create(:test, user_id: teacher.id, problem_id: problem.id, db_file_id: db_file.id) }
-  let!(:student_test) { create(:test, user_id: student.id, problem_id: problem.id, db_file_id: db_file.id) }
+
+  let(:uploaded_submission_file) { fixture_file_upload("#{fixture_path}/files/Solution.java") }
+  let(:db_submission_file) { create(:submission_db_file, name: uploaded_submission_file.original_filename, contents: uploaded_submission_file.read, content_type: 'text/plain') }
+  let!(:submission) { create(:submission, user_id: student.id, problem_id: problem.id, db_file_id: db_submission_file.id, language: FileHelper.filename_to_language(uploaded_submission_file.original_filename)) }
+  let(:submission2) { create(:submission, user_id: student.id, problem_id: problem.id, db_file_id: db_submission_file.id, language: FileHelper.filename_to_language(uploaded_submission_file.original_filename)) }
+
+  let(:uploaded_test_file) { fixture_file_upload("#{fixture_path}/files/input.txt") }
+  let(:db_test_file) { create(:test_db_file, name: uploaded_test_file.original_filename, contents: uploaded_test_file.read, content_type: 'text/plain') }
+
+  let!(:test) { create(:test, user_id: teacher.id, problem_id: problem.id, db_file_id: db_test_file.id) }
+  let!(:student_test) { create(:test, user_id: student.id, problem_id: problem.id, db_file_id: db_test_file.id) }
 
   context "when a student is authenticated" do
     before(:each) do
@@ -26,9 +34,9 @@ RSpec.describe "Tests", type: :request do
         it "returns the file" do
           get "/api/tests/#{student_test.id}/file"
           expect(response).to have_http_status(200)
-          expect(response.header['Content-Type']).to eq(db_file.content_type)
-          uploaded_file.rewind
-          expect(response.body).to eq(uploaded_file.read)
+          expect(response.header['Content-Type']).to eq(db_test_file.content_type)
+          uploaded_test_file.rewind
+          expect(response.body).to eq(uploaded_test_file.read)
         end
       end
     end
@@ -55,13 +63,13 @@ RSpec.describe "Tests", type: :request do
       {
         user_id: teacher.id,
         problem_id: problem.id,
-        file: uploaded_file,
+        file: uploaded_test_file,
       }
     end
 
     context "and the teacher made the course" do
       describe "GET /api/problems/:problem_id/tests" do
-        let!(:test2) { create(:test, user_id: teacher.id, problem_id: problem.id, db_file_id: db_file.id) }
+        let!(:test2) { create(:test, user_id: teacher.id, problem_id: problem.id, db_file_id: db_test_file.id) }
         it "returns a list of all of teachers's Tests for a Problem" do
           get "/api/problems/#{problem.id}/tests"
           expect(response).to have_http_status(200)
@@ -86,9 +94,21 @@ RSpec.describe "Tests", type: :request do
         end
 
         it "creates a Test with the right attributes" do
-          post "/api/problems/#{problem.id}/tests", params: test_params
+          expect {
+            post "/api/problems/#{problem.id}/tests", params: test_params
+          }.to enqueue_job(FillExpectedOutputJob)
           expect(response).to have_http_status(201)
           expect(response.body).to include_json(**expected_properties)
+        end
+
+        it "reruns the most recent submission for each user" do
+          expect {
+            post "/api/problems/#{problem.id}/tests", params: test_params
+          }.to enqueue_job(RunSubmissionsJob).with(submission.id)
+
+          expect {
+            post "/api/problems/#{problem.id}/tests", params: test_params
+          }.to enqueue_job(RunSubmissionsJob).with(submission2.id)
         end
       end
     end
@@ -96,7 +116,7 @@ RSpec.describe "Tests", type: :request do
     context "and the teacher did not create the course" do
       let(:teacher2) { create(:teacher) }
       let(:course) { create(:course, teacher_id: teacher2.id) }
-      let(:test) { create(:test, user_id: student.id, problem_id: problem.id, db_file_id: db_file.id) }
+      let(:test) { create(:test, user_id: student.id, problem_id: problem.id, db_file_id: db_test_file.id) }
       let(:restricted_get_endpoints) do
         [
           "/api/problems/#{problem.id}/tests",
