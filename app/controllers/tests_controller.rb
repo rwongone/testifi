@@ -28,14 +28,16 @@ class TestsController < ApplicationController
       test.save!
     end
 
-    render status: :created, json: test
-
     FillExpectedOutputJob.perform_later(test.id)
 
-    # Rerun all previous submissions on this new test case
-    if problem.submission_ids.size > 0
-      RunSubmissionsJob.perform_later(*problem.submission_ids)
+    # Rerun most recent submissions of each user on this new test case
+    newest_submission_by_user = problem.submissions.group(:user_id).maximum(:id).values
+    newest_submission_by_user.delete(problem.solution_id)
+    if newest_submission_by_user.size > 0
+      RunSubmissionsJob.perform_later(*newest_submission_by_user)
     end
+
+    render status: :created, json: test
   end
 
   def show
