@@ -22,11 +22,11 @@ class Home extends Component {
         }
 
         const id = this.props.user.get('id');
-        const location = this.props.location;
+        const loc = this.props.location;
         // if the user is not logged in
         if (id === UNKNOWN_USER_ID) {
             // if not at the home page, redirect to the home page
-            if (location.pathname !== '/') {
+            if (loc.pathname !== '/') {
                 return <Redirect to="/" />
             }
 
@@ -41,7 +41,7 @@ class Home extends Component {
                     );
         }
 
-        if (location.pathname === '/') {
+        if (loc.pathname === '/') {
             return <Redirect to="/courses" />
         }
 

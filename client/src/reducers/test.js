@@ -1,6 +1,7 @@
 import { Map, List, fromJS } from 'immutable';
 import { CREATE_PROBLEM_SUCCESS, RECEIVE_PROBLEMS_SUCCESS } from '../actions/problem';
 import { CREATE_TEST_SUCCESS, RECEIVE_TESTS_SUCCESS } from '../actions/test';
+import { LOGOUT_SUCCESS } from '../actions/user';
 
 const defaultStateForProblem = Map({
     fetched: false,
@@ -29,6 +30,9 @@ export default function(state = Map(), action) {
                 fetched: true,
                 tests: fromJS(action.tests)
             }));
+
+        case LOGOUT_SUCCESS:
+            return Map();
 
         default:
             return state;

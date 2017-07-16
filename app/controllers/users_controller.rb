@@ -1,7 +1,7 @@
 require "http"
 
 class UsersController < ApplicationController
-  skip_before_action :authenticate, only: [:create_admin, :oauth_github, :oauth_google]
+  skip_before_action :authenticate, only: [:create_admin, :oauth_github, :oauth_google, :logout]
   skip_before_action :check_admin
 
   def create_admin
@@ -97,6 +97,11 @@ class UsersController < ApplicationController
       logger.info validator.problem
       head :forbidden
     end
+  end
+
+  def logout()
+      cookies.delete 'Authorization'
+      head :ok
   end
 
   private
