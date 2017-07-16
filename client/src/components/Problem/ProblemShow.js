@@ -45,13 +45,13 @@ class ProblemShow extends Component {
         }).isRequired,
         history: PropTypes.shape({
             push: PropTypes.func.isRequired
-        }).isRequired
+        }).isRequired,
+        isAdmin: PropTypes.bool.required,
     }
 
     constructor(props) {
         super(props);
         this.state = {
-            accepted: null,
             rejected: null
         };
     }
@@ -125,11 +125,10 @@ class ProblemShow extends Component {
     }
 
     render() {
-        const test = this.props.test;
         const assignment = this.getAssignment();
         const problem = this.getProblem(assignment);
-        const { user } = this.props;
-        const { accepted, rejected } = this.state;
+        const { isAdmin, test } = this.props;
+        const { rejected } = this.state;
 
         return (
             <div className="problemShow">
@@ -143,11 +142,11 @@ class ProblemShow extends Component {
                 ) : null
                 }
                 {
-                    user.get('isAdmin')
+                    isAdmin
                 ? (
                     <div classname="submitSection">
                         <label>Upload canonical solution:</label>
-                        <Filedrop onAccept={ this.onAccept } onReject={ this.onReject } accepted={ accepted } rejected={ rejected } accept=".java,.py" />
+                        <Filedrop onAccept={ this.onAccept } onReject={ this.onReject } rejected={ rejected } accept=".java,.py" />
                     </div>
                 ) : null
                 }
@@ -160,5 +159,5 @@ export default connect(state => ({
     assignment: state.assignment,
     problem: state.problem,
     test: state.test,
-    user: state.user,
+    isAdmin: state.user.get('isAdmin'),
 }))(ProblemShow);
