@@ -68,7 +68,7 @@ export function fetchUnusedInvites(courseId) {
     return function(dispatch) {
         let headers = new Headers();
         headers.append('Accept', 'application/json');
-        return fetch(`/api/courses/${courseId}/unused`, {
+        return fetch(`/api/courses/${courseId}/invites/unused`, {
             headers,
             credentials: 'include'
         })

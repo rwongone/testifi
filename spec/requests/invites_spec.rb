@@ -71,9 +71,9 @@ RSpec.describe "Invites", type: :request do
       end
     end
 
-    describe "GET /api/courses/:id/unused" do
+    describe "GET /api/courses/:id/invites/unused" do
       it "returns invites that have not been redeemed" do
-        get "/api/courses/#{course.id}/unused"
+        get "/api/courses/#{course.id}/invites/unused"
         expect(response).to be_ok
         expect(json_response.size).to eq(1)
         expect(json_response.first).to include(invite_properties)
@@ -81,7 +81,7 @@ RSpec.describe "Invites", type: :request do
 
       it "does not return invites that have been redeemed" do
         invite.update(redeemer: student)
-        get "/api/courses/#{course.id}/unused"
+        get "/api/courses/#{course.id}/invites/unused"
         expect(response).to be_ok
         expect(json_response).to be_empty
       end
@@ -134,9 +134,9 @@ RSpec.describe "Invites", type: :request do
       end
     end
 
-    describe "GET /api/courses/:id/unused" do
+    describe "GET /api/courses/:id/invites/unused" do
       it "is inaccessible" do
-        get "/api/courses/#{course.id}/unused"
+        get "/api/courses/#{course.id}/invites/unused"
         expect(response).to be_forbidden
       end
     end
