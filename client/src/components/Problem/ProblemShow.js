@@ -110,7 +110,7 @@ class ProblemShow extends Component {
     }
 
     onAccept = accepted => {
-        const { dispatch, problem } = this.props;
+        const { dispatch } = this.props;
 
         this.setState({
             rejected: null
@@ -128,7 +128,7 @@ class ProblemShow extends Component {
     render() {
         const assignment = this.getAssignment();
         const problem = this.getProblem(assignment);
-        const { isAdmin, test } = this.props;
+        const { history, isAdmin, test } = this.props;
         const { rejected } = this.state;
 
         return (
@@ -154,7 +154,12 @@ class ProblemShow extends Component {
                     // *** end isAdmin
                     // *** begin !isAdmin
                     : (
-                    <SubmissionList problemId={ problem.get('id') } />
+                    <SubmissionList
+                        courseId={ this.getCourseId() }
+                        assignmentId={ assignment.get('id') }
+                        problemId={ problem.get('id') }
+                        history={ history }
+                    />
                     )
                     // *** end !isAdmin
                     }

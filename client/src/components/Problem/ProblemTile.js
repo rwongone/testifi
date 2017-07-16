@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 
@@ -30,10 +29,8 @@ export default class ProblemTile extends Component {
         const { problem } = this.props;
 
         return (
-                <div>
-                    <div className="problemTileFrame frame existing" onClick={ this.goToProblem } >
-                        <h3>{ problem.get('name') }</h3>
-                    </div>
+                <div className="problemTileFrame frame existing" onClick={ this.goToProblem } >
+                    <h3>{ problem.get('name') }</h3>
                 </div>
                 );
     }
