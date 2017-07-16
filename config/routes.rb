@@ -16,6 +16,7 @@ Rails.application.routes.draw do
     resources :courses, only: [:create, :update, :destroy] do
       resources :invites, only: [:create]
       resources :assignments, only: [:create, :index]
+      get 'invites/unused', to: 'invites#unused'
     end
     resources :assignments, only: [:show, :update, :destroy] do
         resources :problems, only: [:create, :index]
@@ -25,14 +26,15 @@ Rails.application.routes.draw do
       resources :tests, only: [:create, :index]
     end
 
-    resources :submissions, only: [:show]
-    get '/submissions/:id/file', to: 'submissions#show_file'
-    resources :tests, only: [:show, :update, :destroy]
-    get '/tests/:id/file', to: 'tests#show_file'
+    resources :submissions, only: [:show] do
+      get 'file', to: 'submissions#show_file'
+    end
+    resources :tests, only: [:show, :update, :destroy] do
+      get 'file', to: 'tests#show_file'
+    end
 
     get '/files/:id', to: 'db_files#show'
 
-    get '/courses/:course_id/invites/unused', to: 'invites#unused'
     get '/invites/:invite_id/redeem', to: 'invites#redeem'
     post '/invites/:invite_id/resend', to: 'invites#resend'
   end
