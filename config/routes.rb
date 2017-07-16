@@ -32,7 +32,7 @@ Rails.application.routes.draw do
 
     get '/files/:id', to: 'db_files#show'
 
-    get '/courses/:course_id/unused', to: 'invites#unused'
+    get '/courses/:course_id/invites/unused', to: 'invites#unused'
     get '/invites/:invite_id/redeem', to: 'invites#redeem'
     post '/invites/:invite_id/resend', to: 'invites#resend'
   end

@@ -47,7 +47,7 @@ class InvitesController < ApplicationController
 
   def unused
     course_id = params[:course_id]
-    invs = Invite.where(course_id: course_id, redeemer_id: nil)
-    render status: :ok, json: invs
+    invites = Invite.unused.where(course_id: course_id)
+    render status: :ok, json: invites
   end
 end
