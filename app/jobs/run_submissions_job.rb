@@ -2,9 +2,9 @@ class RunSubmissionsJob < ApplicationJob
   queue_as :pending_execution
 
   def perform(*submission_ids)
-    submissions = Submission.find(submission_ids)
+    submissions = Submission.includes(:problem).find(submission_ids)
     submissions.each do |submission|
-      run_submission submission
+      run_submission submission if submission.id != submission.problem.solution_id
     end
   end
 

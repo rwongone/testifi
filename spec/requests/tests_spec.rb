@@ -3,6 +3,7 @@ require 'helpers/rails_helper'
 require 'rspec/json_expectations'
 
 RSpec.describe "Tests", type: :request do
+  include ActiveJob::TestHelper
   include_context "with authenticated requests"
   include_context "with JSON responses"
 
@@ -86,7 +87,9 @@ RSpec.describe "Tests", type: :request do
         end
 
         it "creates a Test with the right attributes" do
-          post "/api/problems/#{problem.id}/tests", params: test_params
+          expect {
+            post "/api/problems/#{problem.id}/tests", params: test_params
+          }.to enqueue_job(FillExpectedOutputJob)
           expect(response).to have_http_status(201)
           expect(response.body).to include_json(**expected_properties)
         end
