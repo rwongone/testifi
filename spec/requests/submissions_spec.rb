@@ -29,6 +29,62 @@ RSpec.describe "Submissions", type: :request do
         file: uploaded_file,
       }
     end
+
+    context "and the teacher teaches the course" do
+      let(:course) { create(:course, teacher: teacher) }
+      describe "POST /api/problems/:problem_id/submissions" do
+        let(:expected_properties) do
+          {
+            user_id: teacher.id,
+            problem_id: problem.id,
+            language: 'java',
+          }
+        end
+
+        it "creates a Submission with the right attributes" do
+          expect {
+            post "/api/problems/#{problem.id}/submissions", params: submission_params
+          }.to enqueue_job( RunSubmissionsJob )
+          expect(response).to have_http_status(201)
+          expect(response.body).to include_json(**expected_properties)
+        end
+
+        it "the Submission is actually the solution to the problem" do
+          expect(problem.solution_id).to be_nil
+          post "/api/problems/#{problem.id}/submissions", params: submission_params
+          expect(Problem.find(problem.id).solution_id).to eq(Submission.last.id)
+        end
+      end
+    end
+
+    context "and the teacher does not teach the course" do
+      let(:course) { create(:course) }
+      let(:submission) { create(:submission, user_id: teacher.id, problem_id: problem.id, db_file_id: db_file.id, language: FileHelper.filename_to_language(uploaded_file.original_filename)) }
+      let(:restricted_get_endpoints) do
+        [
+          "/api/problems/#{problem.id}/submissions",
+        ]
+      end
+      let(:restricted_post_endpoints) do
+        {
+          "/api/problems/#{problem.id}/submissions" => submission_params,
+        }
+      end
+
+      describe "restricted Submission endpoints" do
+        it "are inaccessible" do
+          restricted_get_endpoints.each do |endpoint|
+            get endpoint
+            expect(response).to be_forbidden
+          end
+
+          restricted_post_endpoints.each do |endpoint, params|
+            post endpoint, params: params
+            expect(response).to be_forbidden
+          end
+        end
+      end
+    end
   end
 
   context "when a student is authenticated" do

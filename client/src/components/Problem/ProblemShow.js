@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { fetchTests } from '../../actions/test';
+import { submitSubmission } from '../../actions/submission';
+import Filedrop from '../Filedrop';
 import TestList from '../Test/TestList';
 import SubmissionList from '../Submission/SubmissionList';
 import './ProblemShow.css';
@@ -48,6 +50,13 @@ class ProblemShow extends Component {
         isAdmin: PropTypes.bool.isRequired,
     }
 
+    constructor(props) {
+        super(props);
+        this.state = {
+            rejected: null
+        };
+    }
+
     getCourseId = () => {
         const {
             match: { params: { courseId } }
@@ -64,9 +73,9 @@ class ProblemShow extends Component {
 
     getProblemId = () => {
         const {
-            match: { params: { assignmentId } }
+            match: { params: { problemId } }
         } = this.props;
-        return parseInt(assignmentId, 10);
+        return parseInt(problemId, 10);
     }
 
     componentWillMount() {
@@ -100,10 +109,27 @@ class ProblemShow extends Component {
         push(`/courses/${courseId}/assignments/${assignment.get('id')}`);
     }
 
+    onAccept = accepted => {
+        const { dispatch, problem } = this.props;
+
+        this.setState({
+            rejected: null
+        })
+
+        dispatch(submitSubmission(this.getProblemId(), accepted))
+    }
+
+    onReject = rejected => {
+        this.setState({
+            rejected
+        })
+    }
+
     render() {
-        const { test, isAdmin } = this.props;
         const assignment = this.getAssignment();
         const problem = this.getProblem(assignment);
+        const { isAdmin, test } = this.props;
+        const { rejected } = this.state;
 
         return (
                 <div className="problemShow">
@@ -116,7 +142,13 @@ class ProblemShow extends Component {
                     ? (
                     test.getIn([problem.get('id'), 'fetched'])
                     ? (
-                    <TestList problemId={ problem.get('id') } />
+                    <div>
+                        <div>
+                            <label>Upload canonical solution:</label>
+                            <Filedrop onAccept={ this.onAccept } onReject={ this.onReject } rejected={ rejected } accept=".java,.py" />
+                        </div>
+                        <TestList problemId={ problem.get('id') } />
+                    </div>
                     ) : null
                     )
                     // *** end isAdmin
