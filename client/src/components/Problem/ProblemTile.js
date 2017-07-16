@@ -49,11 +49,8 @@ class ProblemTile extends Component {
             courseId,
             problem,
             history,
-            user,
         } = this.props;
-        if (user.get('isAdmin')) {
-            history.push(`/courses/${courseId}/assignments/${assignmentId}/problems/${problem.get('id')}`);
-        }
+        history.push(`/courses/${courseId}/assignments/${assignmentId}/problems/${problem.get('id')}`);
     }
 
     render() {

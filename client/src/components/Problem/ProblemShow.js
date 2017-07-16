@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { fetchTests } from '../../actions/test';
 import TestList from '../Test/TestList';
+import SubmissionList from '../Submission/SubmissionList';
 import './ProblemShow.css';
 
 class ProblemShow extends Component {
@@ -43,7 +44,8 @@ class ProblemShow extends Component {
         }).isRequired,
         history: PropTypes.shape({
             push: PropTypes.func.isRequired
-        }).isRequired
+        }).isRequired,
+        isAdmin: PropTypes.bool.isRequired,
     }
 
     getCourseId = () => {
@@ -68,9 +70,9 @@ class ProblemShow extends Component {
     }
 
     componentWillMount() {
-        const { test, dispatch } = this.props;
+        const { isAdmin, test, dispatch } = this.props;
         const problemId = this.getProblemId();
-        if (!test.getIn([problemId, 'fetched'])) {
+        if (isAdmin && !test.getIn([problemId, 'fetched'])) {
             dispatch(fetchTests(problemId));
         }
     }
@@ -99,7 +101,7 @@ class ProblemShow extends Component {
     }
 
     render() {
-        const test = this.props.test;
+        const { test, isAdmin } = this.props;
         const assignment = this.getAssignment();
         const problem = this.getProblem(assignment);
 
@@ -109,10 +111,20 @@ class ProblemShow extends Component {
                         <div className="backButtonAndText" onClick={ this.goBackToProblems }><i className="fa fa-angle-left backButton" aria-hidden="true"></i>{ assignment.get('name') } - { problem.get('name') }</div>
                     </h1>
                     {
+                    isAdmin
+                    // *** begin isAdmin
+                    ? (
                     test.getIn([problem.get('id'), 'fetched'])
                     ? (
                     <TestList problemId={ problem.get('id') } />
                     ) : null
+                    )
+                    // *** end isAdmin
+                    // *** begin !isAdmin
+                    : (
+                    <SubmissionList problemId={ problem.get('id') } />
+                    )
+                    // *** end !isAdmin
                     }
                 </div>
                 );
@@ -122,5 +134,6 @@ class ProblemShow extends Component {
 export default connect(state => ({
     assignment: state.assignment,
     problem: state.problem,
-    test: state.test
+    test: state.test,
+    isAdmin: state.user.get('isAdmin'),
 }))(ProblemShow);
