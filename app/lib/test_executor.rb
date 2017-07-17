@@ -46,8 +46,9 @@ class TestExecutor
     container.start!
 
     container.attach(:stream => true, :stdin => nil, :stdout => true, :stderr => true, :logs => true, :tty => false)
-    container.streaming_logs(stderr: true) { |stream, chunk| puts chunk }
-    container.read_file("#{WORKDIR}/output/test.out")
+    output = container.read_file("#{WORKDIR}/output/test.out")
+    container.remove(force: true)
+    output
   end
 
   def self.create_testing_image(submission)
