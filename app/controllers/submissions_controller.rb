@@ -56,7 +56,7 @@ class SubmissionsController < ApplicationController
   end
 
   def show_file
-    submission = Submission.includes(:db_file).find(params[:id])
+    submission = Submission.includes(:db_file).find(params[:submission_id])
     if submission.user_id != current_user.id && !current_user.admin?
       head :forbidden
       return

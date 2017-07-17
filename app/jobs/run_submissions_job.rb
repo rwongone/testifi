@@ -16,6 +16,7 @@ class RunSubmissionsJob < ApplicationJob
       
       next if execution.persisted? && execution.updated_at >= test.updated_at
       execution.output = TestExecutor.run_test(submission, test)
+      execution.passed = test.expected_output == execution.output
 
       execution.save!
     end

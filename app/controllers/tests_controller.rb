@@ -51,7 +51,7 @@ class TestsController < ApplicationController
   end
 
   def show_file
-    test = Test.includes(:db_file).find(params[:id])
+    test = Test.includes(:db_file).find(params[:test_id])
     if test.user_id != current_user.id && !current_user.admin?
       head :forbidden
       return
