@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import ImmutablePropTypes from 'react-immutable-proptypes';
+import { connect } from 'react-redux';
+import { fetchSubmissionResults } from '../../actions/submissionResults';
 import './SubmissionShow.css';
 
-export default class SubmissionShow extends Component {
+class SubmissionShow extends Component {
     static propTypes = {
         match: PropTypes.shape({
             params: PropTypes.shape({
@@ -15,6 +18,14 @@ export default class SubmissionShow extends Component {
         history: PropTypes.shape({
             push: PropTypes.func.isRequired
         }).isRequired,
+        submissionResults: ImmutablePropTypes.mapOf(ImmutablePropTypes.contains({
+            fetched: PropTypes.bool.isRequired,
+            results: ImmutablePropTypes.contains({
+                total_tests: PropTypes.number.isRequired,
+                num_passed: PropTypes.number.isRequired,
+            })
+        })).isRequired,
+        dispatch: PropTypes.func.isRequired,
     }
 
     getCourseId = () => {
@@ -53,14 +64,36 @@ export default class SubmissionShow extends Component {
         push(`/courses/${this.getCourseId()}/assignments/${this.getAssignmentId()}/problems/${this.getProblemId()}`);
     }
 
+    componentWillMount() {
+        const { submissionResults, dispatch } = this.props;
+        const submissionId = this.getSubmissionId();
+
+        if (!submissionResults.getIn([submissionId, 'fetched'])) {
+            dispatch(fetchSubmissionResults(submissionId));
+        }
+    }
+
     render() {
+        const results = this.props.submissionResults.getIn([this.getSubmissionId(), 'results']);
         return (
                 <div className="submissionShow">
                     <h1>
                         <div className="backButtonAndText" onClick={ this.goBackToSubmissions }><i className="fa fa-angle-left backButton" aria-hidden="true"></i>Submissions</div>
                     </h1>
-                    <h2>Test Results</h2>
+                    {
+                    results
+                    ? (
+                    <div>
+                        <h2>Test Results</h2>
+                        This submission passed { results.get('num_passed') }/{ results.get('total_tests') } tests.
+                    </div>
+                    ) : null
+                    }
                 </div>
                 );
     }
 }
+
+export default connect(state => ({
+    submissionResults: state.submissionResults,
+}))(SubmissionShow);
