@@ -109,8 +109,8 @@ RSpec.describe "Invites", type: :request do
 
       it "rejects used invites" do
         old_redeemer = create(:student)
-        invite.redeemer = old_redeemer
-        invite.save!
+        invite.update(redeemer: old_redeemer)
+
         get "/api/invites/#{invite.id}/redeem"
         expect(response).to be_forbidden
       end
