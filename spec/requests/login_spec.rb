@@ -78,8 +78,6 @@ RSpec.describe "User authentication", type: :request do
     it "does not make any subsequent users admin" do
       # create first user as admin
       teacher = create(:teacher)
-      teacher.admin = true
-      teacher.save
 
       # create second user
       expect(validator).to receive(:check).with(second_code, google_client.id, google_client.id).and_return(
