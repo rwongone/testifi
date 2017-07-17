@@ -11,13 +11,13 @@ DOCKER_DIR=docker/sys
 
 
 # When a phony target is declared, make will execute the recipe regardless of whether a file with the same name exists.
-.PHONY: all deploy deploy_build deploy_run stop bootstrap build run ui client_build load_static node console c test
+.PHONY: all deploy deploy_build deploy_run stop bootstrap build run client_build node console c test
 
 
 # default `all` target to run backend and client development server from testifi_deploy.
 # `make install` to deploy backend and generate static client assets.
 all: bootstrap
-install: deploy ui
+install: deploy
 
 
 # deploy the application, and forcefully stop its execution.
@@ -37,7 +37,7 @@ deploy_run:
 		sh -c "make bootstrap"
 stop:
 	echo "Force stopping all containers";
-	-docker rm -f testifi_app testifi_db client_dev;
+	-docker rm -f testifi_app testifi_db client_dev testifi_caddy;
 	sudo rm -rf tmp
 
 
@@ -46,21 +46,9 @@ stop:
 bootstrap: build run
 build:
 	docker build -f $(DOCKER_DIR)/Dockerfile.rails -t testifi_app .
+	docker build -f $(DOCKER_DIR)/Dockerfile.caddy -t testifi_caddy .
 run:
 	docker-compose -f $(DOCKER_DIR)/docker-compose.yml -f $(DOCKER_DIR)/docker-compose.client.yml up --scale app=1 -d
-
-
-# creates an optimized production build of the frontend
-ui: client_build load_static
-client_build:
-	docker container run --rm -it \
-		-v $(PWD)/client:/usr/src/app \
-		-w /usr/src/app \
-		-u $(UID):$(GID) \
-		node \
-		sh -c 'npm install; npm run build'
-load_static:
-	cp -R client/build/* public
 
 
 # for installing node packages
