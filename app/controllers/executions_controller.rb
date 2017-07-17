@@ -9,22 +9,14 @@ class ExecutionsController < ApplicationController
       return
     end
 
-    num_passed = 0
-    failed_execution_ids = []
-
     executions = Execution.select(:test_id, :passed).where(submission_id: params[:submission_id])
 
-    executions.each do |execution|
-      if execution.passed?
-        num_passed += 1
-      else
-        failed_execution_ids << execution.test_id
-      end
-    end
+    failed_test_ids = executions.select { |execution| !execution.passed? }.map { |failed_execution| failed_execution.test_id }
+    num_passed = executions.size - failed_test_ids.size
 
     failed_test_hints = []
-    if failed_execution_ids.size > 0
-      failed_test_hints = Test.find(failed_execution_ids).pluck(:hint)
+    if !failed_test_ids.empty?
+      failed_test_hints = Test.find(failed_test_ids).pluck(:hint)
     end
 
     render status: :ok, json: {
