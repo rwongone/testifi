@@ -1,0 +1,8 @@
+0.0.0.0 {
+    gzip
+    proxy /api app:3000
+    rewrite / {
+        if {path} not_starts_with /api/
+        to {path} /
+    }
+}

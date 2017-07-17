@@ -1,0 +1,9 @@
+FROM node
+WORKDIR /usr/src/app
+ADD client/ .
+RUN npm install
+RUN npm run build
+
+FROM abiosoft/caddy
+COPY --from=0 /usr/src/app/build /srv
+ADD caddy/Caddyfile /etc/Caddyfile
