@@ -11,7 +11,7 @@ DOCKER_DIR=docker/sys
 
 
 # When a phony target is declared, make will execute the recipe regardless of whether a file with the same name exists.
-.PHONY: all deploy deploy_build deploy_run stop bootstrap build run client_build node console c test
+.PHONY: all deploy deploy_build deploy_run stop bootstrap build run client_build node console c test attach
 
 
 # default `all` target to run backend and client development server from testifi_deploy.
@@ -69,3 +69,9 @@ c: console
 # for running tests without entering container
 test:
 	docker exec -it testifi_app bash -c 'rspec -fd'
+
+
+# attach to Docker process running Rails so we can use byebug.
+# ctrl-P, ctrl-Q to detach.
+attach:
+	docker container attach --sig-proxy=false testifi_app
