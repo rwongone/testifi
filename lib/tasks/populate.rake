@@ -42,6 +42,49 @@ namespace :db do
       db_file_id: s_f.id,
     )
     p.update(solution_id: s.id)
-    FillExpectedOutputJob.new.perform(t.id)
+
+    p2 = Problem.create!(
+      name: "Putting the Pieces Together",
+      description: "Write a Java class that prints the concatenation of space-separated strings provided via the standard input stream.",
+      assignment: a,
+    )
+    f2 = DbFile.create!(
+      name: "abcdefg",
+      content_type: "txt",
+      contents: "a b c d e f g",
+    )
+    t2 = Test.create!(
+      name: "letters",
+      hint: nil,
+      problem: p2,
+      user: u,
+      db_file_id: f2.id,
+    )
+    f3 = DbFile.create!(
+      name: "0xdeadbeef",
+      content_type: "txt",
+      contents: "0x dead beef",
+    )
+    t3 = Test.create!(
+      name: "hexcode",
+      hint: nil,
+      problem: p2,
+      user: u,
+      db_file_id: f3.id,
+    )
+    s_f2 = DbFile.create!(
+      name: "Solution.java",
+      content_type: "java",
+      contents: File.open('spec/fixtures/files/Concat.java', 'r').read,
+    )
+    s2 = Submission.create!(
+      user: u,
+      problem: p2,
+      language: 'java',
+      db_file_id: s_f2.id,
+    )
+    p2.update(solution_id: s2.id)
+
+    FillExpectedOutputJob.new.perform(t.id, t2.id, t3.id)
   end
 end
