@@ -17,6 +17,7 @@ class CourseDropdown extends Component {
                              })
                              ).isRequired
         }).isRequired,
+        isAdmin: PropTypes.bool.isRequired,
         location: PropTypes.shape({
             pathname: PropTypes.string.isRequired
         }).isRequired,
@@ -60,7 +61,7 @@ class CourseDropdown extends Component {
     }
 
     render() {
-        const { course } = this.props;
+        const { course, isAdmin } = this.props;
         const selectedCourse = this.getSelectedCourse();
 
         return selectedCourse && !course.get('courses').isEmpty()
@@ -75,7 +76,11 @@ class CourseDropdown extends Component {
                             >{ `${c.get('course_code')}: ${c.get('title')}` }</option>
                             ))
                             }
-                            <option value={ NEW_COURSE_ID }>Create New Course...</option>
+                            {
+                            isAdmin
+                            ? <option value={ NEW_COURSE_ID }>Create New Course...</option>
+                            : null
+                            }
                         </select>
                     </div>
                     )
@@ -85,5 +90,6 @@ class CourseDropdown extends Component {
 
 // the withRouter decorator injects the current path location
 export default withRouter(connect(state => ({
-    course: state.course
+    course: state.course,
+    isAdmin: state.user.get('isAdmin'),
 }))(CourseDropdown));
