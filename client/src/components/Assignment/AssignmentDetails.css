@@ -1,0 +1,14 @@
+.assignmentDetails .editable {
+  cursor: pointer;
+}
+
+.assignmentDetails .nameEdit {
+  margin: 0.67em 0;
+  display: flex;
+  align-items: center;
+}
+
+.assignmentDetails .nameEdit input {
+  font-size: 1.4em;
+  margin: 3px 10px 3px 0;
+}
