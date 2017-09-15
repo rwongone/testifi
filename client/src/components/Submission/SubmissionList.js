@@ -46,7 +46,7 @@ class SubmissionList extends Component {
             rejected: null,
         });
 
-        dispatch(submitSubmission(problemId, accepted))
+        dispatch(submitSubmission(problemId, accepted, assignmentId, false))
             .then(s => {
                 push(`/courses/${courseId}/assignments/${assignmentId}/problems/${problemId}/submissions/${s.id}`);
             });
