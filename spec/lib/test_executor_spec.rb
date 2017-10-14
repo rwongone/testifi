@@ -47,35 +47,5 @@ RSpec.describe TestExecutor do
       test_consec_3.reload
       test_consec_5.reload
     end
-
-    describe ".run_tests" do
-      it "executes all Tests for the Submission's Problem using the Submission" do
-        expect(subject).to receive(:run_test).exactly(problem.tests.length).times
-
-        subject.run_tests(solution)
-      end
-    end
-
-    describe ".correct_output?" do
-      it "returns true if the Submission output matches expected output" do
-        expect(subject.correct_output?(solution, test_consec_3)).to be true
-        expect(subject.correct_output?(solution, test_consec_5)).to be true
-      end
-
-      it "returns false if the Submission output differs from expected output" do
-        expect(subject.correct_output?(bad_submission, test_consec_3)).to be false
-        expect(subject.correct_output?(bad_submission, test_consec_5)).to be false
-      end
-    end
-
-    describe ".run_test" do
-      it "returns the result of executing the Test on the Submission code" do
-        output = subject.run_test(solution, test_consec_3)
-        expect(output).to eq("6\n")
-      end
-
-      it "reports errors with a flag" do
-      end
-    end
   end
 end

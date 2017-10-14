@@ -4,4 +4,9 @@ class Test < ApplicationRecord
 
   belongs_to :problem
   belongs_to :user
+
+  def fill_expected_output!
+    self.expected_output = problem.solution.run_test!(self)
+    save!
+  end
 end

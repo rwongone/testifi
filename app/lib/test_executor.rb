@@ -6,30 +6,6 @@ class TestExecutor
     @@images ||= {}
   end
 
-  def self.correct_submission?(submission)
-    tests = Test.where(problem_id: submission.problem_id)
-
-    tests.all? do |test|
-      correct_output?(submission, test)
-    end
-  end
-
-  def self.correct_output?(submission, test)
-    output = run_test(submission, test)
-
-    raise "Missing expected output" if test.expected_output.nil?
-
-    output == test.expected_output
-  end
-
-  def self.run_tests(submission)
-    tests = Test.where(problem_id: submission.problem_id)
-
-    tests.each do |test|
-      run_test(submission, test)
-    end
-  end
-
   def self.run_test(submission, test)
     create_testing_image(submission)
 
@@ -47,8 +23,12 @@ class TestExecutor
 
     container.attach(:stream => true, :stdin => nil, :stdout => true, :stderr => true, :logs => true, :tty => false)
     output = container.read_file("#{WORKDIR}/output/test.out")
+    std_error = container.read_file("#{WORKDIR}/output/test.err")
+    return_code = container.read_file("#{WORKDIR}/output/returncode")
     container.remove(force: true)
-    output
+
+    # TODO: return a struct
+    [output, std_error, return_code]
   end
 
   def self.create_testing_image(submission)
@@ -70,7 +50,7 @@ class TestExecutor
   def self.cmd
     {
       'python' => 'python submission/solution.py < input/test.in > output/test.out',
-      'java' => 'javac submission/Solution.java -d . && java Solution < input/test.in > output/test.out',
+      'java' => 'javac submission/Solution.java -d . 2> output/test.err && java Solution < input/test.in > output/test.out 2> output/test.err; echo $? > output/returncode',
     }
   end
 

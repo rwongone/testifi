@@ -16,11 +16,14 @@ RSpec.describe "Executions", type: :request do
   let!(:submission) { create(:submission, user_id: student.id, problem_id: problem.id, db_file_id: db_file.id, language: FileHelper.filename_to_language(uploaded_file.original_filename)) }
   let(:uploaded_test_file) { fixture_file_upload("#{fixture_path}/files/input.txt") }
   let(:db_test_file) { create(:test_db_file, name: uploaded_test_file.original_filename, contents: uploaded_test_file.read, content_type: 'text/plain') }
-  let!(:test) { create(:test, user_id: teacher.id, problem_id: problem.id, db_file_id: db_test_file.id, expected_output: "1\n") }
-  let!(:test2) { create(:test, user_id: teacher.id, problem_id: problem.id, db_file_id: db_test_file.id, expected_output: "1\n", hint: "Test hint") }
+  let(:expected_output) { "1\n" }
+  let!(:test) { create(:test, user: teacher, problem: problem, db_file_id: db_test_file.id, expected_output: expected_output, hint: "IF YOU SEE THIS, SOMETHING IS WRONG") }
+  let!(:test2) { create(:test, user: teacher, problem: problem, db_file_id: db_test_file.id, expected_output: expected_output, hint: "the output was wrong") }
+  let!(:test3) { create(:test, user: teacher, problem: problem, db_file_id: db_test_file.id, expected_output: expected_output, hint: "there was an error") }
 
-  let!(:execution) { create(:execution, submission_id: submission.id, test_id: test.id, passed: true) }
-  let!(:execution2) { create(:execution, submission_id: submission.id, test_id: test2.id, passed: false) }
+  let!(:execution) { create(:execution, submission: submission, test: test, output: expected_output, return_code: 0) }
+  let!(:execution2) { create(:execution, submission: submission, test: test2, output: "wrong_output", return_code: 0) }
+  let!(:execution3) { create(:execution, submission: submission, test: test3, output: nil, return_code: 1) }
 
   before(:each) do
     authenticate(student)
@@ -30,7 +33,7 @@ RSpec.describe "Executions", type: :request do
     it "should return the number of correct executions" do
       get "/api/submissions/#{submission.id}/results"
       expect(response).to have_http_status(200)
-      expect(response.body).to eq({total_tests: 2, num_passed: 1, failed_test_hints: [test2.hint]}.to_json)
+      expect(response.body).to eq({total_tests: 3, num_passed: 1, failed_test_hints: [test2.hint, test3.hint]}.to_json)
     end
   end
 

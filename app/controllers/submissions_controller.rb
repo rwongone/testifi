@@ -87,7 +87,7 @@ class SubmissionsController < ApplicationController
 
   def exec
     submission = Submission.find(params[:id])
-    result = TestExecutor.run_tests(submission)
+    result = submission.run_tests!
     render status: :ok, json: { 'result': result }
   end
 end
