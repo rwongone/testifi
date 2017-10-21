@@ -51,8 +51,9 @@ ActiveRecord::Schema.define(version: 20170713142139) do
   end
 
   create_table "executions", force: :cascade do |t|
-    t.binary "output", null: false
-    t.boolean "passed", null: false
+    t.binary "output"
+    t.binary "std_error"
+    t.integer "return_code"
     t.bigint "submission_id", null: false
     t.bigint "test_id", null: false
     t.datetime "created_at", null: false

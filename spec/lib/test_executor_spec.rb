@@ -11,10 +11,7 @@ RSpec.describe TestExecutor do
   let(:assignment) { create(:assignment, course: course) }
   let!(:problem) { create(:problem, assignment: assignment) }
   let(:solution_file) { fixture_file_upload("#{fixture_path}/files/Solution.java") }
-  let(:solution_db_file) { create(:submission_db_file,
-                                    name: solution_file.original_filename,
-                                    contents: solution_file.read) }
-  let!(:solution) { create(:submission, user: teacher, problem: problem, db_file_id: solution_db_file.id, language: FileHelper.filename_to_language(solution_file.original_filename)) }
+  let!(:solution) { create(:submission, user: teacher, problem: problem, file: solution_file) }
 
   subject { described_class }
 
@@ -38,10 +35,7 @@ RSpec.describe TestExecutor do
     let(:test_consec_3) { create(:test, user: teacher, problem: problem, db_file_id: consec_3.id) }
     let(:test_consec_5) { create(:test, user: teacher, problem: problem, db_file_id: consec_5.id) }
     let(:bad_submission_file) { fixture_file_upload("#{fixture_path}/files/BadSolution.java") }
-    let(:bad_submission_db_file) { create(:submission_db_file,
-                                          name: bad_submission_file.original_filename,
-                                          contents: bad_submission_file.read) }
-    let!(:bad_submission) { create(:submission, user: student, problem: problem, db_file_id: bad_submission_db_file.id, language: FileHelper.filename_to_language(bad_submission_file.original_filename)) }
+    let!(:bad_submission) { create(:submission, user: student, problem: problem, file: bad_submission_file) }
 
     before do
       subject.create_testing_image(solution)
@@ -52,33 +46,6 @@ RSpec.describe TestExecutor do
       FillExpectedOutputJob.perform_now(test_consec_3.id, test_consec_5.id)
       test_consec_3.reload
       test_consec_5.reload
-    end
-
-    describe ".run_tests" do
-      it "executes all Tests for the Submission's Problem using the Submission" do
-        expect(subject).to receive(:run_test).exactly(problem.tests.length).times
-
-        subject.run_tests(solution)
-      end
-    end
-
-    describe ".correct_output?" do
-      it "returns true if the Submission output matches expected output" do
-        expect(subject.correct_output?(solution, test_consec_3)).to be true
-        expect(subject.correct_output?(solution, test_consec_5)).to be true
-      end
-
-      it "returns false if the Submission output differs from expected output" do
-        expect(subject.correct_output?(bad_submission, test_consec_3)).to be false
-        expect(subject.correct_output?(bad_submission, test_consec_5)).to be false
-      end
-    end
-
-    describe ".run_test" do
-      it "returns the result of executing the Test on the Submission code" do
-        output = subject.run_test(solution, test_consec_3)
-        expect(output).to eq("6\n")
-      end
     end
   end
 end

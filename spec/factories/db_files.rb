@@ -21,4 +21,13 @@ FactoryGirl.define do
       end).join(" ") + "\n"
     end
   end
+
+  factory :fixture_db_file, class: "DbFile" do
+    transient do
+      fixture_file nil
+    end
+
+    name { fixture_file&.original_filename || "empty_file" }
+    contents { fixture_file&.read || "" }
+  end
 end

@@ -5,12 +5,7 @@ class FillExpectedOutputJob < ApplicationJob
     tests = Test.includes(:problem, problem: :solution).find(test_ids)
 
     tests.each do |test|
-      fill_expected_output(test, test.problem.solution)
+      test.fill_expected_output!
     end
-  end
-
-  def fill_expected_output(test, solution)
-    test.expected_output = TestExecutor.run_test(solution, test)
-    test.save!
   end
 end
