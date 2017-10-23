@@ -6,7 +6,14 @@ shared_context "with authenticated requests" do
 end
 
 shared_context "with JSON responses" do
-  let(:json_response) { ActiveSupport::JSON.decode(response.body) }
+  let(:json_response) do
+    decoded_response = ActiveSupport::JSON.decode(response.body)
+    if decoded_response.is_a?(Hash)
+      decoded_response.with_indifferent_access
+    else
+      decoded_response
+    end
+  end
 end
 
 shared_examples "an admin-only GET endpoint" do |endpoint|
