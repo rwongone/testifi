@@ -74,3 +74,32 @@ function createAssignmentSuccess(courseId, assignment) {
         assignment
     }
 }
+
+export function updateAssignment(info) {
+    return function(dispatch) {
+        let headers = new Headers();
+        headers.append('Accept', 'application/json');
+        headers.append('Content-Type', 'application/json');
+        return fetch(`/api/assignments/${info.id}`, {
+            method: 'PUT',
+            headers,
+            body: JSON.stringify(info),
+            credentials: 'include'
+        })
+        .then(handleErrors)
+        .then(resp => resp.json())
+        .then(assignment => {
+            dispatch(updateAssignmentSuccess(assignment));
+            return assignment;
+        })
+        .catch(e => console.error(e));
+    }
+}
+
+export const UPDATE_ASSIGNMENT_SUCCESS = 'UPDATE_ASSIGNMENT_SUCCESS';
+function updateAssignmentSuccess(assignment) {
+    return {
+        type: UPDATE_ASSIGNMENT_SUCCESS,
+        assignment,
+    }
+}

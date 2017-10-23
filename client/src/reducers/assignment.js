@@ -2,6 +2,7 @@ import { Map, List, fromJS } from 'immutable';
 import { CREATE_COURSE_SUCCESS, RECEIVE_COURSES_SUCCESS } from '../actions/course';
 import {
     CREATE_ASSIGNMENT_SUCCESS,
+    UPDATE_ASSIGNMENT_SUCCESS,
     FETCH_ASSIGNMENTS,
     RECEIVE_ASSIGNMENTS_FAILURE,
     RECEIVE_ASSIGNMENTS_SUCCESS
@@ -17,6 +18,11 @@ export default function(state = Map(), action) {
     switch (action.type) {
         case CREATE_ASSIGNMENT_SUCCESS:
             return state.updateIn([action.courseId, 'assignments'], a => a.push(fromJS(action.assignment)));
+
+        case UPDATE_ASSIGNMENT_SUCCESS: {
+            const index = state.getIn([action.assignment.course_id, 'assignments']).findIndex(a => a.get('id') === action.assignment.id);
+            return state.updateIn([action.assignment.course_id, 'assignments'], a => a.set(index, fromJS(action.assignment)));
+        }
 
         case RECEIVE_COURSES_SUCCESS:
             for (let c of action.courses) {
