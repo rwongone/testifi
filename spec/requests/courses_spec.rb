@@ -10,21 +10,21 @@ RSpec.describe "Courses", type: :request do
   let!(:course) { create(:course) }
   let(:default_params) do
     {
-      "/api/courses" => {
-        "course_code" => "CS348",
-        "title" => "Introduction to Databases",
-        "description" => "This course introduces students to databases",
+      '/api/courses' => {
+        course_code: "CS348",
+        title: "Introduction to Databases",
+        description: "This course introduces students to databases",
       }
     }
   end
   let(:course_properties) do
     {
-      "id" => course.id,
-      "course_code" => course.course_code,
-      "title" => course.title,
-      "description" => course.description,
-      "teacher_id" => course.teacher_id,
-    }
+      id: course.id,
+      course_code: course.course_code,
+      title: course.title,
+      description: course.description,
+      teacher_id: course.teacher_id,
+    }.with_indifferent_access
   end
 
   context "when a teacher is authenticated" do
@@ -33,12 +33,7 @@ RSpec.describe "Courses", type: :request do
     describe "POST /api/courses" do
       let(:params) { default_params["/api/courses"] }
       let(:expected_properties) do
-        {
-          "course_code" => params["course_code"],
-          "title" => params["title"],
-          "description" => params["description"],
-          "teacher_id" => teacher.id,
-        }
+        params.merge({ teacher_id: teacher.id })
       end
 
       it "creates a course" do

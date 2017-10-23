@@ -15,16 +15,23 @@ RSpec.describe "User authentication", type: :request do
     let(:second_google_id) { "google_id_125" }
     let(:g_validator_response) do
       {
-        "sub" => google_id,
-        "name" => name,
-        "email" => email,
-      }
+        sub: google_id,
+        name: name,
+        email: email,
+      }.with_indifferent_access
+    end
+    let(:g_validator_response_2) do
+      {
+        sub: second_google_id,
+        name: "Some random name",
+        email: "email@example.com",
+      }.with_indifferent_access
     end
     let(:expected_response) do
       {
-        "google_id" => google_id,
-        "name" => name,
-        "email" => email,
+        google_id: google_id,
+        name: name,
+        email: email,
       }
     end
     let(:validator) { instance_double("GoogleIDToken::Validator") }
@@ -80,13 +87,7 @@ RSpec.describe "User authentication", type: :request do
       teacher = create(:teacher)
 
       # create second user
-      expect(validator).to receive(:check).with(second_code, google_client.id, google_client.id).and_return(
-      {
-        "sub" => second_google_id,
-        "name" => "Some random name",
-        "email" => "email@sendpics.com",
-      }
-      )
+      expect(validator).to receive(:check).with(second_code, google_client.id, google_client.id).and_return(g_validator_response_2)
       get("/api/users/oauth/google", params: {code: second_code})
       expect(response).to have_http_status(200)
       expect(json_response['admin']).to eq(false)
