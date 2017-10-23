@@ -12,15 +12,15 @@ RSpec.describe "Invites", type: :request do
   let!(:invite) { create(:invite, course: course, inviter: teacher, email: student.email) }
   let(:default_params) do
     {
-      "emails" => [student.email]
+      emails: [student.email]
     }
   end
   let(:invite_properties) do
     {
-      "course_id" => course.id,
-      "inviter_id" => teacher.id,
-      "email" => student.email,
-    }
+      course_id: course.id,
+      inviter_id: teacher.id,
+      email: student.email,
+    }.with_indifferent_access
   end
 
   context "when a teacher is authenticated" do
@@ -96,7 +96,7 @@ RSpec.describe "Invites", type: :request do
         get "/api/invites/#{invite.id}/redeem"
         expect(response).to be_ok
         expect(json_response).to include(invite_properties.merge({
-          "redeemer_id" => student.id
+          redeemer_id: student.id
         }))
         expect(student.enrolled_courses.size).to eq(1)
         expect(student.enrolled_courses.first).to eq(course)

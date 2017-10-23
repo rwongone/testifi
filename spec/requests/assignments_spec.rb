@@ -11,8 +11,8 @@ RSpec.describe "Assignments", type: :request do
   let!(:assignment) { create(:assignment, course_id: course.id) }
   let(:assignment_create_params) do
     {
-      "name" => "Assignment 1",
-      "description" => "This course introduces students to databases"
+      name: "Assignment 1",
+      description: "This course introduces students to databases",
     }
   end
 
@@ -46,9 +46,7 @@ RSpec.describe "Assignments", type: :request do
           expect(response).to have_http_status(201)
 
           expect(json_response).to include(
-            "name" => assignment_create_params["name"],
-            "description" => assignment_create_params["description"],
-            "course_id" => course.id
+            assignment_create_params.merge({ course_id: course.id })
           )
         end
       end
@@ -57,14 +55,10 @@ RSpec.describe "Assignments", type: :request do
     context "and the teacher does not teach the course" do
       let(:course) { create(:course) }
       let(:restricted_get_endpoints) do
-        [
-          "/api/assignments/#{assignment.id}",
-        ]
+        [ "/api/assignments/#{assignment.id}", ]
       end
       let(:restricted_post_endpoints) do
-        {
-          "/api/courses/#{course.id}/assignments" => assignment_create_params,
-        }
+        { "/api/courses/#{course.id}/assignments" => assignment_create_params }
       end
 
       describe "GET /api/courses/:course_id/assignments" do
