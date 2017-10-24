@@ -1,19 +1,21 @@
+# frozen_string_literal: true
+
 class TestExecutor
   HOST_WORKDIR = '/usr/src/app'
   WORKDIR = '/tmp/sandbox'
 
   def self.images
-    @@images ||= {}
+    @images ||= {}
   end
 
   def self.run_test(submission, test)
     create_testing_image(submission)
 
-    docker_cmd =  ["sh", "-c", cmd[submission.language]]
+    docker_cmd =  ['sh', '-c', cmd[submission.language]]
     image = images[submission.language]
     opts = {
       'Image' => image.id,
-      'Cmd' => docker_cmd,
+      'Cmd' => docker_cmd
     }
 
     container = Docker::Container.create(opts)
@@ -21,7 +23,7 @@ class TestExecutor
     container.store_file(source_path[submission.language], submission.db_file.contents)
     container.start!
 
-    container.attach(:stream => true, :stdin => nil, :stdout => true, :stderr => true, :logs => true, :tty => false)
+    container.attach(stream: true, stdin: nil, stdout: true, stderr: true, logs: true, tty: false)
     output = container.read_file("#{WORKDIR}/output/test.out")
     std_error = container.read_file("#{WORKDIR}/output/test.err")
     return_code = container.read_file("#{WORKDIR}/output/returncode")
@@ -32,10 +34,8 @@ class TestExecutor
   end
 
   def self.create_testing_image(submission)
-    if !images.key?(submission.language)
-      images[submission.language] = Docker::Image.build_from_dir("#{HOST_WORKDIR}", {
-        'dockerfile' => "docker/lang/#{lang_to_image[submission.language]}",
-      } )
+    unless images.key?(submission.language)
+      images[submission.language] = Docker::Image.build_from_dir(HOST_WORKDIR.to_s, 'dockerfile' => "docker/lang/#{lang_to_image[submission.language]}")
     end
     images[submission.language]
   end
@@ -43,21 +43,21 @@ class TestExecutor
   def self.lang_to_image
     {
       'python' => 'Dockerfile.python',
-      'java' => 'Dockerfile.java',
+      'java' => 'Dockerfile.java'
     }
   end
 
   def self.cmd
     {
       'python' => 'python submission/solution.py < input/test.in > output/test.out',
-      'java' => 'javac submission/Solution.java -d . 2> output/test.err && java Solution < input/test.in > output/test.out 2> output/test.err; echo $? > output/returncode',
+      'java' => 'javac submission/Solution.java -d . 2> output/test.err && java Solution < input/test.in > output/test.out 2> output/test.err; echo $? > output/returncode'
     }
   end
 
   def self.source_path
     {
       'python' => "#{WORKDIR}/submission/solution.py",
-      'java' => "#{WORKDIR}/submission/Solution.java",
+      'java' => "#{WORKDIR}/submission/Solution.java"
     }
   end
 end

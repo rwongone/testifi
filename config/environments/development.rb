@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
@@ -31,8 +33,8 @@ Rails.application.configure do
     address:              'smtp.gmail.com',
     port:                 587,
     domain:               'gmail.com',
-		user_name:            Rails.application.secrets.dig(:smtp, :username),
-		password:             Rails.application.secrets.dig(:smtp, :password),
+    user_name:            Rails.application.secrets.dig(:smtp, :username),
+    password:             Rails.application.secrets.dig(:smtp, :password),
     authentication:       :plain,
     enable_starttls_auto: true
   }
@@ -54,7 +56,5 @@ Rails.application.configure do
   # routes, locales, etc. This feature depends on the listen gem.
   config.file_watcher = ActiveSupport::EventedFileUpdateChecker
 
-
   config.url = 'http://localhost:3001'
-
 end

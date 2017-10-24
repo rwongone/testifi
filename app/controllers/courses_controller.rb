@@ -1,12 +1,12 @@
+# frozen_string_literal: true
+
 class CoursesController < ApplicationController
-  skip_before_action :check_admin, only: [:get_visible]
+  skip_before_action :check_admin, only: [:visible]
 
   def create
     course = Course.new(create_params)
     course.teacher_id = current_user.id
-    if course.save!
-      render status: :created, json: course
-    end
+    render status: :created, json: course if course.save!
   end
 
   def update
@@ -17,9 +17,7 @@ class CoursesController < ApplicationController
       return
     end
 
-    if course.update!(create_params)
-      render status: :ok, json: course
-    end
+    render status: :ok, json: course if course.update!(create_params)
   end
 
   def destroy
@@ -35,7 +33,7 @@ class CoursesController < ApplicationController
   end
 
   # get visible returns courses that are taught by an admin or enrolled in by a student
-  def get_visible
+  def visible
     if current_user.admin?
       render status: :ok, json: current_user.taught_courses
     else

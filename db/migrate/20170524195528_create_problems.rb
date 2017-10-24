@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateProblems < ActiveRecord::Migration[5.1]
   def change
     create_table :problems do |t|
@@ -10,6 +12,5 @@ class CreateProblems < ActiveRecord::Migration[5.1]
 
       t.index :solution_id
     end
-
   end
 end

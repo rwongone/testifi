@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class InvitesController < ApplicationController
   skip_before_action :check_admin, only: [:redeem]
 
@@ -9,11 +11,9 @@ class InvitesController < ApplicationController
 
     ActiveRecord::Base.transaction do
       invites = emails.map do |email|
-        invite = Invite.create({
-          "course_id" => course_id,
-          "email" => email,
-          "inviter_id" => current_user_id
-        })
+        invite = Invite.create('course_id' => course_id,
+                               'email' => email,
+                               'inviter_id' => current_user_id)
         OnboardingMailer.welcome_email(invite).deliver_later
         invite
       end

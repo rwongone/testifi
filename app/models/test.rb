@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 class Test < ApplicationRecord
-  has_one :db_file, foreign_key: "id", primary_key: "db_file_id"
+  has_one :db_file, foreign_key: 'id', primary_key: 'db_file_id'
   has_many :executions
 
   belongs_to :problem

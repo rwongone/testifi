@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require './app/lib/test_executor.rb'
 require 'helpers/rails_helper'
 require 'helpers/api_helper'
@@ -15,10 +17,10 @@ RSpec.describe TestExecutor do
 
   subject { described_class }
 
-  describe ".create_testing_image" do
+  describe '.create_testing_image' do
     # All expectations in one test, so we only actually create the image once.
-    it "creates a singleton Docker::Image for the Submission" do
-      subject.class_variable_set(:@@images, {})
+    it 'creates a singleton Docker::Image for the Submission' do
+      subject.instance_variable_set(:@images, {})
       expect(Docker::Image).to receive(:build_from_dir).once.and_call_original
 
       image = subject.create_testing_image(solution)
@@ -29,7 +31,7 @@ RSpec.describe TestExecutor do
     end
   end
 
-  context "when executing tests with an existing image" do
+  context 'when executing tests with an existing image' do
     let(:consec_3) { create(:consec, n: 3) }
     let(:consec_5) { create(:consec, n: 5) }
     let(:test_consec_3) { create(:test, user: teacher, problem: problem, db_file_id: consec_3.id) }

@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 class ProblemsController < ApplicationController
-  skip_before_action :check_admin, only: [:show, :index]
+  skip_before_action :check_admin, only: %i[show index]
 
   def index
     course = Assignment.find(params[:assignment_id]).course
-    if !current_user_in_course?(course)
+    unless current_user_in_course?(course)
       head :forbidden
       return
     end
@@ -41,7 +43,7 @@ class ProblemsController < ApplicationController
   def show
     problem = Problem.find(params[:id])
     course = problem.course
-    if !current_user_in_course?(course)
+    unless current_user_in_course?(course)
       head :forbidden
       return
     end
@@ -58,9 +60,7 @@ class ProblemsController < ApplicationController
       return
     end
 
-    if problem.update!(create_params)
-      render status: :ok, json: problem
-    end
+    render status: :ok, json: problem if problem.update!(create_params)
   end
 
   def destroy

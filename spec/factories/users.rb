@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryGirl.define do
   factory :user, aliases: [:student] do
     name { 'Larry Learner' }

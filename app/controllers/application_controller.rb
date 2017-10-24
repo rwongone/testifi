@@ -1,26 +1,27 @@
+# frozen_string_literal: true
+
 class ApplicationController < ActionController::API
   include ActionController::Cookies
 
   before_action :authenticate, :check_admin
 
   def logged_in?
-    !!current_user
+    current_user.present?
   end
 
   def current_user
-    if bearer_token?
-      user_id = auth["user_id"]
-      user = User.find_by(id: user_id)
-      @current_user ||= user
-    end
+    return unless bearer_token?
+    user_id = auth['user_id']
+    user = User.find_by(id: user_id)
+    @current_user ||= user
   end
 
   def authenticate
-    head :unauthorized if !logged_in?
+    head :unauthorized unless logged_in?
   end
 
   def check_admin
-    head :forbidden if !current_user.admin?
+    head :forbidden unless current_user.admin?
   end
 
   def current_user_in_course?(course)

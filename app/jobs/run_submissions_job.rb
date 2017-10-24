@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RunSubmissionsJob < ApplicationJob
   queue_as :pending_execution
 

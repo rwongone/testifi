@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'test_executor'
 require 'file_helper'
 
@@ -7,7 +9,7 @@ class SubmissionsController < ApplicationController
   def create
     problem = Problem.find(params[:problem_id])
     course = problem.course
-    if !current_user_in_course?(course)
+    unless current_user_in_course?(course)
       head :forbidden
       return
     end
@@ -16,7 +18,7 @@ class SubmissionsController < ApplicationController
 
     submission_lang = FileHelper.filename_to_language(uploaded_file.original_filename)
     if submission_lang.nil?
-      render status: :bad_request, json: {message: "No file extension to infer submission language"}
+      render status: :bad_request, json: { message: 'No file extension to infer submission language' }
       return
     end
 
@@ -36,9 +38,7 @@ class SubmissionsController < ApplicationController
       submission.db_file_id = file.id
       submission.save!
 
-      if current_user.admin?
-        problem.update(solution_id: submission.id)
-      end
+      problem.update(solution_id: submission.id) if current_user.admin?
     end
 
     RunSubmissionsJob.perform_later(submission.id)
@@ -70,18 +70,13 @@ class SubmissionsController < ApplicationController
 
   def index
     course = Problem.find(params[:problem_id]).course
-    if !current_user_in_course?(course)
+    unless current_user_in_course?(course)
       head :forbidden
       return
     end
 
-    submissions = []
-    if current_user.admin?
-      submissions = Submission.where(problem_id: params[:problem_id])
-    else
-      submissions = Submission.where(problem_id: params[:problem_id], user_id: current_user.id)
-    end
-
+    submissions = Submission.where(problem_id: params[:problem_id])
+    submissions = submissions.where(user_id: current_user.id) if current_user.admin?
     render status: :ok, json: submissions
   end
 
