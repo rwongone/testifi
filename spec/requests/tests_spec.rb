@@ -1,11 +1,13 @@
+# frozen_string_literal: true
+
 require 'helpers/api_helper'
 require 'helpers/rails_helper'
 require 'rspec/json_expectations'
 
-RSpec.describe "Tests", type: :request do
+RSpec.describe 'Tests', type: :request do
   include ActiveJob::TestHelper
-  include_context "with authenticated requests"
-  include_context "with JSON responses"
+  include_context 'with authenticated requests'
+  include_context 'with JSON responses'
 
   let(:student) { create(:student) }
   let(:teacher) { create(:teacher) }
@@ -24,14 +26,14 @@ RSpec.describe "Tests", type: :request do
   let!(:test) { create(:test, user_id: teacher.id, problem_id: problem.id, db_file_id: db_test_file.id) }
   let!(:student_test) { create(:test, user_id: student.id, problem_id: problem.id, db_file_id: db_test_file.id) }
 
-  context "when a student is authenticated" do
+  context 'when a student is authenticated' do
     before(:each) do
       authenticate(student)
     end
 
-    context "and the student requests a file they own" do
-      describe "GET /api/tests/:id/file" do
-        it "returns the file" do
+    context 'and the student requests a file they own' do
+      describe 'GET /api/tests/:id/file' do
+        it 'returns the file' do
           get "/api/tests/#{student_test.id}/file"
           expect(response).to have_http_status(200)
           expect(response.header['Content-Type']).to eq(db_test_file.content_type)
@@ -41,10 +43,10 @@ RSpec.describe "Tests", type: :request do
       end
     end
 
-    context "and the student requests a file they do not own" do
-      describe "GET /api/tests/:id/file" do
+    context 'and the student requests a file they do not own' do
+      describe 'GET /api/tests/:id/file' do
         let(:student2) { create(:student) }
-        it "prevents access" do
+        it 'prevents access' do
           authenticate(student2)
 
           get "/api/tests/#{student_test.id}/file"
@@ -54,7 +56,7 @@ RSpec.describe "Tests", type: :request do
     end
   end
 
-  context "when a teacher is authenticated" do
+  context 'when a teacher is authenticated' do
     before(:each) do
       authenticate(teacher)
     end
@@ -63,12 +65,12 @@ RSpec.describe "Tests", type: :request do
       {
         user_id: teacher.id,
         problem_id: problem.id,
-        file: uploaded_test_file,
+        file: uploaded_test_file
       }
     end
 
-    context "and the teacher made the course" do
-      describe "GET /api/problems/:problem_id/tests" do
+    context 'and the teacher made the course' do
+      describe 'GET /api/problems/:problem_id/tests' do
         let!(:test2) { create(:test, user_id: teacher.id, problem_id: problem.id, db_file_id: db_test_file.id) }
         it "returns a list of all of teachers's Tests for a Problem" do
           get "/api/problems/#{problem.id}/tests"
@@ -77,59 +79,59 @@ RSpec.describe "Tests", type: :request do
         end
       end
 
-      describe "GET /api/test/:id" do
-        it "returns the test as JSON" do
+      describe 'GET /api/test/:id' do
+        it 'returns the test as JSON' do
           get "/api/tests/#{test.id}"
           expect(response).to have_http_status(200)
           expect(response.body).to eq(test.to_json)
         end
       end
 
-      describe "POST /api/problems/:problem_id/tests" do
+      describe 'POST /api/problems/:problem_id/tests' do
         let(:expected_properties) do
           {
             user_id: teacher.id,
-            problem_id: problem.id,
+            problem_id: problem.id
           }
         end
 
-        it "creates a Test with the right attributes" do
-          expect {
+        it 'creates a Test with the right attributes' do
+          expect do
             post "/api/problems/#{problem.id}/tests", params: test_params
-          }.to enqueue_job(FillExpectedOutputJob)
+          end.to enqueue_job(FillExpectedOutputJob)
           expect(response).to have_http_status(201)
           expect(response.body).to include_json(**expected_properties)
         end
 
-        it "reruns the most recent submission for each user" do
-          expect {
+        it 'reruns the most recent submission for each user' do
+          expect do
             post "/api/problems/#{problem.id}/tests", params: test_params
-          }.to enqueue_job(RunSubmissionsJob).with(submission.id)
+          end.to enqueue_job(RunSubmissionsJob).with(submission.id)
 
-          expect {
+          expect do
             post "/api/problems/#{problem.id}/tests", params: test_params
-          }.to enqueue_job(RunSubmissionsJob).with(submission2.id)
+          end.to enqueue_job(RunSubmissionsJob).with(submission2.id)
         end
       end
     end
 
-    context "and the teacher did not create the course" do
+    context 'and the teacher did not create the course' do
       let(:teacher2) { create(:teacher) }
       let(:course) { create(:course, teacher_id: teacher2.id) }
       let(:test) { create(:test, user_id: student.id, problem_id: problem.id, db_file_id: db_test_file.id) }
       let(:restricted_get_endpoints) do
         [
-          "/api/problems/#{problem.id}/tests",
+          "/api/problems/#{problem.id}/tests"
         ]
       end
       let(:restricted_post_endpoints) do
         {
-          "/api/problems/#{problem.id}/tests" => test_params,
+          "/api/problems/#{problem.id}/tests" => test_params
         }
       end
 
-      describe "restricted Test endpoints" do
-        it "are inaccessible" do
+      describe 'restricted Test endpoints' do
+        it 'are inaccessible' do
           restricted_get_endpoints.each do |endpoint|
             get endpoint
             expect(response).to be_forbidden

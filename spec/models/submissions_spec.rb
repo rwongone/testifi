@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'helpers/rails_helper'
 
 RSpec.describe Submission, type: :model do

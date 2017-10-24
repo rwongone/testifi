@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 class Submission < ApplicationRecord
-  has_one :db_file, foreign_key: "id", primary_key: "db_file_id"
+  has_one :db_file, foreign_key: 'id', primary_key: 'db_file_id'
   has_many :executions
 
   belongs_to :problem
@@ -9,19 +11,19 @@ class Submission < ApplicationRecord
 
   def correct?
     Test.where(problem: problem).all? do |test|
-      if tests_executed.include?(test)
-        execution = Execution.find_by(submission: self, test: test)
-      else
-        execution = run_test!(test, false)
-      end
+      execution = if tests_executed.include?(test)
+                    Execution.find_by(submission: self, test: test)
+                  else
+                    run_test!(test, false)
+                  end
       execution.passed?
     end
   end
 
-  def run_test!(test, output_only=true)
+  def run_test!(test, output_only = true)
     execution = Execution.find_or_initialize_by(submission: self, test: test)
 
-    if !(execution.persisted? && execution.updated_at >= test.updated_at)
+    unless execution.persisted? && execution.updated_at >= test.updated_at
       execution.output, execution.std_error, execution.return_code = TestExecutor.run_test(self, test)
       execution.save!
     end
@@ -36,8 +38,6 @@ class Submission < ApplicationRecord
   end
 
   def tests_executed
-    executions.map do |execution|
-      execution.test
-    end
+    executions.map(&:test)
   end
 end

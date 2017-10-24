@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ExecutionsController < ApplicationController
   skip_before_action :check_admin
 
@@ -10,14 +12,14 @@ class ExecutionsController < ApplicationController
     end
 
     executions = Execution.where(submission: submission)
-    failed_test_ids = executions.
-      select { |execution| !execution.passed? }.
-      map { |failed_execution| failed_execution.test_id }
+    failed_test_ids = executions
+                      .reject(&:passed?)
+                      .map(&:test_id)
 
     num_passed = executions.size - failed_test_ids.size
 
     failed_test_hints = []
-    if !failed_test_ids.empty?
+    unless failed_test_ids.empty?
       failed_test_hints = Test.find(failed_test_ids).pluck(:hint)
     end
 
