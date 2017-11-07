@@ -5,7 +5,7 @@ export function fetchAssignments(courseId) {
     return function(dispatch) {
         dispatch({
             type: FETCH_ASSIGNMENTS,
-            courseId
+            courseId,
         });
         let headers = new Headers();
         headers.append('Accept', 'application/json');
@@ -13,7 +13,7 @@ export function fetchAssignments(courseId) {
         return fetch(`/api/courses/${courseId}/assignments`, {
             method: 'GET',
             headers,
-            credentials: 'include'
+            credentials: 'include',
         })
         .then(handleErrors)
         .then(resp => resp.json())
@@ -25,7 +25,7 @@ export function fetchAssignments(courseId) {
             dispatch(receiveAssignmentsFailure(courseId));
             console.error(e);
         });
-    }
+    };
 }
 
 export const RECEIVE_ASSIGNMENTS_SUCCESS = 'RECEIVE_ASSIGNMENTS_SUCCESS';
@@ -33,16 +33,16 @@ function receiveAssignmentsSuccess(courseId, assignments) {
     return {
         type: RECEIVE_ASSIGNMENTS_SUCCESS,
         courseId,
-        assignments
-    }
+        assignments,
+    };
 }
 
 export const RECEIVE_ASSIGNMENTS_FAILURE = 'RECEIVE_ASSIGNMENTS_FAILURE';
 function receiveAssignmentsFailure(courseId) {
     return {
         type: RECEIVE_ASSIGNMENTS_FAILURE,
-        courseId
-    }
+        courseId,
+    };
 }
 
 export function createAssignment(courseId, info) {
@@ -54,7 +54,7 @@ export function createAssignment(courseId, info) {
             method: 'POST',
             headers,
             body: JSON.stringify(info),
-            credentials: 'include'
+            credentials: 'include',
         })
         .then(handleErrors)
         .then(resp => resp.json())
@@ -63,7 +63,7 @@ export function createAssignment(courseId, info) {
             return assignment;
         })
         .catch(e => console.error(e));
-    }
+    };
 }
 
 export const CREATE_ASSIGNMENT_SUCCESS = 'CREATE_ASSIGNMENT_SUCCESS';
@@ -71,8 +71,8 @@ function createAssignmentSuccess(courseId, assignment) {
     return {
         type: CREATE_ASSIGNMENT_SUCCESS,
         courseId,
-        assignment
-    }
+        assignment,
+    };
 }
 
 export function updateAssignment(info) {
@@ -84,7 +84,7 @@ export function updateAssignment(info) {
             method: 'PUT',
             headers,
             body: JSON.stringify(info),
-            credentials: 'include'
+            credentials: 'include',
         })
         .then(handleErrors)
         .then(resp => resp.json())
@@ -93,7 +93,7 @@ export function updateAssignment(info) {
             return assignment;
         })
         .catch(e => console.error(e));
-    }
+    };
 }
 
 export const UPDATE_ASSIGNMENT_SUCCESS = 'UPDATE_ASSIGNMENT_SUCCESS';
@@ -101,5 +101,5 @@ function updateAssignmentSuccess(assignment) {
     return {
         type: UPDATE_ASSIGNMENT_SUCCESS,
         assignment,
-    }
+    };
 }

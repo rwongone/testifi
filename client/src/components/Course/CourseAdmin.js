@@ -13,7 +13,7 @@ import './CourseAdmin.css';
 class CourseAdmin extends Component {
     static propTypes = {
         history: PropTypes.shape({
-            push: PropTypes.func.isRequired
+            push: PropTypes.func.isRequired,
         }).isRequired,
         match: PropTypes.shape({
             params: PropTypes.shape({
@@ -39,8 +39,8 @@ class CourseAdmin extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            rawEmails: "",
-            parsedEmails: List()
+            rawEmails: '',
+            parsedEmails: List(),
         };
     }
 
@@ -56,10 +56,10 @@ class CourseAdmin extends Component {
     }
 
     emailChange = e => {
-        const parsedEmails = Set(e.target.value.split(/[\s,]+/g)).remove("").toList().sort();
+        const parsedEmails = Set(e.target.value.split(/[\s,]+/g)).remove('').toList().sort();
         this.setState({
             parsedEmails,
-            rawEmails: e.target.value
+            rawEmails: e.target.value,
         });
     }
 
@@ -78,7 +78,7 @@ class CourseAdmin extends Component {
         }
 
         dispatch(invite(this.getCourseId(), parsedEmails))
-            .then(() => this.setState({ rawEmails: "", parsedEmails: List() }));
+            .then(() => this.setState({ rawEmails: '', parsedEmails: List() }));
     }
 
     resend = id => () => {

@@ -8,7 +8,7 @@ export function fetchTests(problemId) {
         return fetch(`/api/problems/${problemId}/tests`, {
             method: 'GET',
             headers,
-            credentials: 'include'
+            credentials: 'include',
         })
         .then(handleErrors)
         .then(resp => resp.json())
@@ -17,7 +17,7 @@ export function fetchTests(problemId) {
             return tests;
         })
         .catch(e => console.error(e));
-    }
+    };
 }
 
 export const RECEIVE_TESTS_SUCCESS = 'RECEIVE_TESTS_SUCCESS';
@@ -25,24 +25,24 @@ function receiveTestsSuccess(problemId, tests) {
     return {
         type: RECEIVE_TESTS_SUCCESS,
         problemId,
-        tests
-    }
+        tests,
+    };
 }
 
 export function createTest(problemId, info) {
     return function(dispatch) {
         // since tests contain an input file, they must be posted as form data
         const fd = new FormData();
-        fd.append("name", info.name);
-        fd.append("hint", info.hint);
-        fd.append("file", info.file);
+        fd.append('name', info.name);
+        fd.append('hint', info.hint);
+        fd.append('file', info.file);
         let headers = new Headers();
         headers.append('Accept', 'application/json');
         return fetch(`/api/problems/${problemId}/tests`, {
             method: 'POST',
             headers,
             body: fd,
-            credentials: 'include'
+            credentials: 'include',
         })
         .then(handleErrors)
         .then(resp => resp.json())
@@ -51,7 +51,7 @@ export function createTest(problemId, info) {
             return test;
         })
         .catch(e => console.error(e));
-    }
+    };
 }
 
 export const CREATE_TEST_SUCCESS = 'CREATE_TEST_SUCCESS';
@@ -59,6 +59,6 @@ function createTestSuccess(problemId, test) {
     return {
         type: CREATE_TEST_SUCCESS,
         problemId,
-        test
-    }
+        test,
+    };
 }

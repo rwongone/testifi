@@ -10,10 +10,10 @@ import './Login.css';
 class Login extends Component {
     static propTypes = {
         user: ImmutablePropTypes.contains({
-            id: PropTypes.number.isRequired
+            id: PropTypes.number.isRequired,
         }).isRequired,
         history: PropTypes.shape({
-            push: PropTypes.func.isRequired
+            push: PropTypes.func.isRequired,
         }),
         dontRedirectWhenLoggedIn: PropTypes.bool,
         instructionText: PropTypes.string,
@@ -23,7 +23,7 @@ class Login extends Component {
         const {
             history,
             dontRedirectWhenLoggedIn,
-            user
+            user,
         } = props;
         if (user.get('id') !== UNKNOWN_USER_ID && !dontRedirectWhenLoggedIn) {
             history.push('/courses');
@@ -51,10 +51,10 @@ class Login extends Component {
                         </div>
                     </div>
                 </div>
-                );
+        );
     }
 }
 
 export default connect(state => ({
-    user: state.user
+    user: state.user,
 }))(Login);

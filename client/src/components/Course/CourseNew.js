@@ -8,21 +8,21 @@ class CourseNew extends Component {
     static propTypes = {
         dispatch: PropTypes.func.isRequired,
         history: PropTypes.shape({
-            push: PropTypes.func.isRequired
-        }).isRequired
+            push: PropTypes.func.isRequired,
+        }).isRequired,
     }
 
     onSubmit = e => {
         const {
             dispatch,
-            history: { push }
+            history: { push },
         } = this.props;
 
         const course = {
             course_code: e.target.courseCode.value,
             title: e.target.title.value,
-            description: e.target.description.value
-        }
+            description: e.target.description.value,
+        };
 
         dispatch(createCourse(course)).then(c => push(`/courses/${c.id}/assignments`));
         e.preventDefault();
@@ -41,7 +41,7 @@ class CourseNew extends Component {
                         </form>
                     </div>
                 </div>
-                );
+        );
     }
 }
 

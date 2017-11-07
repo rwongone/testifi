@@ -5,7 +5,7 @@ import { LOGOUT_SUCCESS } from '../actions/user';
 
 const defaultStateForProblem = Map({
     fetched: false,
-    tests: List()
+    tests: List(),
 });
 
 export default function(state = Map(), action) {
@@ -28,7 +28,7 @@ export default function(state = Map(), action) {
         case RECEIVE_TESTS_SUCCESS:
             return state.set(action.problemId, Map({
                 fetched: true,
-                tests: fromJS(action.tests)
+                tests: fromJS(action.tests),
             }));
 
         case LOGOUT_SUCCESS:

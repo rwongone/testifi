@@ -17,7 +17,7 @@ export function notify(message, notificationType) {
             message,
             notificationType,
         });
-    }
+    };
 }
 
 export const UNNOTIFY = 'UNNOTIFY';
@@ -25,5 +25,5 @@ function unnotify(id) {
     return {
         type: UNNOTIFY,
         id,
-    }
+    };
 }

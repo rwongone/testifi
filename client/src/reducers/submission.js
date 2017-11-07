@@ -27,7 +27,7 @@ export default function(state = Map(), action) {
         case RECEIVE_SUBMISSIONS_SUCCESS:
             return state.set(action.problemId, Map({
                 fetched: true,
-                submissions: fromJS(action.submissions).map(s => s.update('created_at', d => new Date(d)))
+                submissions: fromJS(action.submissions).map(s => s.update('created_at', d => new Date(d))),
             }));
 
         case LOGOUT_SUCCESS:

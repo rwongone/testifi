@@ -6,7 +6,7 @@ import { loginGoogle } from '../../actions/user';
 
 class GoogleLoginButton extends Component {
     static propTypes = {
-        dispatch: PropTypes.func.isRequired
+        dispatch: PropTypes.func.isRequired,
     }
 
     componentDidMount() {
@@ -16,7 +16,7 @@ class GoogleLoginButton extends Component {
             const auth2 = gapi.auth2.init({
                 client_id: '20208689027-nbm2lpcslog9r8a42c5c06dfg059f7hq.apps.googleusercontent.com',
                 cookiepolicy: 'single_host_origin',
-                scope: 'email'
+                scope: 'email',
             });
             let element = document.getElementById('googleLoginButton');
             auth2.attachClickHandler(element, {},
@@ -33,7 +33,7 @@ class GoogleLoginButton extends Component {
                 <button id="googleLoginButton" className="loginButton">
                     <i className="fa fa-google" aria-hidden="true"></i><span className="name">Google</span>
                 </button>
-                );
+        );
     }
 }
 

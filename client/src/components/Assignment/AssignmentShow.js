@@ -16,27 +16,27 @@ class AssignmentShow extends Component {
         match: PropTypes.shape({
             params: PropTypes.shape({
                 assignmentId: PropTypes.string.isRequired,
-                courseId: PropTypes.string.isRequired
-            }).isRequired
+                courseId: PropTypes.string.isRequired,
+            }).isRequired,
         }).isRequired,
         history: PropTypes.object.isRequired,
         problem: ImmutablePropTypes.mapOf(
                 ImmutablePropTypes.contains({
-                    fetched: PropTypes.bool.isRequired
+                    fetched: PropTypes.bool.isRequired,
                 })
-                )
+                ),
     }
 
     getCourseId = () => {
         const {
-            match: { params: { courseId } }
+            match: { params: { courseId } },
         } = this.props;
         return parseInt(courseId, 10);
     }
 
     getAssignmentId = () => {
         const {
-            match: { params: { assignmentId } }
+            match: { params: { assignmentId } },
         } = this.props;
         return parseInt(assignmentId, 10);
     }
@@ -68,10 +68,10 @@ class AssignmentShow extends Component {
                         ) : null
                         }
                 </div>
-                );
+        );
     }
 }
 
 export default connect(state => ({
-    problem: state.problem
+    problem: state.problem,
 }))(AssignmentShow);

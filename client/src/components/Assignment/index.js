@@ -14,20 +14,20 @@ class Assignment extends Component {
                             ImmutablePropTypes.contains({
                                 fetched: PropTypes.bool.isRequired,
                                 fetching: PropTypes.bool.isRequired,
-                                assignments: ImmutablePropTypes.list.isRequired
+                                assignments: ImmutablePropTypes.list.isRequired,
                             }).isRequired
                             ).isRequired,
         dispatch: PropTypes.func.isRequired,
         match: PropTypes.shape({
             params: PropTypes.shape({
-                courseId: PropTypes.string.isRequired
-            }).isRequired
-        }).isRequired
+                courseId: PropTypes.string.isRequired,
+            }).isRequired,
+        }).isRequired,
     }
 
     getCourseId = props => {
         const {
-            match: { params: { courseId } }
+            match: { params: { courseId } },
         } = props;
         return parseInt(courseId, 10);
     }
@@ -35,7 +35,7 @@ class Assignment extends Component {
     fetchAssignmentsIfNecessary = props => {
         const {
             assignment,
-            dispatch
+            dispatch,
         } = props;
 
         const courseId = this.getCourseId(props);
@@ -69,5 +69,5 @@ class Assignment extends Component {
 }
 
 export default connect(state => ({
-    assignment: state.assignment
+    assignment: state.assignment,
 }))(Assignment);

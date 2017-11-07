@@ -15,9 +15,9 @@ class AssignmentList extends Component {
                                 assignments: ImmutablePropTypes.listOf(
                                                      ImmutablePropTypes.contains({
                                                          id: PropTypes.number.isRequired,
-                                                         name: PropTypes.string.isRequired
+                                                         name: PropTypes.string.isRequired,
                                                      })
-                                                     ).isRequired
+                                                     ).isRequired,
                             }).isRequired
                             ).isRequired,
         user: ImmutablePropTypes.contains({
@@ -25,18 +25,18 @@ class AssignmentList extends Component {
         }).isRequired,
         match: PropTypes.shape({
             params: PropTypes.shape({
-                courseId: PropTypes.string.isRequired
-            }).isRequired
+                courseId: PropTypes.string.isRequired,
+            }).isRequired,
         }).isRequired,
         history: PropTypes.shape({
-            push: PropTypes.func.isRequired
-        }).isRequired
+            push: PropTypes.func.isRequired,
+        }).isRequired,
     }
 
     goToAssignment = assignmentId => () => {
         const {
             match: { params: { courseId } },
-            history
+            history,
         } = this.props;
 
         if (assignmentId === NEW_ASSIGNMENT_ID) {
@@ -51,7 +51,7 @@ class AssignmentList extends Component {
             assignment,
             user,
             match: { params: { courseId } },
-            history
+            history,
         } = this.props;
         const parsedCourseId = parseInt(courseId, 10);
         const assignments = assignment.getIn([parsedCourseId, 'assignments']);
@@ -85,11 +85,11 @@ class AssignmentList extends Component {
                         }
                     </div>
                 </div>
-                );
+        );
     }
 }
 
 export default connect(state => ({
     assignment: state.assignment,
-    user: state.user
+    user: state.user,
 }))(AssignmentList);

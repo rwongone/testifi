@@ -5,12 +5,12 @@ import { loginGithub } from '../../actions/user';
 
 class GithubLoginButton extends Component {
     static propTypes = {
-        dispatch: PropTypes.func.isRequired
+        dispatch: PropTypes.func.isRequired,
     };
 
     loginAction = () => {
         const {
-            dispatch
+            dispatch,
         } = this.props;
 
         dispatch(loginGithub());
@@ -21,7 +21,7 @@ class GithubLoginButton extends Component {
                 <button className="loginButton" onClick={ this.loginAction }>
                     <i className="fa fa-github" aria-hidden="true"></i><span className="name">Github</span>
                 </button>
-                );
+        );
     }
 }
 

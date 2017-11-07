@@ -8,7 +8,7 @@ export function fetchProblems(assignmentId) {
         return fetch(`/api/assignments/${assignmentId}/problems`, {
             method: 'GET',
             headers,
-            credentials: 'include'
+            credentials: 'include',
         })
         .then(handleErrors)
         .then(resp => resp.json())
@@ -17,7 +17,7 @@ export function fetchProblems(assignmentId) {
             return problems;
         })
         .catch(e => console.error(e));
-    }
+    };
 }
 
 export const RECEIVE_PROBLEMS_SUCCESS = 'RECEIVE_PROBLEMS_SUCCESS';
@@ -25,8 +25,8 @@ function receiveProblemsSuccess(assignmentId, problems) {
     return {
         type: RECEIVE_PROBLEMS_SUCCESS,
         assignmentId,
-        problems
-    }
+        problems,
+    };
 }
 
 export function createProblem(assignmentId, info) {
@@ -38,7 +38,7 @@ export function createProblem(assignmentId, info) {
             method: 'POST',
             headers,
             body: JSON.stringify(info),
-            credentials: 'include'
+            credentials: 'include',
         })
         .then(handleErrors)
         .then(resp => resp.json())
@@ -47,7 +47,7 @@ export function createProblem(assignmentId, info) {
             return problem;
         })
         .catch(e => console.error(e));
-    }
+    };
 }
 
 export const CREATE_PROBLEM_SUCCESS = 'CREATE_PROBLEM_SUCCESS';
@@ -55,6 +55,6 @@ function createProblemSuccess(assignmentId, problem) {
     return {
         type: CREATE_PROBLEM_SUCCESS,
         assignmentId,
-        problem
-    }
+        problem,
+    };
 }

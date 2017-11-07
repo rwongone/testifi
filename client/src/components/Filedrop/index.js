@@ -41,6 +41,6 @@ export default class Filedrop extends Component {
                     : <div>Drop input file here or click to upload...</div>
                     }
                 </Dropzone>
-                );
+        );
     }
 }

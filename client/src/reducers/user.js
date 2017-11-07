@@ -17,7 +17,7 @@ export default function(state = defaultUserState, action) {
                 admin,
                 email,
                 name,
-                id
+                id,
             } = action.user;
 
             return state.merge({
@@ -25,12 +25,12 @@ export default function(state = defaultUserState, action) {
                 isAdmin: admin,
                 email,
                 name,
-                id
+                id,
             });
 
         case RECEIVE_USER_FAILURE:
             return state.merge({
-                fetched: true
+                fetched: true,
             });
 
         case LOGOUT_SUCCESS:

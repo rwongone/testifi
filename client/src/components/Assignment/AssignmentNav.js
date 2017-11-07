@@ -8,9 +8,9 @@ class AssignmentNav extends Component {
         backEnabled: PropTypes.bool,
         courseId: PropTypes.number.isRequired,
         history: PropTypes.shape({
-            push: PropTypes.func.isRequired
+            push: PropTypes.func.isRequired,
         }).isRequired,
-        isAdmin: PropTypes.bool.isRequired
+        isAdmin: PropTypes.bool.isRequired,
     }
 
     goBack = () => {
@@ -20,7 +20,7 @@ class AssignmentNav extends Component {
 
         const {
             courseId,
-            history: { push }
+            history: { push },
         } = this.props;
         push(`/courses/${courseId}/assignments`);
     }
@@ -28,7 +28,7 @@ class AssignmentNav extends Component {
     goToAdmin = () => {
         const {
             courseId,
-            history: { push }
+            history: { push },
         } = this.props;
         push(`/courses/${courseId}/admin`);
     }
@@ -51,10 +51,10 @@ class AssignmentNav extends Component {
                     }
                     </div>
                 </div>
-                    )
+        );
     }
 }
 
 export default connect(state => ({
-    isAdmin: state.user.get('isAdmin')
+    isAdmin: state.user.get('isAdmin'),
 }))(AssignmentNav);

@@ -8,7 +8,7 @@ export default class Notification extends Component {
         data: ImmutablePropTypes.contains({
             notificationType: PropTypes.string.isRequired,
             message: PropTypes.string.isRequired,
-        }).isRequired
+        }).isRequired,
     }
 
     render() {
@@ -17,6 +17,6 @@ export default class Notification extends Component {
                 <div className={ classNames('notification frame', data.get('notificationType')) }>
                     { data.get('message') }
                 </div>
-               );
+        );
     }
 }

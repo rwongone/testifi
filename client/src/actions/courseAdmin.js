@@ -10,7 +10,7 @@ export function invite(courseId, emails) {
             method: 'POST',
             headers,
             body: JSON.stringify({ emails }),
-            credentials: 'include'
+            credentials: 'include',
         })
         .then(handleErrors)
         .then(resp => resp.json())
@@ -19,7 +19,7 @@ export function invite(courseId, emails) {
             return invites;
         })
         .catch(e => console.error(e));
-    }
+    };
 }
 
 export const INVITE_SUCCESS = 'INVITE_SUCCESS';
@@ -28,7 +28,7 @@ function inviteSuccess(courseId, invites) {
         type: INVITE_SUCCESS,
         courseId,
         invites,
-    }
+    };
 }
 
 export function resendInvite(inviteId) {
@@ -38,11 +38,11 @@ export function resendInvite(inviteId) {
         return fetch(`/api/invites/${inviteId}/resend`, {
             method: 'POST',
             headers,
-            credentials: 'include'
+            credentials: 'include',
         })
         .then(handleErrors)
         .catch(e => console.error(e));
-    }
+    };
 }
 
 export function redeemInvite(inviteId) {
@@ -51,7 +51,7 @@ export function redeemInvite(inviteId) {
         headers.append('Accept', 'application/json');
         return fetch(`/api/invites/${inviteId}/redeem`, {
             headers,
-            credentials: 'include'
+            credentials: 'include',
         })
         .then(handleErrors)
         .then(resp => resp.json())
@@ -61,7 +61,7 @@ export function redeemInvite(inviteId) {
             return inv;
         })
         .catch(e => console.error(e));
-    }
+    };
 }
 
 export function fetchUnusedInvites(courseId) {
@@ -70,7 +70,7 @@ export function fetchUnusedInvites(courseId) {
         headers.append('Accept', 'application/json');
         return fetch(`/api/courses/${courseId}/invites/unused`, {
             headers,
-            credentials: 'include'
+            credentials: 'include',
         })
         .then(handleErrors)
         .then(resp => resp.json())
@@ -79,7 +79,7 @@ export function fetchUnusedInvites(courseId) {
             return invites;
         })
         .catch(e => console.error(e));
-    }
+    };
 }
 
 export const RECEIVE_INVITES_SUCCESS = 'RECEIVE_INVITES_SUCCESS';
@@ -88,7 +88,7 @@ function receiveInvitesSuccess(courseId, invites) {
         type: RECEIVE_INVITES_SUCCESS,
         courseId,
         invites,
-    }
+    };
 }
 
 export function fetchStudents(courseId) {
@@ -97,7 +97,7 @@ export function fetchStudents(courseId) {
         headers.append('Accept', 'application/json');
         return fetch(`/api/courses/${courseId}/students`, {
             headers,
-            credentials: 'include'
+            credentials: 'include',
         })
         .then(handleErrors)
         .then(resp => resp.json())
@@ -106,7 +106,7 @@ export function fetchStudents(courseId) {
             return students;
         })
         .catch(e => console.error(e));
-    }
+    };
 }
 
 export const RECEIVE_STUDENTS_SUCCESS = 'RECEIVE_STUDENTS_SUCCESS';
@@ -115,5 +115,5 @@ function receiveStudentsSuccess(courseId, students) {
         type: RECEIVE_STUDENTS_SUCCESS,
         courseId,
         students,
-    }
+    };
 }
