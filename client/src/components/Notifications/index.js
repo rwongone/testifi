@@ -9,7 +9,7 @@ class Notifications extends Component {
     static propTypes = {
         notification: ImmutablePropTypes.listOf(ImmutablePropTypes.contains({
             id: PropTypes.string.isRequired,
-        })).isRequired
+        })).isRequired,
     }
 
     render() {
@@ -18,10 +18,10 @@ class Notifications extends Component {
                 <div className="notifications">
                     { notification.map(n => <Notification key={ n.get('id') } data={ n } />) }
                 </div>
-               );
+        );
     }
 }
 
 export default connect(state => ({
-    notification: state.notification
+    notification: state.notification,
 }))(Notifications);

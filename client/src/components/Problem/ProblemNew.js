@@ -11,15 +11,15 @@ class ProblemNew extends Component {
         assignmentId: PropTypes.number.isRequired,
         courseId: PropTypes.number.isRequired,
         history: PropTypes.shape({
-            push: PropTypes.func.isRequired
-        }).isRequired
+            push: PropTypes.func.isRequired,
+        }).isRequired,
     }
 
     goToProblem = problemId => {
         const {
             assignmentId,
             courseId,
-            history
+            history,
         } = this.props;
         history.push(`/courses/${courseId}/assignments/${assignmentId}/problems/${problemId}`);
     }
@@ -29,13 +29,13 @@ class ProblemNew extends Component {
             dispatch,
             assignmentId,
             courseId,
-            history: { push }
+            history: { push },
         } = this.props;
 
         const problem = {
             name: e.target.name.value,
-            description: e.target.description.value
-        }
+            description: e.target.description.value,
+        };
 
         dispatch(createProblem(assignmentId, problem)).then(p => push(`/courses/${courseId}/assignments/${assignmentId}/problems/${p.id}`));
         e.preventDefault();
@@ -62,7 +62,7 @@ class ProblemNew extends Component {
                         </form>
                     </div>
                 </div>
-                );
+        );
     }
 }
 

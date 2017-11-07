@@ -8,7 +8,7 @@ export function fetchCourses() {
         return fetch('/api/courses/visible', {
             method: 'GET',
             headers,
-            credentials: 'include'
+            credentials: 'include',
         })
         .then(handleErrors)
         .then(resp => resp.json())
@@ -17,15 +17,15 @@ export function fetchCourses() {
             return courses;
         })
         .catch(e => console.error(e));
-    }
+    };
 }
 
 export const RECEIVE_COURSES_SUCCESS = 'RECEIVE_COURSES_SUCCESS';
 function receiveCoursesSuccess(courses) {
     return {
         type: RECEIVE_COURSES_SUCCESS,
-        courses
-    }
+        courses,
+    };
 }
 
 export function createCourse(info) {
@@ -37,7 +37,7 @@ export function createCourse(info) {
             method: 'POST',
             headers,
             body: JSON.stringify(info),
-            credentials: 'include'
+            credentials: 'include',
         })
         .then(handleErrors)
         .then(resp => resp.json())
@@ -46,13 +46,13 @@ export function createCourse(info) {
             return course;
         })
         .catch(e => console.error(e));
-    }
+    };
 }
 
 export const CREATE_COURSE_SUCCESS = 'CREATE_COURSE_SUCCESS';
 function createCourseSuccess(course) {
     return {
         type: CREATE_COURSE_SUCCESS,
-        course
-    }
+        course,
+    };
 }

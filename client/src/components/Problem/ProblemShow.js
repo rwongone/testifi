@@ -15,17 +15,17 @@ class ProblemShow extends Component {
             assignments: ImmutablePropTypes.mapOf(
                 ImmutablePropTypes.contains({
                     id: PropTypes.number.isRequired,
-                    name: PropTypes.string.isRequired
+                    name: PropTypes.string.isRequired,
                 })
-                )
+                ),
         }),
         problem: ImmutablePropTypes.contains({
             problems: ImmutablePropTypes.mapOf(
                 ImmutablePropTypes.contains({
                     id: PropTypes.number.isRequired,
-                    name: PropTypes.string.isRequired
+                    name: PropTypes.string.isRequired,
                 })
-                )
+                ),
         }),
         test: ImmutablePropTypes.contains({
             fetched: PropTypes.bool.required,
@@ -33,19 +33,19 @@ class ProblemShow extends Component {
                 ImmutablePropTypes.contains({
                     id: PropTypes.number.isRequired,
                     name: PropTypes.string.isRequired,
-                    solution: PropTypes.string.isRequired
+                    solution: PropTypes.string.isRequired,
                 })
-                )
+                ),
         }),
         match: PropTypes.shape({
             params: PropTypes.shape({
                 assignmentId: PropTypes.string.isRequired,
                 courseId: PropTypes.string.isRequired,
-                problemId: PropTypes.string.isRequired
-            }).isRequired
+                problemId: PropTypes.string.isRequired,
+            }).isRequired,
         }).isRequired,
         history: PropTypes.shape({
-            push: PropTypes.func.isRequired
+            push: PropTypes.func.isRequired,
         }).isRequired,
         isAdmin: PropTypes.bool.isRequired,
     }
@@ -53,27 +53,27 @@ class ProblemShow extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            rejected: null
+            rejected: null,
         };
     }
 
     getCourseId = () => {
         const {
-            match: { params: { courseId } }
+            match: { params: { courseId } },
         } = this.props;
         return parseInt(courseId, 10);
     }
 
     getAssignmentId = () => {
         const {
-            match: { params: { assignmentId } }
+            match: { params: { assignmentId } },
         } = this.props;
         return parseInt(assignmentId, 10);
     }
 
     getProblemId = () => {
         const {
-            match: { params: { problemId } }
+            match: { params: { problemId } },
         } = this.props;
         return parseInt(problemId, 10);
     }
@@ -101,7 +101,7 @@ class ProblemShow extends Component {
 
     goBackToProblems = () => {
         const {
-            history: { push }
+            history: { push },
         } = this.props;
         const courseId = this.getCourseId();
         const assignment = this.getAssignment();
@@ -113,16 +113,16 @@ class ProblemShow extends Component {
         const { dispatch } = this.props;
 
         this.setState({
-            rejected: null
-        })
+            rejected: null,
+        });
 
-        dispatch(submitSubmission(this.getProblemId(), accepted))
+        dispatch(submitSubmission(this.getProblemId(), accepted));
     }
 
     onReject = rejected => {
         this.setState({
-            rejected
-        })
+            rejected,
+        });
     }
 
     render() {
@@ -164,7 +164,7 @@ class ProblemShow extends Component {
                     // *** end !isAdmin
                     }
                 </div>
-                );
+        );
     }
 }
 

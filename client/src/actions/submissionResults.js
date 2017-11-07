@@ -16,7 +16,7 @@ export function fetchSubmissionResults(submissionId) {
             return results;
         })
         .catch(e => console.error(e));
-    }
+    };
 }
 
 export const RECEIVE_SUBMISSION_RESULTS_SUCCESS = 'RECEIVE_SUBMISSION_RESULTS_SUCCESS';
@@ -25,6 +25,6 @@ function receiveSubmissionResultsSuccess(submissionId, results) {
         type: RECEIVE_SUBMISSION_RESULTS_SUCCESS,
         submissionId,
         results,
-    }
+    };
 }
 

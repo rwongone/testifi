@@ -46,20 +46,20 @@ export default function(state = Map(), action) {
                 return state.set(action.courseId, defaultStateForCourse.set('fetching', true));
             }
             return state.update(action.courseId, m => m.merge({
-                fetching: true
+                fetching: true,
             }));
 
         case RECEIVE_ASSIGNMENTS_SUCCESS:
             return state.set(action.courseId, Map({
                 fetched: true,
                 fetching: false,
-                assignments: fromJS(action.assignments)
+                assignments: fromJS(action.assignments),
             }));
 
         case RECEIVE_ASSIGNMENTS_FAILURE:
             return state.update(action.courseId, m => m.merge({
                 fetched: false,
-                fetching: false
+                fetching: false,
             }));
 
         case LOGOUT_SUCCESS:

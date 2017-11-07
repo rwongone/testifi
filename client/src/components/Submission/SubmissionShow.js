@@ -13,52 +13,52 @@ class SubmissionShow extends Component {
                 courseId: PropTypes.string.isRequired,
                 problemId: PropTypes.string.isRequired,
                 submissionId: PropTypes.string.isRequired,
-            }).isRequired
+            }).isRequired,
         }).isRequired,
         history: PropTypes.shape({
-            push: PropTypes.func.isRequired
+            push: PropTypes.func.isRequired,
         }).isRequired,
         submissionResults: ImmutablePropTypes.mapOf(ImmutablePropTypes.contains({
             fetched: PropTypes.bool.isRequired,
             results: ImmutablePropTypes.contains({
                 total_tests: PropTypes.number.isRequired,
                 num_passed: PropTypes.number.isRequired,
-            })
+            }),
         })).isRequired,
         dispatch: PropTypes.func.isRequired,
     }
 
     getCourseId = () => {
         const {
-            match: { params: { courseId } }
+            match: { params: { courseId } },
         } = this.props;
         return parseInt(courseId, 10);
     }
 
     getAssignmentId = () => {
         const {
-            match: { params: { assignmentId } }
+            match: { params: { assignmentId } },
         } = this.props;
         return parseInt(assignmentId, 10);
     }
 
     getProblemId = () => {
         const {
-            match: { params: { problemId } }
+            match: { params: { problemId } },
         } = this.props;
         return parseInt(problemId, 10);
     }
 
     getSubmissionId = () => {
         const {
-            match: { params: { submissionId } }
+            match: { params: { submissionId } },
         } = this.props;
         return parseInt(submissionId, 10);
     }
 
     goBackToSubmissions = () => {
         const {
-            history: { push }
+            history: { push },
         } = this.props;
 
         push(`/courses/${this.getCourseId()}/assignments/${this.getAssignmentId()}/problems/${this.getProblemId()}`);
@@ -90,7 +90,7 @@ class SubmissionShow extends Component {
                     ) : null
                     }
                 </div>
-                );
+        );
     }
 }
 

@@ -2,11 +2,11 @@ import { Map, List, fromJS } from 'immutable';
 import {
     RECEIVE_INVITES_SUCCESS,
     RECEIVE_STUDENTS_SUCCESS,
-    INVITE_SUCCESS,
+    INVITE_SUCCESS
 } from '../actions/courseAdmin';
 import {
     CREATE_COURSE_SUCCESS,
-    RECEIVE_COURSES_SUCCESS,
+    RECEIVE_COURSES_SUCCESS
 } from '../actions/course';
 
 function parseAndSort(...inviteLists) {

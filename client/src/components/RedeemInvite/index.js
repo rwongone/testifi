@@ -11,16 +11,16 @@ class RedeemInvite extends Component {
         dispatch: PropTypes.func.isRequired,
         user: ImmutablePropTypes.contains({
             fetched: PropTypes.bool.isRequired,
-            id: PropTypes.number.isRequired
+            id: PropTypes.number.isRequired,
         }),
         history: PropTypes.shape({
             push: PropTypes.func.isRequired,
-        }).isRequired
+        }).isRequired,
     }
 
     getInviteId = () => {
         const {
-            match: { params: { inviteId } }
+            match: { params: { inviteId } },
         } = this.props;
 
         return inviteId;
@@ -64,10 +64,10 @@ class RedeemInvite extends Component {
         }
         return (
                 <Login dontRedirectWhenLoggedIn={ true } instructionText="Please login to enroll in the course:" />
-                );
+        );
     }
 }
 
 export default connect(state => ({
-    user: state.user
+    user: state.user,
 }))(RedeemInvite);

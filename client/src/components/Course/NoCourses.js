@@ -8,7 +8,7 @@ class NoCourses extends Component {
     static propTypes = {
         user: ImmutablePropTypes.contains({
             isAdmin: PropTypes.bool.isRequired,
-        }).isRequired
+        }).isRequired,
     }
 
     render() {
@@ -25,10 +25,10 @@ class NoCourses extends Component {
                         </div>
                     </div>
                 </div>
-                );
+        );
     }
 }
 
 export default connect(state => ({
-    user: state.user
+    user: state.user,
 }))(NoCourses);

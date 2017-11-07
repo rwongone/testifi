@@ -18,18 +18,18 @@ class SubmissionList extends Component {
                                 submissions: ImmutablePropTypes.listOf(ImmutablePropTypes.contains({
                                     id: PropTypes.number.isRequired,
                                     created_at: PropTypes.instanceOf(Date).isRequired,
-                                })).isRequired
+                                })).isRequired,
                             }).isRequired
                             ).isRequired,
         history: PropTypes.shape({
             push: PropTypes.func.isRequired,
-        }).isRequired
+        }).isRequired,
     }
 
     constructor(props) {
         super(props);
         this.state = {
-            rejected: null
+            rejected: null,
         };
     }
 
@@ -54,7 +54,7 @@ class SubmissionList extends Component {
 
     onReject = rejected => {
         this.setState({
-            rejected
+            rejected,
         });
     }
 
@@ -99,7 +99,7 @@ class SubmissionList extends Component {
                     ))
                     }
                 </div>
-                );
+        );
     }
 }
 

@@ -9,28 +9,28 @@ import './TestNew.css';
 class TestNew extends Component {
     static propTypes = {
         dispatch: PropTypes.func.isRequired,
-        problemId: PropTypes.number.isRequired
+        problemId: PropTypes.number.isRequired,
     }
 
     constructor(props) {
         super(props);
         this.state = {
             accepted: null,
-            rejected: null
+            rejected: null,
         };
     }
 
     onSubmit = e => {
         const {
             dispatch,
-            problemId
+            problemId,
         } = this.props;
 
         const test = {
             name: e.target.name.value,
             hint: e.target.hint.value,
-            file: this.state.accepted
-        }
+            file: this.state.accepted,
+        };
 
         const target = e.target;
         dispatch(createTest(problemId, test)).then(() => {
@@ -38,7 +38,7 @@ class TestNew extends Component {
             target.reset();
             this.setState({
                 accepted: null,
-                rejected: null
+                rejected: null,
             });
         });
         e.preventDefault();
@@ -54,7 +54,7 @@ class TestNew extends Component {
     onReject = rejected => {
         this.setState({
             accepted: null,
-            rejected
+            rejected,
         });
     }
 
@@ -86,7 +86,7 @@ class TestNew extends Component {
                         </form>
                     </div>
                 </div>
-                );
+        );
     }
 }
 

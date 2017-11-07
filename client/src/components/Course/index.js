@@ -13,15 +13,15 @@ class Course extends Component {
     static propTypes = {
         course: ImmutablePropTypes.contains({
             fetched: PropTypes.bool.isRequired,
-            courses: ImmutablePropTypes.list.isRequired
+            courses: ImmutablePropTypes.list.isRequired,
         }).isRequired,
         user: ImmutablePropTypes.contains({
             isAdmin: PropTypes.bool.isRequired,
         }).isRequired,
         dispatch: PropTypes.func.isRequired,
         history: PropTypes.shape({
-            push: PropTypes.func.isRequired
-        }).isRequired
+            push: PropTypes.func.isRequired,
+        }).isRequired,
     }
 
     redirectToSubPage = () => {
@@ -29,7 +29,7 @@ class Course extends Component {
             course,
             history,
             location,
-            user
+            user,
         } = this.props;
 
         // if at the root of courses, need to redirect
@@ -55,7 +55,7 @@ class Course extends Component {
     componentWillMount() {
         const {
             course,
-            dispatch
+            dispatch,
         } = this.props;
 
         if (!course.get('fetched')) {
@@ -81,5 +81,5 @@ class Course extends Component {
 
 export default connect(state => ({
     course: state.course,
-    user: state.user
+    user: state.user,
 }))(Course);

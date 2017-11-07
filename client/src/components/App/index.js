@@ -16,13 +16,13 @@ class App extends Component {
         dispatch: PropTypes.func.isRequired,
         user: ImmutablePropTypes.contains({
             fetched: PropTypes.bool.isRequired,
-        })
+        }),
     }
 
     componentWillMount() {
         const {
             dispatch,
-            user: { fetched }
+            user: { fetched },
         } = this.props;
 
         if (!fetched) {
@@ -41,11 +41,11 @@ class App extends Component {
                     </Switch>
                     <Notifications />
                 </div>
-                );
+        );
     }
 }
 
 // need withrouter to force a rerender on route change (user selects a course from dropdown)
 export default withRouter(connect(state => ({
-    user: state.user
+    user: state.user,
 }))(App));

@@ -14,15 +14,15 @@ class AssignmentDetails extends Component {
                 ImmutablePropTypes.contains({
                     id: PropTypes.number.isRequired,
                     name: PropTypes.string.isRequired,
-                    description: PropTypes.string.isRequired
+                    description: PropTypes.string.isRequired,
                 })
-                )
+                ),
         }),
         match: PropTypes.shape({
             params: PropTypes.shape({
                 assignmentId: PropTypes.string.isRequired,
-                courseId: PropTypes.string.isRequired
-            }).isRequired
+                courseId: PropTypes.string.isRequired,
+            }).isRequired,
         }).isRequired,
         dispatch: PropTypes.func.isRequired,
         history: PropTypes.object.isRequired,
@@ -40,7 +40,7 @@ class AssignmentDetails extends Component {
 
     getCourseId = () => {
         const {
-            match: { params: { courseId } }
+            match: { params: { courseId } },
         } = this.props;
         return parseInt(courseId, 10);
     }
@@ -117,7 +117,7 @@ class AssignmentDetails extends Component {
                     </div>
                     <ProblemList courseId={ courseId } assignmentId={ ass.get('id') } history={ history } />
                 </div>
-                );
+        );
     }
 }
 

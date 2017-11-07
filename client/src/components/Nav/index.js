@@ -11,7 +11,7 @@ import './Nav.css';
 class Nav extends Component {
     static propTypes = {
         user: ImmutablePropTypes.contains({
-            name: PropTypes.string.isRequired
+            name: PropTypes.string.isRequired,
         }).isRequired,
         dispatch: PropTypes.func.isRequired,
         history: PropTypes.shape({
@@ -26,7 +26,7 @@ class Nav extends Component {
 
     render() {
         const {
-            user
+            user,
         } = this.props;
 
         return (
@@ -50,11 +50,11 @@ class Nav extends Component {
                         }
                     </div>
                 </div>
-                );
+        );
     }
 }
 
 // need withrouter to force a rerender on route change (user selects a course from dropdown)
 export default withRouter(connect(state => ({
-    user: state.user
+    user: state.user,
 }))(Nav));

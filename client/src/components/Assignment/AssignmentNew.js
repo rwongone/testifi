@@ -10,17 +10,17 @@ class AssignmentNew extends Component {
         dispatch: PropTypes.func.isRequired,
         match: PropTypes.shape({
             params: PropTypes.shape({
-                courseId: PropTypes.string.isRequired
-            }).isRequired
+                courseId: PropTypes.string.isRequired,
+            }).isRequired,
         }).isRequired,
         history: PropTypes.shape({
-            push: PropTypes.func.isRequired
-        }).isRequired
+            push: PropTypes.func.isRequired,
+        }).isRequired,
     }
 
     getCourseId = () => {
         const {
-            match: { params: { courseId } }
+            match: { params: { courseId } },
         } = this.props;
         return parseInt(courseId, 10);
     }
@@ -28,14 +28,14 @@ class AssignmentNew extends Component {
     onSubmit = e => {
         const {
             dispatch,
-            history: { push }
+            history: { push },
         } = this.props;
         const courseId = this.getCourseId();
 
         const assignment = {
             name: e.target.name.value,
-            description: e.target.description.value
-        }
+            description: e.target.description.value,
+        };
 
         dispatch(createAssignment(this.getCourseId(), assignment)).then(a => push(`/courses/${courseId}/assignments/${a.id}`));
         e.preventDefault();
@@ -59,7 +59,7 @@ class AssignmentNew extends Component {
                         </div>
                     </div>
                 </div>
-                );
+        );
     }
 }
 

@@ -6,7 +6,7 @@ import './AdminSignup.css';
 
 class AdminSignup extends Component {
     static propTypes = {
-        dispatch: PropTypes.func.isRequired
+        dispatch: PropTypes.func.isRequired,
     }
 
     constructor() {
@@ -14,19 +14,19 @@ class AdminSignup extends Component {
         this.state = {
             password: '',
             confirmPassword: '',
-            hasStartedConfirmingPassword: false
-        }
+            hasStartedConfirmingPassword: false,
+        };
     }
 
     onSubmit = e => {
         const {
-            dispatch
+            dispatch,
         } = this.props;
 
         const data = {
             name: e.target.name.value,
             email: e.target.email.value,
-            password: e.target.password.value
+            password: e.target.password.value,
         };
         if (data.password !== e.target.confirmPassword.value) {
             alert('Passwords must match before proceeding');
@@ -44,14 +44,14 @@ class AdminSignup extends Component {
 
     onPasswordChange = e => {
         this.setState({
-            password: e.target.value
+            password: e.target.value,
         });
     }
 
     onConfirmPasswordChange = e => {
         this.setState({
             confirmPassword: e.target.value,
-            hasStartedConfirmingPassword: true
+            hasStartedConfirmingPassword: true,
         });
     }
 
@@ -59,7 +59,7 @@ class AdminSignup extends Component {
         const {
             confirmPassword,
             password,
-            hasStartedConfirmingPassword
+            hasStartedConfirmingPassword,
         } = this.state;
 
         let confirmPasswordClass = '';
@@ -83,7 +83,7 @@ class AdminSignup extends Component {
                         </form>
                     </div>
                 </div>
-                );
+        );
     }
 }
 

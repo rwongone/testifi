@@ -34,6 +34,6 @@ export default class TestTile extends Component {
                         }
                     </div>
                 </div>
-                );
+        );
     }
 }

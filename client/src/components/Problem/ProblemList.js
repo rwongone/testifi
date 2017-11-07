@@ -10,8 +10,8 @@ class ProblemList extends Component {
         problem: ImmutablePropTypes.mapOf(
                             ImmutablePropTypes.contains({
                                 problems: ImmutablePropTypes.listOf(ImmutablePropTypes.contains({
-                                    id: PropTypes.number.isRequired
-                                })).isRequired
+                                    id: PropTypes.number.isRequired,
+                                })).isRequired,
                             }).isRequired
                             ).isRequired,
         user: ImmutablePropTypes.contains({
@@ -19,7 +19,7 @@ class ProblemList extends Component {
         }).isRequired,
         courseId: PropTypes.number.isRequired,
         assignmentId: PropTypes.number.isRequired,
-        history: PropTypes.object.isRequired
+        history: PropTypes.object.isRequired,
     }
 
     render() {
@@ -28,7 +28,7 @@ class ProblemList extends Component {
             user,
             history,
             courseId,
-            assignmentId
+            assignmentId,
         } = this.props;
         const problems = problem.getIn([assignmentId, 'problems']);
 
@@ -44,11 +44,11 @@ class ProblemList extends Component {
                     : null
                     }
                 </div>
-                );
+        );
     }
 }
 
 export default connect(state => ({
     problem: state.problem,
-    user: state.user
+    user: state.user,
 }))(ProblemList);

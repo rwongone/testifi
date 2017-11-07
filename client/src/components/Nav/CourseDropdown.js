@@ -13,17 +13,17 @@ class CourseDropdown extends Component {
                              ImmutablePropTypes.contains({
                                  title: PropTypes.string.isRequired,
                                  course_code: PropTypes.string.isRequired,
-                                 id: PropTypes.number.isRequired
+                                 id: PropTypes.number.isRequired,
                              })
-                             ).isRequired
+                             ).isRequired,
         }).isRequired,
         isAdmin: PropTypes.bool.isRequired,
         location: PropTypes.shape({
-            pathname: PropTypes.string.isRequired
+            pathname: PropTypes.string.isRequired,
         }).isRequired,
         history: PropTypes.shape({
-            push: PropTypes.func.isRequired
-        }).isRequired
+            push: PropTypes.func.isRequired,
+        }).isRequired,
     }
 
     getSelectedCourse = () => {
@@ -54,7 +54,7 @@ class CourseDropdown extends Component {
 
         let courseId = parseInt(e.target.value, 10);
         if (courseId === NEW_COURSE_ID) {
-            history.push(`/courses/create`);
+            history.push('/courses/create');
             return;
         }
         history.push(`/courses/${courseId}/assignments`);

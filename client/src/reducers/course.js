@@ -1,7 +1,7 @@
 import { Map, List, fromJS } from 'immutable';
 import {
     CREATE_COURSE_SUCCESS,
-    RECEIVE_COURSES_SUCCESS,
+    RECEIVE_COURSES_SUCCESS
 } from '../actions/course';
 import { LOGOUT_SUCCESS } from '../actions/user';
 
@@ -16,7 +16,7 @@ export default function(state = Map({
         case RECEIVE_COURSES_SUCCESS:
             return state.merge({
                 fetched: true,
-                courses: fromJS(action.courses)
+                courses: fromJS(action.courses),
             });
 
         case LOGOUT_SUCCESS:

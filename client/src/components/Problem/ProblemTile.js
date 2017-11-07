@@ -8,10 +8,10 @@ export default class ProblemTile extends Component {
         assignmentId: PropTypes.number.isRequired,
         problem: ImmutablePropTypes.contains({
             id: PropTypes.number.isRequired,
-            name: PropTypes.string.isRequired
+            name: PropTypes.string.isRequired,
         }),
         history: PropTypes.shape({
-            push: PropTypes.func.isRequired
+            push: PropTypes.func.isRequired,
         }).isRequired,
     }
 
@@ -32,6 +32,6 @@ export default class ProblemTile extends Component {
                 <div className="problemTileFrame frame existing" onClick={ this.goToProblem } >
                     <h3>{ problem.get('name') }</h3>
                 </div>
-                );
+        );
     }
 }

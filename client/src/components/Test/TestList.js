@@ -10,21 +10,21 @@ class TestList extends Component {
         test: ImmutablePropTypes.mapOf(
                             ImmutablePropTypes.contains({
                                 tests: ImmutablePropTypes.listOf(ImmutablePropTypes.contains({
-                                    id: PropTypes.number.isRequired
-                                })).isRequired
+                                    id: PropTypes.number.isRequired,
+                                })).isRequired,
                             }).isRequired
                             ).isRequired,
         user: ImmutablePropTypes.contains({
             isAdmin: PropTypes.bool.isRequired,
         }).isRequired,
-        problemId: PropTypes.number.isRequired
+        problemId: PropTypes.number.isRequired,
     }
 
     render() {
         const {
             test,
             user,
-            problemId
+            problemId,
         } = this.props;
         const tests = test.getIn([problemId, 'tests']);
         const isAdmin = user.get('isAdmin');
@@ -41,11 +41,11 @@ class TestList extends Component {
                     : null
                     }
                 </div>
-                );
+        );
     }
 }
 
 export default connect(state => ({
     test: state.test,
-    user: state.user
+    user: state.user,
 }))(TestList);

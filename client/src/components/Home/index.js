@@ -11,7 +11,7 @@ class Home extends Component {
     static propTypes = {
         user: ImmutablePropTypes.contains({
             id: PropTypes.number.isRequired,
-        }).isRequired
+        }).isRequired,
     }
 
     render() {
@@ -27,7 +27,7 @@ class Home extends Component {
         if (id === UNKNOWN_USER_ID) {
             // if not at the home page, redirect to the home page
             if (loc.pathname !== '/') {
-                return <Redirect to="/" />
+                return <Redirect to="/" />;
             }
 
             // return the home page
@@ -38,19 +38,19 @@ class Home extends Component {
                             This is a platform for testing software. Please <Link to="/login">login</Link> to get started.
                         </div>
                     </div>
-                    );
+            );
         }
 
         if (loc.pathname === '/') {
-            return <Redirect to="/courses" />
+            return <Redirect to="/courses" />;
         }
 
         return (
                 <Route path="/courses" component={ Course } />
-                );
+        );
     }
 }
 
 export default connect(state => ({
-    user: state.user
+    user: state.user,
 }))(Home);
