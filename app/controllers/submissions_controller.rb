@@ -76,7 +76,7 @@ class SubmissionsController < ApplicationController
     end
 
     submissions = Submission.where(problem_id: params[:problem_id])
-    submissions = submissions.where(user_id: current_user.id) if current_user.admin?
+    submissions = submissions.where(user_id: current_user.id) if !current_user.admin?
     render status: :ok, json: submissions
   end
 
