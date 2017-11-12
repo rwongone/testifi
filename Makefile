@@ -33,6 +33,7 @@ deploy_run:
 		-e PROJECT_DIR=$(PWD) \
 		-e HOST_UID=$(UID) \
 		-e HOST_GID=$(GID) \
+		-e RUNTIME_ENV=$(RUNTIME_ENV) \
 		testifi_deploy:latest \
 		sh -c "make bootstrap"
 stop:

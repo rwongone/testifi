@@ -6,4 +6,5 @@ RUN npm run build
 
 FROM abiosoft/caddy
 COPY --from=0 /usr/src/app/build /srv
-ADD caddy/Caddyfile /etc/Caddyfile
+ADD caddy/Caddyfile.dev /etc/Caddyfile.dev
+ADD caddy/Caddyfile.prod /etc/Caddyfile.prod
