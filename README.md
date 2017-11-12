@@ -1,4 +1,4 @@
 # README
 
 Running in production:
-RUNTIME_ENV=prod make deploy
+RUNTIME_ENV=PRODUCTION make deploy
