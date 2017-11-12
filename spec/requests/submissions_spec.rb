@@ -10,6 +10,7 @@ RSpec.describe 'Submissions', type: :request do
   include_context 'with JSON responses'
 
   let(:student) { create(:student) }
+  let(:other_student) { create(:student) }
   let(:teacher) { create(:teacher) }
   let(:course) { create(:course) }
   let(:assignment) { create(:assignment, course_id: course.id) }
@@ -17,6 +18,8 @@ RSpec.describe 'Submissions', type: :request do
   let(:uploaded_file) { fixture_file_upload("#{fixture_path}/files/Solution.java") }
   let(:db_file) { create(:submission_db_file, name: uploaded_file.original_filename, contents: uploaded_file.read, content_type: 'text/plain') }
   let!(:submission) { create(:submission, user_id: student.id, problem_id: problem.id, db_file_id: db_file.id, language: FileHelper.filename_to_language(uploaded_file.original_filename)) }
+  let!(:submission2) { create(:submission, user_id: student.id, problem_id: problem.id, db_file_id: db_file.id, language: FileHelper.filename_to_language(uploaded_file.original_filename)) }
+  let!(:submission3) { create(:submission, user_id: other_student.id, problem_id: problem.id, db_file_id: db_file.id, language: FileHelper.filename_to_language(uploaded_file.original_filename)) }
 
   context 'when a teacher is authenticated' do
     before(:each) do
@@ -35,6 +38,9 @@ RSpec.describe 'Submissions', type: :request do
     context 'and the teacher teaches the course' do
       let(:course) { create(:course, teacher: teacher) }
       describe 'POST /api/problems/:problem_id/submissions' do
+        subject do
+          post "/api/problems/#{problem.id}/submissions", params: submission_params
+        end
         let(:expected_properties) do
           {
             user_id: teacher.id,
@@ -44,17 +50,27 @@ RSpec.describe 'Submissions', type: :request do
         end
 
         it 'creates a Submission with the right attributes' do
-          expect do
-            post "/api/problems/#{problem.id}/submissions", params: submission_params
-          end.to enqueue_job(RunSubmissionsJob)
+          expect { subject }.to enqueue_job(RunSubmissionsJob)
           expect(response).to have_http_status(201)
           expect(response.body).to include_json(**expected_properties)
         end
 
         it 'the Submission is actually the solution to the problem' do
           expect(problem.solution_id).to be_nil
-          post "/api/problems/#{problem.id}/submissions", params: submission_params
+          subject
           expect(Problem.find(problem.id).solution_id).to eq(Submission.last.id)
+        end
+      end
+
+      describe 'GET /api/problems/:problem_id/submissions' do
+        subject do
+          get "/api/problems/#{problem.id}/submissions"
+        end
+
+        it 'shows all Submissions for the Problem' do
+          subject
+          expect(response).to have_http_status(200)
+          expect(response.body).to eq([submission, submission2, submission3].to_json)
         end
       end
     end
@@ -103,27 +119,18 @@ RSpec.describe 'Submissions', type: :request do
       }
     end
 
-    context 'and the student requests a file they own' do
-      describe 'GET /api/submissions/:id/file' do
-        it 'returns the file' do
-          get "/api/submissions/#{submission.id}/file"
-          expect(response).to have_http_status(200)
-          expect(response.header['Content-Type']).to eq(db_file.content_type)
-          uploaded_file.rewind
-          expect(response.body).to eq(uploaded_file.read)
-        end
+    describe 'GET /api/submissions/:id/file' do
+      it 'returns their own file' do
+        get "/api/submissions/#{submission.id}/file"
+        expect(response).to have_http_status(200)
+        expect(response.header['Content-Type']).to eq(db_file.content_type)
+        uploaded_file.rewind
+        expect(response.body).to eq(uploaded_file.read)
       end
-    end
 
-    context 'and the student requests a file they do not own' do
-      describe 'GET /api/submissions/:id/file' do
-        let(:student2) { create(:student) }
-        it 'prevents access' do
-          authenticate(student2)
-
-          get "/api/submissions/#{submission.id}/file"
-          expect(response).to have_http_status(403)
-        end
+      it 'prevents access to files belonging to other students' do
+        get "/api/submissions/#{submission3.id}/file"
+        expect(response).to have_http_status(403)
       end
     end
 
@@ -131,7 +138,6 @@ RSpec.describe 'Submissions', type: :request do
       let(:course) { create(:course, students: [student]) }
 
       describe 'GET /api/problems/:problem_id/submissions' do
-        let!(:submission2) { create(:submission, user_id: student.id, problem_id: problem.id, db_file_id: db_file.id, language: FileHelper.filename_to_language(uploaded_file.original_filename)) }
         it "returns a list of all of user's Submissions for a Problem" do
           get "/api/problems/#{problem.id}/submissions"
           expect(response).to have_http_status(200)
@@ -144,6 +150,18 @@ RSpec.describe 'Submissions', type: :request do
           get "/api/submissions/#{submission.id}"
           expect(response).to have_http_status(200)
           expect(response.body).to eq(submission.to_json)
+        end
+      end
+
+      describe 'GET /api/problems/:problem_id/submissions' do
+        subject do
+          get "/api/problems/#{problem.id}/submissions"
+        end
+
+        it "shows only the student's Submissions for the Problem" do
+          subject
+          expect(response).to have_http_status(200)
+          expect(response.body).to eq([submission, submission2].to_json)
         end
       end
 
