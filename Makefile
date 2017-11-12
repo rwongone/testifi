@@ -7,6 +7,7 @@ SHELL := bash
 .SUFFIXES:
 UID=$(shell id -u)
 GID=$(shell id -g)
+RUNTIME_ENV ?= DEV
 DOCKER_DIR=docker/sys
 
 
