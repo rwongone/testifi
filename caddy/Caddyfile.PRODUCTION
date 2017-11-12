@@ -1,0 +1,9 @@
+https://testifi.me {
+    gzip
+    proxy /api app:3000
+    tls jachorlt@uwaterloo.ca
+    rewrite / {
+        if {path} not_starts_with /api/
+        to {path} /
+    }
+}
