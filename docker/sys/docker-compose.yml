@@ -12,8 +12,10 @@ services:
             - "3000"
         links:
             - db
+            - redis
         depends_on:
             - db
+            - redis
         stdin_open: true
         tty: true
     db:
@@ -21,6 +23,19 @@ services:
         image: postgres:9.4
         ports:
             - "5432"
+    redis:
+        container_name: testifi_redis
+        image: redis
+        ports:
+            - "6379"
+    worker:
+        container_name: testifi_worker
+        image: testifi_app
+        command: sh -c "./wait-for-it.sh db:5432 -- bundle exec sidekiq"
+        working_dir: /usr/src/app
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+            - ${PROJECT_DIR}:/usr/src/app
     caddy:
         container_name: testifi_caddy
         image: testifi_caddy
