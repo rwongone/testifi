@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
+import { notify } from '../../actions/notification';
+import { NOTIFICATION_TYPE } from '../../constants';
 import Filedrop from '../Filedrop';
 import { fetchSubmissions, submitSubmission } from '../../actions/submission';
 import './SubmissionList.css';
@@ -48,6 +50,7 @@ class SubmissionList extends Component {
 
         dispatch(submitSubmission(problemId, accepted, assignmentId, false))
             .then(s => {
+                dispatch(notify('Submission uploaded successfully', NOTIFICATION_TYPE.SUCCESS));
                 push(`/courses/${courseId}/assignments/${assignmentId}/problems/${problemId}/submissions/${s.id}`);
             });
     }
