@@ -13,6 +13,19 @@ class ProblemsController < ApplicationController
     render status: :ok, json: Problem.where(assignment_id: params[:assignment_id])
   end
 
+  def show_solution_file
+    problem = Problem.find(params[:problem_id])
+    if problem.course.teacher_id != current_user.id || !current_user.admin?
+      head :forbidden
+      return
+    end
+
+    file = problem.solution.db_file
+    send_data(file.contents,
+              filename: file.name,
+              type: file.content_type)
+  end
+
   def create
     problem = Problem.create!(create_params)
 

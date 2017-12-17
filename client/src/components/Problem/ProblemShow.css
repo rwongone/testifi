@@ -5,3 +5,8 @@
 .problemShow .backButton {
   margin-right: 20px;
 }
+
+.problemShow .canonicalSolutionLink {
+  margin-bottom: 20px;
+  font-size: 24px;
+}

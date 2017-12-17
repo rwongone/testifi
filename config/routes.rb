@@ -26,6 +26,7 @@ Rails.application.routes.draw do
     end
 
     resources :problems, only: %i[show update destroy] do
+      get 'solution', to: 'problems#show_solution_file'
       resources :submissions, only: %i[create index]
       resources :tests, only: %i[create index]
     end

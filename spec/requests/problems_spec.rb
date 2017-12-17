@@ -61,9 +61,21 @@ RSpec.describe 'Problems', type: :request do
           expect(response).to have_http_status(201)
           expect(response.body).to include_json(problem_params.merge(assignment_id: assignment.id))
           solution_id = ActiveSupport::JSON.decode(response.body)['solution_id']
+          problem_id = ActiveSupport::JSON.decode(response.body)['id']
           expect(Submission.find(solution_id).db_file.contents).to eq(solution_file.read)
+
+          get "/api/problems/#{problem_id}/solution"
+          expect(response).to have_http_status(200)
+          solution_file.rewind
+          expect(response.body).to eq(solution_file.read)
         end
       end
+
+      describe 'GET /api/problems/:id/solution' do
+        it 'returns the Solution as a file' do
+        end
+      end
+
     end
 
     context 'and the teacher does not teach the course' do

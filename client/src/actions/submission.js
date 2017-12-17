@@ -1,6 +1,6 @@
 import { handleErrors } from './util';
 
-export function submitSubmission(problemId, file) {
+export function submitSubmission(problemId, file, assignmentId, isSolution) {
     return function(dispatch) {
         // submit file as formdata
         const fd = new FormData();
@@ -16,7 +16,7 @@ export function submitSubmission(problemId, file) {
         .then(handleErrors)
         .then(resp => resp.json())
         .then(submission => {
-            dispatch(createSubmissionSuccess(problemId, submission));
+            dispatch(createSubmissionSuccess(problemId, submission, assignmentId, isSolution));
             return submission;
         })
         .catch(e => console.error(e));
@@ -24,11 +24,13 @@ export function submitSubmission(problemId, file) {
 }
 
 export const CREATE_SUBMISSION_SUCCESS = 'CREATE_SUBMISSION_SUCCESS';
-function createSubmissionSuccess(problemId, submission) {
+function createSubmissionSuccess(problemId, submission, assignmentId, isSolution) {
     return {
         type: CREATE_SUBMISSION_SUCCESS,
         problemId,
         submission,
+        assignmentId,
+        isSolution,
     };
 }
 

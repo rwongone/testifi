@@ -8,7 +8,7 @@ import './Notification.css';
 class Notifications extends Component {
     static propTypes = {
         notification: ImmutablePropTypes.listOf(ImmutablePropTypes.contains({
-            id: PropTypes.string.isRequired,
+            id: PropTypes.number.isRequired,
         })).isRequired,
     }
 

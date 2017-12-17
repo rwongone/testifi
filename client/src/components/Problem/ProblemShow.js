@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import { fetchTests } from '../../actions/test';
 import { submitSubmission } from '../../actions/submission';
+import { notify } from '../../actions/notification';
+import { NOTIFICATION_TYPE } from '../../constants';
 import Filedrop from '../Filedrop';
 import TestList from '../Test/TestList';
 import SubmissionList from '../Submission/SubmissionList';
@@ -110,13 +112,16 @@ class ProblemShow extends Component {
     }
 
     onAccept = accepted => {
-        const { dispatch } = this.props;
+        const { dispatch, isAdmin } = this.props;
 
         this.setState({
             rejected: null,
         });
 
-        dispatch(submitSubmission(this.getProblemId(), accepted));
+        const assignment = this.getAssignment();
+        dispatch(submitSubmission(this.getProblemId(), accepted, assignment.get('id'), isAdmin)).then(resp => {
+            dispatch(notify('Solution uploaded successfully', NOTIFICATION_TYPE.SUCCESS));
+        });
     }
 
     onReject = rejected => {
@@ -144,7 +149,22 @@ class ProblemShow extends Component {
                     ? (
                     <div>
                         <div>
-                            <label>Upload canonical solution:</label>
+                            {
+                            // *** begin problem has solution
+                            problem.get('solution_id')
+                            ? (
+                            <div>
+                                <div className="canonicalSolutionLink">
+                                    <a href={`/api/problems/${problem.get('id')}/solution`} target="_blank" rel="noopener noreferrer">Canonical solution</a>
+                                </div>
+                                <label>Replace canonical solution:</label>
+                            </div>
+                            )
+                            : (
+                                <label>Upload canonical solution:</label>
+                            )
+                            // *** end problem solution check
+                            }
                             <Filedrop onAccept={ this.onAccept } onReject={ this.onReject } rejected={ rejected } accept=".java,.py" />
                         </div>
                         <TestList problemId={ problem.get('id') } />
@@ -152,8 +172,8 @@ class ProblemShow extends Component {
                     ) : null
                     )
                     // *** end isAdmin
-                    // *** begin !isAdmin
                     : (
+                    // *** begin !isAdmin
                     <SubmissionList
                         courseId={ this.getCourseId() }
                         assignmentId={ assignment.get('id') }
