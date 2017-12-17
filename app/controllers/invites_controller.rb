@@ -11,11 +11,9 @@ class InvitesController < ApplicationController
 
     ActiveRecord::Base.transaction do
       invites = emails.map do |email|
-        invite = Invite.create('course_id' => course_id,
-                               'email' => email,
-                               'inviter_id' => current_user_id)
-        OnboardingMailer.welcome_email(invite).deliver_later
-        invite
+        Invite.create('course_id' => course_id,
+                      'email' => email,
+                      'inviter_id' => current_user_id)
       end
     end
     render status: :created, json: invites
@@ -28,7 +26,7 @@ class InvitesController < ApplicationController
       head :not_found
       return
     end
-    OnboardingMailer.welcome_email(invite).deliver_later
+    invite.send_email
     head :no_content
   end
 
