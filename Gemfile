@@ -35,6 +35,9 @@ gem 'docker-api', '~> 1.33.4'
 # google-id-token to verify google tokens on login
 gem 'google-id-token'
 
+# sidekiq for job queue and workers
+gem 'sidekiq'
+
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 
