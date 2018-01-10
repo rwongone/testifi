@@ -3,3 +3,4 @@
 :queues:
   - [pending_execution, 2]
   - pending_expected_output
+  - mailers
