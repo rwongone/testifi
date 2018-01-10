@@ -39,7 +39,7 @@ deploy_run:
 		sh -c "make bootstrap"
 stop:
 	echo "Force stopping all containers";
-	-docker rm -f testifi_app testifi_db client_dev testifi_caddy testifi_redis;
+	-docker rm -f testifi_app testifi_db client_dev testifi_caddy testifi_redis testifi_worker;
 	sudo rm -rf tmp
 clean: stop
 
