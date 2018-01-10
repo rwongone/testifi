@@ -7,7 +7,7 @@ SHELL := bash
 .SUFFIXES:
 UID=$(shell id -u)
 GID=$(shell id -g)
-RUNTIME_ENV ?= DEV
+RAILS_ENV ?= development
 DOCKER_DIR=docker/sys
 
 
@@ -34,7 +34,7 @@ deploy_run:
 		-e PROJECT_DIR=$(PWD) \
 		-e HOST_UID=$(UID) \
 		-e HOST_GID=$(GID) \
-		-e RUNTIME_ENV=$(RUNTIME_ENV) \
+		-e RAILS_ENV=$(RAILS_ENV) \
 		testifi_deploy:latest \
 		sh -c "make bootstrap"
 stop:
