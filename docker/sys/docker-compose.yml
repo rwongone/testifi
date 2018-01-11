@@ -8,6 +8,8 @@ services:
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
             - ${PROJECT_DIR}:/usr/src/app
+        environment:
+            - RAILS_ENV=${RAILS_ENV}
         ports:
             - "3000"
         links:
@@ -41,7 +43,7 @@ services:
     caddy:
         container_name: testifi_caddy
         image: testifi_caddy
-        command: ["--conf", "/etc/Caddyfile.${RUNTIME_ENV}", "--log", "stdout"]
+        command: ["--conf", "/etc/Caddyfile.${RAILS_ENV}", "--log", "stdout"]
         ports:
             - "80:80"
             - "443:443"
