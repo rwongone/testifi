@@ -38,6 +38,8 @@ services:
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
             - ${PROJECT_DIR}:/usr/src/app
+        environment:
+            - RAILS_ENV=${RAILS_ENV}
         ports:
             - "587:587"
     caddy:
