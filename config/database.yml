@@ -84,5 +84,5 @@ test:
 production:
   <<: *default
   database: testifi_production
-  username: testifi
-  password: <%= ENV['TESTIFI_DATABASE_PASSWORD'] %>
+  # username: testifi
+  # password: <%= ENV['TESTIFI_DATABASE_PASSWORD'] %>
