@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# backup database
+docker run -it --rm --network sys_default postgres:9.4 pg_dump -h db -U postgres testifi_production > dump.sql
+
+# kill app
+make stop
+
+# start a new database with the volume
+docker run -it --rm -v sys_testifi_data:/var/lib/postgresql/data/testifi -e PGDATA=/var/lib/postgresql/data/testifi -p 5432 postgres:9.4
+
+# restore the database
+docker cp dump.sql 00120a5be610:/dump.sql
+docker exec -it 00120a5be610 bash
+
+# do the following inside the container
+
+# psql -U postgres
+# create database testifi_production;
+# psql -U postgres testifi_production < dump.sql
