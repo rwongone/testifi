@@ -75,6 +75,7 @@ RSpec.describe RunSubmissionsJob, type: :job do
 
     let(:consec_6) { create(:consec, n: 6) }
     let(:test_consec_6) { create(:test, user: teacher, problem: problem, db_file_id: consec_6.id) }
+
     it 'will run only new tests' do
       FillExpectedOutputJob.perform_now(test_consec_6.id)
       test_consec_6.reload

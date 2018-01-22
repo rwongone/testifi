@@ -64,5 +64,42 @@ RSpec.describe Submission, type: :model do
       expect(execution.std_error).to eq(nil)
       expect(execution.return_code).to eq(0)
     end
+
+    context 'when the uploaded submission is not named Solution.java' do
+      let(:submission_file) { fixture_file_upload("#{fixture_path}/files/SurfsUp.java") }
+
+      it 'processes the Execution' do
+        execution = subject.run_test!(test_consec_3, false)
+        expect(execution).to eq(Execution.find_by(submission: subject, test: test_consec_3))
+        expect(execution.output).to eq("No surfing\n")
+        expect(execution.std_error).to eq(nil)
+        expect(execution.return_code).to eq(0)
+      end
+    end
+
+    context 'when the submission fails to compile' do
+      let(:submission_file) { fixture_file_upload("#{fixture_path}/files/SyntaxError.java") }
+
+      it 'processes the Execution' do
+        execution = subject.run_test!(test_consec_3, false)
+        expect(execution).to eq(Execution.find_by(submission: subject, test: test_consec_3))
+        expect(execution.output).to eq(nil)
+        expect(execution.std_error).to eq("submission/SyntaxError.java:1: error: class, interface, or enum expected\ntrpomi java.util.*;\n^\n1 error\n")
+        expect(execution.return_code).to eq(1)
+      end
+    end
+
+    context 'when the submission times out' do
+      let(:submission_file) { fixture_file_upload("#{fixture_path}/files/Timeout.java") }
+
+      # Test takes anywhere between 1 and 3 minutes.
+      skip 'processes the Execution' do
+        execution = subject.run_test!(test_consec_3, false, 1)
+        expect(execution).to eq(Execution.find_by(submission: subject, test: test_consec_3))
+        expect(execution.output).to eq(nil)
+        expect(execution.std_error).to eq('Timeout reached.')
+        expect(execution.return_code).to eq(1)
+      end
+    end
   end
 end

@@ -1,10 +1,10 @@
 import java.util.*;
 
-public class Solution {
+public class Timeout {
     static int sum(ArrayList<Integer> a) {
         int toReturn = 0;
         while (true) {
-            toReturn += i;
+            if (toReturn - 1 == 1) break;
         }
         return toReturn;
     }

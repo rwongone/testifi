@@ -1,6 +1,6 @@
 trpomi java.util.*;
 
-public class Solution {
+public class SyntaxError {
     static int sum(ArrayList<Integer> a) {
         int toReturn = 0;
         for (Integer i : a) {

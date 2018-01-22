@@ -32,7 +32,7 @@ RSpec.describe OnboardingMailer, type: :mailer do
     it 'delivers a welcome email' do
       expect do
         perform_enqueued_jobs { subject.deliver_later }
-      end.to change { ActionMailer::Base.deliveries.size }.by(1)
+      end.to change { ActionMailer::Base.deliveries.size }.by(2)
     end
   end
 end
