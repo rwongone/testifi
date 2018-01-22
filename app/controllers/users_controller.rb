@@ -70,7 +70,7 @@ class UsersController < ApplicationController
       value: jwt,
       expires: 2.day.from_now
     }
-    redirect_to '/'
+    redirect_to Rails.configuration.url
   end
 
   def oauth_google
