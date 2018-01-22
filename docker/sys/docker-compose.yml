@@ -25,6 +25,8 @@ services:
         image: postgres:9.4
         ports:
             - "5432"
+        volumes:
+            - /testifi/data:/var/lib/postgresql/data
     redis:
         container_name: testifi_redis
         image: redis
