@@ -20,10 +20,12 @@ class Submission < ApplicationRecord
     end
   end
 
-  def run_test!(test, output_only = true)
+  def run_test!(test, output_only=true)
     execution = Execution.find_or_initialize_by(submission: self, test: test)
 
-    unless execution.persisted? && execution.updated_at >= test.updated_at
+    if !execution.persisted? ||
+        test.updated_at > execution.updated_at ||
+        updated_at > test.updated_at
       execution.output, execution.std_error, execution.return_code = TestExecutor.run_test(self, test)
       execution.save!
     end

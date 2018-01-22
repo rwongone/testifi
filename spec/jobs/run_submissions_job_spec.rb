@@ -75,10 +75,12 @@ RSpec.describe RunSubmissionsJob, type: :job do
 
     let(:consec_6) { create(:consec, n: 6) }
     let(:test_consec_6) { create(:test, user: teacher, problem: problem, db_file_id: consec_6.id) }
-    it 'will run only new tests' do
+
+    it 'will run only new tests and will run the solution first' do
       FillExpectedOutputJob.perform_now(test_consec_6.id)
       test_consec_6.reload
 
+      expect(TestExecutor).to receive(:run_test).once.with(solution, test_consec_6).and_call_original
       expect(TestExecutor).to receive(:run_test).once.with(good_submission, test_consec_6).and_call_original
       subject
     end
