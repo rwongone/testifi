@@ -26,6 +26,7 @@ class ProblemShow extends Component {
                 ImmutablePropTypes.contains({
                     id: PropTypes.number.isRequired,
                     name: PropTypes.string.isRequired,
+                    description: PropTypes.string.isRequired,
                 })
                 ),
         }),
@@ -141,6 +142,7 @@ class ProblemShow extends Component {
                     <h1>
                         <div className="backButtonAndText" onClick={ this.goBackToProblems }><i className="fa fa-angle-left backButton" aria-hidden="true"></i>{ assignment.get('name') } - { problem.get('name') }</div>
                     </h1>
+                    <div>Description: { problem.get('description') }</div>
                     {
                     isAdmin
                     // *** begin isAdmin
