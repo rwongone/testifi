@@ -109,12 +109,8 @@ class AssignmentDetails extends Component {
                     )
                     : <h1 onClick={ this.beginNameEdit } className={ classNames({ editable: isAdmin }) }>{ ass.get('name') }</h1>
                     }
-                    <div>
-                        Description:
-                    </div>
-                    <div>
-                        { ass.get('description') }
-                    </div>
+                    <div> Description: </div>
+                    <div> { ass.get('description') || 'N/A' } </div>
                     <ProblemList courseId={ courseId } assignmentId={ ass.get('id') } history={ history } />
                 </div>
         );
