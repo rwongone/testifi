@@ -35,7 +35,22 @@ RSpec.describe 'Executions', type: :request do
     it 'should return the number of correct executions' do
       get "/api/submissions/#{submission.id}/results"
       expect(response).to have_http_status(200)
-      expect(response.body).to eq({ total_tests: 3, num_passed: 1, failed_test_hints: [test2.hint, test3.hint] }.to_json)
+      expect(json_response).to include({
+        total_tests: 3,
+        pending_tests: 0,
+        tests_executed: 3,
+        num_passed: 1,
+        failed_test_hints: [test2.hint]
+      }.with_indifferent_access)
+      expect(json_response['executions']['passed'].first).to include(
+        execution.slice(:id, :output, :std_error, :return_code, :submission_id, :test_id)
+      )
+      expect(json_response['executions']['failed'].first).to include(
+        execution2.slice(:id, :output, :std_error, :return_code, :submission_id, :test_id)
+      )
+      expect(json_response['executions']['errored'].first).to include(
+        execution3.slice(:id, :output, :std_error, :return_code, :submission_id, :test_id)
+      )
     end
   end
 end
