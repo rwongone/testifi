@@ -75,7 +75,13 @@ class SubmissionShow extends Component {
 
     render() {
         const results = this.props.submissionResults.getIn([this.getSubmissionId(), 'results']);
-        return (
+
+        // filters out empty hints
+        let usefulHints;
+        if (results) {
+            usefulHints = results.get('failed_test_hints').filter(h => h);
+        }
+        return results ? (
                 <div className="submissionShow">
                     <h1>
                         <div className="backButtonAndText" onClick={ this.goBackToSubmissions }><i className="fa fa-angle-left backButton" aria-hidden="true"></i>Submissions</div>
@@ -86,11 +92,20 @@ class SubmissionShow extends Component {
                     <div>
                         <h2>Test Results</h2>
                         This submission passed { results.get('num_passed') }/{ results.get('total_tests') } tests.
+                        {
+                        ! usefulHints.isEmpty()
+                        ? (
+                            <div className="hints">
+                                <div>Here are some hints that might help you out:</div>
+                                { usefulHints.map((hint, i) => <div key={i}>{ hint }</div>) }
+                            </div>
+                        ) : null
+                        }
                     </div>
                     ) : null
                     }
                 </div>
-        );
+        ) : null;
     }
 }
 
