@@ -57,6 +57,7 @@ class ProblemShow extends Component {
         super(props);
         this.state = {
             rejected: null,
+            sampleRejected: null,
         };
     }
 
@@ -131,11 +132,34 @@ class ProblemShow extends Component {
         });
     }
 
+    onSampleInputAccept = accepted => {
+        const { dispatch, isAdmin } = this.props;
+
+        this.setState({
+            sampleRejected: null,
+        });
+
+        // TODO figure out sample input submission
+        // const assignment = this.getAssignment();
+        // dispatch(submitSubmission(this.getProblemId(), accepted, assignment.get('id'), isAdmin)).then(resp => {
+        //     dispatch(notify('Sample input uploaded successfully', NOTIFICATION_TYPE.SUCCESS));
+        // });
+    }
+
+    onSampleInputReject = sampleRejected => {
+        this.setState({
+            sampleRejected,
+        });
+    }
+
     render() {
         const assignment = this.getAssignment();
         const problem = this.getProblem(assignment);
         const { history, isAdmin, test } = this.props;
-        const { rejected } = this.state;
+        const {
+            rejected,
+            sampleRejected,
+        } = this.state;
 
         return (
                 <div className="problemShow">
@@ -151,6 +175,7 @@ class ProblemShow extends Component {
                     ? (
                     <div>
                         <div>
+                            <h2>Solution</h2>
                             {
                             // *** begin problem has solution
                             problem.get('solution_id')
@@ -169,6 +194,27 @@ class ProblemShow extends Component {
                             }
                             <Filedrop onAccept={ this.onAccept } onReject={ this.onReject } rejected={ rejected } accept=".java,.py" />
                         </div>
+                        {
+                        // only show sample input field if there is a solution
+                        problem.get('solution_id')
+                        ? (
+                        <div>
+                            <h2>Sample Input</h2>
+                            <div>These inputs will be shown to the user, along with their generated outputs as samples</div>
+                            {
+                            problem.get('solution_id') // also check that there are sample solutions
+                            ? (
+                            <div>
+                                <label>Sample inputs:</label>
+                            </div>
+                            )
+                            : null
+                            }
+                            <label>Add more sample inputs:</label>
+                            <Filedrop onAccept={ this.onSampleInputAccept } onReject={ this.onSampleInputReject } rejected={ sampleRejected } />
+                        </div>
+                        ) : null
+                        }
                         <TestList problemId={ problem.get('id') } />
                     </div>
                     ) : null
