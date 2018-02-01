@@ -19,4 +19,10 @@ class Execution < ApplicationRecord
   def errored?
     !return_code.zero?
   end
+
+  def status
+    return "passed" if passed?
+    return "failed" if failed?
+    return "errored" if errored?
+  end
 end
