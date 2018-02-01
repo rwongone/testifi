@@ -4,6 +4,7 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
 import { fetchSubmissionResults } from '../../actions/submissionResults';
 import './SubmissionShow.css';
+import ExecutionList from './ExecutionList';
 
 class SubmissionShow extends Component {
     static propTypes = {
@@ -22,7 +23,10 @@ class SubmissionShow extends Component {
             fetched: PropTypes.bool.isRequired,
             results: ImmutablePropTypes.contains({
                 total_tests: PropTypes.number.isRequired,
-                num_passed: PropTypes.number.isRequired,
+                executions: ImmutablePropTypes.listOf(ImmutablePropTypes.contains({
+                    status: PropTypes.string.isRequired,
+                }).isRequired
+                ),
             }),
         })).isRequired,
         dispatch: PropTypes.func.isRequired,
@@ -75,12 +79,11 @@ class SubmissionShow extends Component {
 
     render() {
         const results = this.props.submissionResults.getIn([this.getSubmissionId(), 'results']);
-
-        // filters out empty hints
-        let usefulHints;
+        let remainingTests;
         if (results) {
-            usefulHints = results.get('failed_test_hints').filter(h => h);
+            remainingTests = results.get('total_tests') - results.get('executions').size;
         }
+
         return results ? (
                 <div className="submissionShow">
                     <h1>
@@ -91,16 +94,9 @@ class SubmissionShow extends Component {
                     ? (
                     <div>
                         <h2>Test Results</h2>
-                        This submission passed { results.get('num_passed') }/{ results.get('total_tests') } tests.
-                        {
-                        ! usefulHints.isEmpty()
-                        ? (
-                            <div className="hints">
-                                <div>Here are some hints that might help you out:</div>
-                                { usefulHints.map((hint, i) => <div key={i}>{ hint }</div>) }
-                            </div>
-                        ) : null
-                        }
+                        This submission passed { results.get('executions').filter(e => e.get('status') === 'passed').size }/{ results.get('executions').size } tests.
+                        { remainingTests > 0 ? <span> { remainingTests } still must be run. Refresh the page to see updates.</span> : null }
+                        <ExecutionList executions={ results.get('executions') } />
                     </div>
                     ) : null
                     }
