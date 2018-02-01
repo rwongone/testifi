@@ -11,22 +11,18 @@ class ExecutionsController < ApplicationController
       return
     end
 
-    executions = Execution.where(submission: submission)
-    failed_test_ids = executions
-                      .reject(&:passed?)
-                      .map(&:test_id)
+    total_tests = submission.problem.tests.count
 
-    num_passed = executions.size - failed_test_ids.size
-
-    failed_test_hints = []
-    unless failed_test_ids.empty?
-      failed_test_hints = Test.find(failed_test_ids).pluck(:hint)
+    executions = Execution.includes(:test).where(submission: submission).map do |ex|
+      ex.attributes.merge({
+        status: ex.status,
+        hint: ex.test.hint,
+      })
     end
 
     render status: :ok, json: {
-      total_tests: executions.size,
-      num_passed: num_passed,
-      failed_test_hints: failed_test_hints
+      executions: executions,
+      total_tests: total_tests,
     }
   end
 end

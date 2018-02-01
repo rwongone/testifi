@@ -25,7 +25,7 @@ RSpec.describe 'Executions', type: :request do
 
   let!(:execution) { create(:execution, submission: submission, test: test, output: expected_output, return_code: 0) }
   let!(:execution2) { create(:execution, submission: submission, test: test2, output: 'wrong_output', return_code: 0) }
-  let!(:execution3) { create(:execution, submission: submission, test: test3, output: nil, return_code: 1) }
+  let!(:execution3) { create(:execution, submission: submission, test: test3, output: nil, std_error: 'compilation error', return_code: 1) }
 
   before(:each) do
     authenticate(student)
@@ -35,7 +35,30 @@ RSpec.describe 'Executions', type: :request do
     it 'should return the number of correct executions' do
       get "/api/submissions/#{submission.id}/results"
       expect(response).to have_http_status(200)
-      expect(response.body).to eq({ total_tests: 3, num_passed: 1, failed_test_hints: [test2.hint, test3.hint] }.to_json)
+      expect(json_response).to include({
+        total_tests: 3,
+      }.with_indifferent_access)
+      expect(json_response[:executions][0]).to include({
+        output: execution.output,
+        std_error: execution.std_error,
+        return_code: execution.return_code,
+        status: 'passed',
+        hint: test.hint,
+      })
+      expect(json_response[:executions][1]).to include({
+        output: execution2.output,
+        std_error: execution2.std_error,
+        return_code: execution2.return_code,
+        status: 'failed',
+        hint: test2.hint,
+      })
+      expect(json_response[:executions][2]).to include({
+        output: execution3.output,
+        std_error: execution3.std_error,
+        return_code: execution3.return_code,
+        status: 'errored',
+        hint: test3.hint,
+      })
     end
   end
 end
