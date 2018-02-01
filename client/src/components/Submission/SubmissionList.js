@@ -95,11 +95,15 @@ class SubmissionList extends Component {
                     </div>
                     <h2>Previous Submissions</h2>
                     {
-                    submissions.map((s, i) => (
-                    <div className="submissionFrame frame" key={ s.get('id') } onClick={ this.goToSubmission(s.get('id')) }>
-                        <h3>{ 'Submission ' + i }</h3>
-                    </div>
-                    ))
+                    submissions.isEmpty()
+                    ? <div>None :(</div>
+                    : (
+                        submissions.map((s, i) => (
+                        <div className="submissionFrame frame" key={ s.get('id') } onClick={ this.goToSubmission(s.get('id')) }>
+                            <h3>{ 'Submission ' + i }</h3>
+                        </div>
+                        ))
+                    )
                     }
                 </div>
         );

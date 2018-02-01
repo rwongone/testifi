@@ -4,6 +4,7 @@ import ImmutablePropTypes from 'react-immutable-proptypes';
 import { connect } from 'react-redux';
 import { fetchSubmissionResults } from '../../actions/submissionResults';
 import './SubmissionShow.css';
+import ExecutionList from './ExecutionList';
 
 class SubmissionShow extends Component {
     static propTypes = {
@@ -22,7 +23,10 @@ class SubmissionShow extends Component {
             fetched: PropTypes.bool.isRequired,
             results: ImmutablePropTypes.contains({
                 total_tests: PropTypes.number.isRequired,
-                num_passed: PropTypes.number.isRequired,
+                executions: ImmutablePropTypes.listOf(ImmutablePropTypes.contains({
+                    status: PropTypes.string.isRequired,
+                }).isRequired
+                ),
             }),
         })).isRequired,
         dispatch: PropTypes.func.isRequired,
@@ -75,7 +79,12 @@ class SubmissionShow extends Component {
 
     render() {
         const results = this.props.submissionResults.getIn([this.getSubmissionId(), 'results']);
-        return (
+        let remainingTests;
+        if (results) {
+            remainingTests = results.get('total_tests') - results.get('executions').size;
+        }
+
+        return results ? (
                 <div className="submissionShow">
                     <h1>
                         <div className="backButtonAndText" onClick={ this.goBackToSubmissions }><i className="fa fa-angle-left backButton" aria-hidden="true"></i>Submissions</div>
@@ -85,12 +94,14 @@ class SubmissionShow extends Component {
                     ? (
                     <div>
                         <h2>Test Results</h2>
-                        This submission passed { results.get('num_passed') }/{ results.get('total_tests') } tests.
+                        This submission passed { results.get('executions').filter(e => e.get('status') === 'passed').size }/{ results.get('executions').size } tests.
+                        { remainingTests > 0 ? <span> { remainingTests } still must be run. Refresh the page to see updates.</span> : null }
+                        <ExecutionList executions={ results.get('executions') } />
                     </div>
                     ) : null
                     }
                 </div>
-        );
+        ) : null;
     }
 }
 

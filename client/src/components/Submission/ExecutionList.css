@@ -1,0 +1,15 @@
+.executionList .execution.frame {
+  margin: 20px auto;
+}
+
+.executionList .execution.passed {
+  background: #b4deb4;
+}
+
+.executionList .execution.failed, .executionList .execution.errored {
+  background: #e4b0b0;
+}
+
+.executionList .executionDetail {
+  margin: 10px 0;
+}
