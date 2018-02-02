@@ -17,6 +17,7 @@ class ExecutionsController < ApplicationController
       ex.attributes.merge({
         status: ex.status,
         hint: ex.test.hint,
+        test_name: ex.test.name,
       })
     end
 
