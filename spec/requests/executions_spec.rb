@@ -42,6 +42,7 @@ RSpec.describe 'Executions', type: :request do
         output: execution.output,
         std_error: execution.std_error,
         return_code: execution.return_code,
+        test_name: execution.test.name,
         status: 'passed',
         hint: test.hint,
       })
@@ -49,6 +50,7 @@ RSpec.describe 'Executions', type: :request do
         output: execution2.output,
         std_error: execution2.std_error,
         return_code: execution2.return_code,
+        test_name: execution2.test.name,
         status: 'failed',
         hint: test2.hint,
       })
@@ -56,6 +58,7 @@ RSpec.describe 'Executions', type: :request do
         output: execution3.output,
         std_error: execution3.std_error,
         return_code: execution3.return_code,
+        test_name: execution3.test.name,
         status: 'errored',
         hint: test3.hint,
       })

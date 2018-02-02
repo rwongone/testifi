@@ -11,6 +11,7 @@ export default class ExecutionList extends Component {
             std_err: PropTypes.string,
             status: PropTypes.string.isRequired,
             hint: PropTypes.string,
+            test_name: PropTypes.string,
         }).isRequired)
     }
 
@@ -21,19 +22,16 @@ export default class ExecutionList extends Component {
                 <div className="executionList">
                     { executions.map((execution, idx) => (
                     <div key={ idx } className={ classNames("execution frame", execution.get('status')) }>
-                        { execution.get('output') ? (
                         <div className="executionDetail">
-                            <label>Output:</label>
-                            <div>{ execution.get('output') }</div>
+                            <div>{ execution.get('name') || "Unnamed Test" }</div>
                         </div>
-                        ) : null }
                         { execution.get('std_error') ? (
                         <div className="executionDetail">
-                            <label>Std Err:</label>
+                            <label>Error Output:</label>
                             <div>{ execution.get('std_error') }</div>
                         </div>
                         ) : null }
-                        { execution.get('hint') ? (
+                        { execution.get('hint') && execution.status == "failed" ? (
                         <div className="executionDetail">
                             <label>Hint:</label>
                             <div>{ execution.get('hint') }</div>
