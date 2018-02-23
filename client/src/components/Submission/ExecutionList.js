@@ -23,7 +23,7 @@ export default class ExecutionList extends Component {
                     { executions.map((execution, idx) => (
                     <div key={ idx } className={ classNames("execution frame", execution.get('status')) }>
                         <div className="executionDetail">
-                            <div>{ execution.get('name') || "Unnamed Test" }</div>
+                            <div>{ execution.get('test_name') || "Unnamed Test" }</div>
                         </div>
                         { execution.get('std_error') ? (
                         <div className="executionDetail">
@@ -31,7 +31,7 @@ export default class ExecutionList extends Component {
                             <div>{ execution.get('std_error') }</div>
                         </div>
                         ) : null }
-                        { execution.get('hint') && execution.status == "failed" ? (
+                        { execution.get('hint') && execution.get('status') === "failed" ? (
                         <div className="executionDetail">
                             <label>Hint:</label>
                             <div>{ execution.get('hint') }</div>

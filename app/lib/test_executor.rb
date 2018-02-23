@@ -32,7 +32,7 @@ class TestExecutor
     container.remove(force: true)
 
     # TODO: return a struct
-    [output, std_error, return_code]
+    [output || "", std_error, return_code]
 
   rescue Docker::Error::TimeoutError
     [nil, 'Timeout reached.', 1]
