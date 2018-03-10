@@ -56,7 +56,7 @@ class ProblemNew extends Component {
                                 <label htmlFor="description">Description: </label>
                             </div>
                             <div>
-                                <input type="text" name="description" className="problemInputField" />
+                                <textarea rows="16" name="description" className="problemInputField" />
                             </div>
                             <button className="submitButton" type="submit">Create</button>
                         </form>

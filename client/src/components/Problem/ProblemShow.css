@@ -10,3 +10,7 @@
   margin-bottom: 20px;
   font-size: 24px;
 }
+
+.problemShow .description {
+  white-space: pre;
+}
