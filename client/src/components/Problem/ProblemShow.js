@@ -143,7 +143,7 @@ class ProblemShow extends Component {
                         <div className="backButtonAndText" onClick={ this.goBackToProblems }><i className="fa fa-angle-left backButton" aria-hidden="true"></i>{ assignment.get('name') } - { problem.get('name') }</div>
                     </h1>
                     { problem.get('description') ? (
-                        <pre>{ problem.get('description') }</pre>
+                        <pre className="description">{ problem.get('description') }</pre>
                     ) : (
                         <pre>Description: N/A</pre>
                     ) }
