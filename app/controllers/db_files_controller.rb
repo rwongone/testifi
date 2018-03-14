@@ -5,8 +5,7 @@ class DbFilesController < ApplicationController
   # use submissions#show_file or tests#show_file
   def show
     file = DbFile.find(params[:id])
-    send_data(file.contents,
-              filename: file.name,
-              type: file.content_type)
+
+    render plain: file.contents
   end
 end
